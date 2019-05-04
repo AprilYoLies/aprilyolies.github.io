@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://aprilyolies.top/"/>
-  <updated>2019-05-04T05:47:29.051Z</updated>
+  <updated>2019-05-04T05:58:08.533Z</updated>
   <id>https://aprilyolies.top/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://aprilyolies.top/2019/05/02/guan-yu-tcp-ni-ying-gai-zhi-dao-de-na-xie-shi-er/"/>
     <id>https://aprilyolies.top/2019/05/02/guan-yu-tcp-ni-ying-gai-zhi-dao-de-na-xie-shi-er/</id>
     <published>2019-05-02T10:20:38.000Z</published>
-    <updated>2019-05-04T05:47:29.051Z</updated>
+    <updated>2019-05-04T05:58:08.533Z</updated>
     
     <summary type="html">
     
@@ -53,7 +53,7 @@
     <link href="https://aprilyolies.top/2019/05/01/mysql-suo-yin-bei-hou-de-shu-ju-jie-gou-ji-suan-fa-yuan-li/"/>
     <id>https://aprilyolies.top/2019/05/01/mysql-suo-yin-bei-hou-de-shu-ju-jie-gou-ji-suan-fa-yuan-li/</id>
     <published>2019-05-01T09:52:47.000Z</published>
-    <updated>2019-05-04T05:47:15.752Z</updated>
+    <updated>2019-05-04T05:58:04.625Z</updated>
     
     <summary type="html">
     
@@ -70,8 +70,6 @@
     </summary>
     
       <category term="数据库" scheme="https://aprilyolies.top/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-      <category term="数据结构与算法" scheme="https://aprilyolies.top/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
     
     
       <category term="数据结构" scheme="https://aprilyolies.top/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
@@ -114,7 +112,7 @@
     <link href="https://aprilyolies.top/2019/04/20/tong-guo-fastdfs-de-java-ke-hu-duan-shang-chuan-tu-pian-lian-jie-chao-shi-de-jie-jue-guo-cheng/"/>
     <id>https://aprilyolies.top/2019/04/20/tong-guo-fastdfs-de-java-ke-hu-duan-shang-chuan-tu-pian-lian-jie-chao-shi-de-jie-jue-guo-cheng/</id>
     <published>2019-04-20T12:38:48.000Z</published>
-    <updated>2019-05-04T05:46:57.465Z</updated>
+    <updated>2019-05-04T05:57:50.332Z</updated>
     
     <summary type="html">
     
@@ -129,9 +127,7 @@
     
     </summary>
     
-      <category term="问题解决" scheme="https://aprilyolies.top/categories/%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/"/>
-    
-      <category term="后端开发" scheme="https://aprilyolies.top/categories/%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
+      <category term="后端开发" scheme="https://aprilyolies.top/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
     
     
       <category term="FastDFS" scheme="https://aprilyolies.top/tags/FastDFS/"/>
@@ -145,7 +141,7 @@
     <link href="https://aprilyolies.top/2019/04/20/java-kai-fa-chang-yong-gong-ju-lei-hui-zong/"/>
     <id>https://aprilyolies.top/2019/04/20/java-kai-fa-chang-yong-gong-ju-lei-hui-zong/</id>
     <published>2019-04-20T05:26:43.000Z</published>
-    <updated>2019-05-04T05:46:49.797Z</updated>
+    <updated>2019-05-04T05:57:36.993Z</updated>
     
     <summary type="html">
     
@@ -163,8 +159,6 @@
     
       <category term="开发工具" scheme="https://aprilyolies.top/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"/>
     
-      <category term="后端开发" scheme="https://aprilyolies.top/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
-    
     
       <category term="Maven" scheme="https://aprilyolies.top/tags/Maven/"/>
     
@@ -175,7 +169,7 @@
     <link href="https://aprilyolies.top/2019/04/19/jie-jue-liu-lan-qi-fang-wen-github-he-git-clone-gui-su-de-wen-ti/"/>
     <id>https://aprilyolies.top/2019/04/19/jie-jue-liu-lan-qi-fang-wen-github-he-git-clone-gui-su-de-wen-ti/</id>
     <published>2019-04-19T10:55:02.000Z</published>
-    <updated>2019-05-04T05:46:43.053Z</updated>
+    <updated>2019-05-04T05:57:24.573Z</updated>
     
     <summary type="html">
     
@@ -190,9 +184,7 @@
     
     </summary>
     
-      <category term="开发工具" scheme="https://aprilyolies.top/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"/>
-    
-      <category term="小技巧" scheme="https://aprilyolies.top/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
+      <category term="小技巧" scheme="https://aprilyolies.top/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
     
     
       <category term="Git" scheme="https://aprilyolies.top/tags/Git/"/>
@@ -204,7 +196,7 @@
     <link href="https://aprilyolies.top/2019/04/19/fastdfs-dan-ji-huan-jing-xia-de-da-jian/"/>
     <id>https://aprilyolies.top/2019/04/19/fastdfs-dan-ji-huan-jing-xia-de-da-jian/</id>
     <published>2019-04-19T10:20:05.000Z</published>
-    <updated>2019-05-04T05:46:34.326Z</updated>
+    <updated>2019-05-04T05:57:27.940Z</updated>
     
     <summary type="html">
     
@@ -220,8 +212,6 @@
     </summary>
     
       <category term="后端开发" scheme="https://aprilyolies.top/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
-    
-      <category term="操作系统" scheme="https://aprilyolies.top/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
     
     
       <category term="FastDFS" scheme="https://aprilyolies.top/tags/FastDFS/"/>
