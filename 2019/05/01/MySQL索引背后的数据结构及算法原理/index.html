@@ -262,7 +262,7 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://pqxjajlr4.bkt.clouddn.com/static/images/face-img/6.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/6.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
@@ -453,7 +453,7 @@
 <h2 id="数据结构及算法基础"><a href="#数据结构及算法基础" class="headerlink" title="数据结构及算法基础"></a>数据结构及算法基础</h2><h3 id="索引的本质"><a href="#索引的本质" class="headerlink" title="索引的本质"></a>索引的本质</h3><p>MySQL官方对索引的定义为：索引（Index）是帮助MySQL高效获取数据的数据结构。提取句子主干，就可以得到索引的本质：索引是数据结构。</p>
 <p>我们知道，数据库查询是数据库的最主要功能之一。我们都希望查询数据的速度能尽可能的快，因此数据库系统的设计者会从查询算法的角度进行优化。最基本的查询算法当然是顺序查找（linear search），这种复杂度为O(n)的算法在数据量很大时显然是糟糕的，好在计算机科学的发展提供了很多更优秀的查找算法，例如二分查找（binary search）、二叉树查找（binary tree search）等。如果稍微分析一下会发现，每种查找算法都只能应用于特定的数据结构之上，例如二分查找要求被检索数据有序，而二叉树查找只能应用于二叉查找树上，但是数据本身的组织结构不可能完全满足各种数据结构（例如，理论上不可能同时将两列都按顺序进行组织），所以，在数据之外，数据库系统还维护着满足特定查找算法的数据结构，这些数据结构以某种方式引用（指向）数据，这样就可以在这些数据结构上实现高级查找算法。这种数据结构，就是索引。</p>
 <p>看一个例子：</p>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/1.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/1.png">
 <center>图 1</center>
 
 <p>图1展示了一种可能的索引方式。左边是数据表，一共有两列七条记录，最左边的是数据记录的物理地址（注意逻辑上相邻的记录在磁盘上也并不是一定物理相邻的）。为了加快Col2的查找，可以维护一个右边所示的二叉查找树，每个节点分别包含索引键值和一个指向对应数据记录物理地址的指针，这样就可以运用二叉查找在O(log2n)的复杂度内获取到相应数据。</p>
@@ -487,7 +487,7 @@
 </li>
 </ul>
 <p>图2是一个d=2的B-Tree示意图。</p>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/2.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/2.png">
 <center>图 2</center>
 
 <p>由于B-Tree的特性，在B-Tree中按key检索数据的算法非常直观：首先从根节点进行二分查找，如果找到则返回对应节点的data，否则对相应区间的指针指向的节点递归进行查找，直到找到节点或找到null指针，前者查找成功，后者查找失败。B-Tree上查找算法的伪代码如下：</p>
@@ -513,13 +513,13 @@ data <span class="token operator">=</span> <span class="token function">BTree_Se
 <li><p>图3是一个简单的B+Tree示意。</p>
 </li>
 </ul>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/3.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/3.png">
 <center>图 3</center>
 
 <p>由于并不是所有节点都具有相同的域，因此B+Tree中叶节点和内节点一般大小不同。这点与B-Tree不同，虽然B-Tree中不同节点存放的key和指针可能数量不一致，但是每个节点的域和上限是一致的，所以在实现中B-Tree往往对每个节点申请同等大小的空间。</p>
 <p>一般来说，B+Tree比B-Tree更适合实现外存储索引结构，具体原因与外存储器原理及计算机存取原理有关，将在下面讨论。</p>
 <h4 id="带有顺序访问指针的B-Tree"><a href="#带有顺序访问指针的B-Tree" class="headerlink" title="带有顺序访问指针的B+Tree"></a>带有顺序访问指针的B+Tree</h4><p>一般在数据库系统或文件系统中使用的B+Tree结构都在经典B+Tree的基础上进行了优化，增加了顺序访问指针。</p>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/4.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/4.png">
 <center>图 4</center>
 
 <p>如图4所示，在B+Tree的每个叶子节点增加一个指向相邻叶子节点的指针，就形成了带有顺序访问指针的B+Tree。做这个优化的目的是为了提高区间访问的性能，例如图4中如果要查询key为从18到49的所有数据记录，当找到18后，只需顺着节点和指针顺序遍历就可以一次性访问到所有数据节点，极大提到了区间查询效率。</p>
@@ -527,7 +527,7 @@ data <span class="token operator">=</span> <span class="token function">BTree_Se
 <h3 id="为什么使用B-Tree（B-Tree）"><a href="#为什么使用B-Tree（B-Tree）" class="headerlink" title="为什么使用B-Tree（B+Tree）"></a>为什么使用B-Tree（B+Tree）</h3><p>上文说过，红黑树等数据结构也可以用来实现索引，但是文件系统及数据库系统普遍采用B-/+Tree作为索引结构，这一节将结合计算机组成原理相关知识讨论B-/+Tree作为索引的理论基础。</p>
 <p>一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储的磁盘上。这样的话，索引查找过程中就要产生磁盘I/O消耗，相对于内存存取，I/O存取的消耗要高几个数量级，所以评价一个数据结构作为索引的优劣最重要的指标就是在查找过程中磁盘I/O操作次数的渐进复杂度。换句话说，索引的结构组织要尽量减少查找过程中磁盘I/O的存取次数。下面先介绍内存和磁盘存取原理，然后再结合这些原理分析B-/+Tree作为索引的效率。</p>
 <h4 id="主存存取原理"><a href="#主存存取原理" class="headerlink" title="主存存取原理"></a>主存存取原理</h4><p>目前计算机使用的主存基本都是随机读写存储器（RAM），现代RAM的结构和存取原理比较复杂，这里本文抛却具体差别，抽象出一个十分简单的存取模型来说明RAM的工作原理。</p>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/5.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/5.png">
 <center>图 5</center>
 
 <p>从抽象角度看，主存是一系列的存储单元组成的矩阵，每个存储单元存储固定大小的数据。每个存储单元有唯一的地址，现代主存的编址规则比较复杂，这里将其简化成一个二维地址：通过一个行地址和一个列地址可以唯一定位到一个存储单元。图5展示了一个4 x 4的主存模型。</p>
@@ -537,12 +537,12 @@ data <span class="token operator">=</span> <span class="token function">BTree_Se
 <p>这里可以看出，主存存取的时间仅与存取次数呈线性关系，因为不存在机械操作，两次存取的数据的“距离”不会对时间有任何影响，例如，先取A0再取A1和先取A0再取D3的时间消耗是一样的。</p>
 <h4 id="磁盘存取原理"><a href="#磁盘存取原理" class="headerlink" title="磁盘存取原理"></a>磁盘存取原理</h4><p>上文说过，索引一般以文件形式存储在磁盘上，索引检索需要磁盘I/O操作。与主存不同，磁盘I/O存在机械运动耗费，因此磁盘I/O的时间消耗是巨大的。</p>
 <p>图6是磁盘的整体结构示意图。</p>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/6.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/6.png">
 <center>图 6</center>
 
 <p>一个磁盘由大小相同且同轴的圆形盘片组成，磁盘可以转动（各个磁盘必须同步转动）。在磁盘的一侧有磁头支架，磁头支架固定了一组磁头，每个磁头负责存取一个磁盘的内容。磁头不能转动，但是可以沿磁盘半径方向运动（实际是斜切向运动），每个磁头同一时刻也必须是同轴的，即从正上方向下看，所有磁头任何时候都是重叠的（不过目前已经有多磁头独立技术，可不受此限制）。</p>
 <p>图7是磁盘结构的示意图。</p>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/7.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/7.png">
 <center>图 7</center>
 
 <p>盘片被划分成一系列同心环，圆心是盘片中心，每个同心环叫做一个磁道，所有半径相同的磁道组成一个柱面。磁道被沿半径线划分成一个个小的段，每个段叫做一个扇区，每个扇区是磁盘的最小存储单元。为了简单起见，我们下面假设磁盘只有一个盘片和一个磁头。</p>
@@ -564,23 +564,23 @@ data <span class="token operator">=</span> <span class="token function">BTree_Se
 <p>这一章从理论角度讨论了与索引相关的数据结构与算法问题，下一章将讨论B+Tree是如何具体实现为MySQL中索引，同时将结合MyISAM和InnDB存储引擎介绍非聚集索引和聚集索引两种不同的索引实现形式。</p>
 <h2 id="MySQL索引实现"><a href="#MySQL索引实现" class="headerlink" title="MySQL索引实现"></a>MySQL索引实现</h2><p>在MySQL中，索引属于存储引擎级别的概念，不同存储引擎对索引的实现方式是不同的，本文主要讨论MyISAM和InnoDB两个存储引擎的索引实现方式。</p>
 <h3 id="MyISAM索引实现"><a href="#MyISAM索引实现" class="headerlink" title="MyISAM索引实现"></a>MyISAM索引实现</h3><p>MyISAM引擎使用B+Tree作为索引结构，叶节点的data域存放的是数据记录的地址。下图是MyISAM索引的原理图：</p>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/8.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/8.png">
 <center>图 8</center>
 
 <p>这里设表一共有三列，假设我们以Col1为主键，则图8是一个MyISAM表的主索引（Primary key）示意。可以看出MyISAM的索引文件仅仅保存数据记录的地址。在MyISAM中，主索引和辅助索引（Secondary key）在结构上没有任何区别，只是主索引要求key是唯一的，而辅助索引的key可以重复。如果我们在Col2上建立一个辅助索引，则此索引的结构如下图所示：</p>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/9.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/9.png">
 <center>图 9</center>
 
 <p>同样也是一颗B+Tree，data域保存数据记录的地址。因此，MyISAM中索引检索的算法为首先按照B+Tree搜索算法搜索索引，如果指定的Key存在，则取出其data域的值，然后以data域的值为地址，读取相应数据记录。</p>
 <p>MyISAM的索引方式也叫做“非聚集”的，之所以这么称呼是为了与InnoDB的聚集索引区分。</p>
 <h3 id="InnoDB索引实现"><a href="#InnoDB索引实现" class="headerlink" title="InnoDB索引实现"></a>InnoDB索引实现</h3><p>虽然InnoDB也使用B+Tree作为索引结构，但具体实现方式却与MyISAM截然不同。</p>
 <p>第一个重大区别是InnoDB的数据文件本身就是索引文件。从上文知道，MyISAM索引文件和数据文件是分离的，索引文件仅保存数据记录的地址。而在InnoDB中，表数据文件本身就是按B+Tree组织的一个索引结构，这棵树的叶节点data域保存了完整的数据记录。这个索引的key是数据表的主键，因此InnoDB表数据文件本身就是主索引。</p>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/10.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/10.png">
 <center>图 10</center>
 
 <p>图10是InnoDB主索引（同时也是数据文件）的示意图，可以看到叶节点包含了完整的数据记录。这种索引叫做聚集索引。因为InnoDB的数据文件本身要按主键聚集，所以InnoDB要求表必须有主键（MyISAM可以没有），如果没有显式指定，则MySQL系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则MySQL自动为InnoDB表生成一个隐含字段作为主键，这个字段长度为6个字节，类型为长整形。</p>
 <p>第二个与MyISAM索引的不同是InnoDB的辅助索引data域存储相应记录主键的值而不是地址。换句话说，InnoDB的所有辅助索引都引用主键作为data域。例如，图11为定义在Col3上的一个辅助索引：</p>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/11.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/11.png">
 <center>图 11</center>
 
 <p>这里以英文字符的ASCII码作为比较准则。聚集索引这种实现方式使得按主键的搜索十分高效，但是辅助索引搜索需要检索两遍索引：首先检索辅助索引获得主键，然后用主键到主索引中检索获得记录。</p>
@@ -588,7 +588,7 @@ data <span class="token operator">=</span> <span class="token function">BTree_Se
 <p>下一章将具体讨论这些与索引有关的优化策略。</p>
 <h2 id="索引使用策略及优化"><a href="#索引使用策略及优化" class="headerlink" title="索引使用策略及优化"></a>索引使用策略及优化</h2><p>MySQL的优化主要分为结构优化（Scheme optimization）和查询优化（Query optimization）。本章讨论的高性能索引策略主要属于结构优化范畴。本章的内容完全基于上文的理论基础，实际上一旦理解了索引背后的机制，那么选择高性能的策略就变成了纯粹的推理，并且可以理解这些策略背后的逻辑。</p>
 <h3 id="示例数据库"><a href="#示例数据库" class="headerlink" title="示例数据库"></a>示例数据库</h3><p>为了讨论索引策略，需要一个数据量不算小的数据库作为示例。本文选用MySQL官方文档中提供的示例数据库之一：employees。这个数据库关系复杂度适中，且数据量较大。下图是这个数据库的E-R关系图（引用自MySQL官方手册）：</p>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/12.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/12.png">
 <center>图 12</center>
 
 <p>MySQL官方文档中关于此数据库的页面为<a href="http://dev.mysql.com/doc/employee/en/employee.html" target="_blank" rel="noopener">http://dev.mysql.com/doc/employee/en/employee.html</a>。里面详细介绍了此数据库，并提供了下载地址和导入方法，如果有兴趣导入此数据库到自己的MySQL可以参考文中内容。</p>
@@ -810,12 +810,12 @@ data <span class="token operator">=</span> <span class="token function">BTree_Se
 <p>经常看到有帖子或博客讨论主键选择问题，有人建议使用业务无关的自增主键，有人觉得没有必要，完全可以使用如学号或身份证号这种唯一字段作为主键。不论支持哪种论点，大多数论据都是业务层面的。如果从数据库索引优化角度看，使用InnoDB引擎而不使用自增主键绝对是一个糟糕的主意。</p>
 <p>上文讨论过InnoDB的索引实现，InnoDB使用聚集索引，数据记录本身被存于主索引（一颗B+Tree）的叶子节点上。这就要求同一个叶子节点内（大小为一个内存页或磁盘页）的各条数据记录按主键顺序存放，因此每当有一条新的记录插入时，MySQL会根据其主键将其插入适当的节点和位置，如果页面达到装载因子（InnoDB默认为15/16），则开辟一个新的页（节点）。</p>
 <p>如果表使用自增主键，那么每次插入新的记录，记录就会顺序添加到当前索引节点的后续位置，当一页写满，就会自动开辟一个新的页。如下图所示：</p>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/13.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/13.png">
 <center>图 13</center>
 
 <p>这样就会形成一个紧凑的索引结构，近似顺序填满。由于每次插入时也不需要移动已有数据，因此效率很高，也不会增加很多开销在维护索引上。</p>
 <p>如果使用非自增主键（如果身份证号或学号等），由于每次插入主键的值近似于随机，因此每次新纪录都要被插到现有索引页得中间某个位置：</p>
-<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/14.png">
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/14.png">
 <center>图 14</center>
 
 <p>此时MySQL不得不为了将新记录插到合适位置而移动数据，甚至目标页面可能已经被回写到磁盘上而从缓存中清掉，此时又要从磁盘上读回来，这增加了很多开销，同时频繁的移动、分页操作造成了大量的碎片，得到了不够紧凑的索引结构，后续不得不通过OPTIMIZE TABLE来重建表并优化填充页面。</p>
@@ -1263,7 +1263,7 @@ data <span class="token operator">=</span> <span class="token function">BTree_Se
                 <a href="../../02/关于TCP你应该知道的那些事儿/">
                     <div class="card-image">
                         
-                        <img src="https://pqxjajlr4.bkt.clouddn.com/static/images/face-img/7.jpg" class="responsive-img" alt="关于TCP你应该知道的那些事儿">
+                        <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/7.jpg" class="responsive-img" alt="关于TCP你应该知道的那些事儿">
                         
                         <span class="card-title">关于TCP你应该知道的那些事儿</span>
                     </div>
@@ -1321,7 +1321,7 @@ TCP慢启动、拥塞避免、快速重传、快速恢复
                 <a href="../../../04/24/Git常用指令总结/">
                     <div class="card-image">
                         
-                        <img src="https://pqxjajlr4.bkt.clouddn.com/static/images/face-img/5.jpg" class="responsive-img" alt="Git常用指令总结">
+                        <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/5.jpg" class="responsive-img" alt="Git常用指令总结">
                         
                         <span class="card-title">Git常用指令总结</span>
                     </div>
