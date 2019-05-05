@@ -527,7 +527,7 @@ tracker_server<span class="token operator">=</span>ali:22122
 <pre class="line-numbers language-bash"><code class="language-bash"> firewall-cmd --zone<span class="token operator">=</span>public --add-port<span class="token operator">=</span>端口号/tcp --permanet
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p> 另外要注意的是，如果你使用的是云服务器，那么还需要配置云端防火墙规则，比如我的阿里云服务器配置规则如下：</p>
- <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-04/aliyun-firewall.jpg">
+ <img src="www.image.aprilyolies.top/static/images/2019-04/aliyun-firewall.jpg">
 </li>
 <li><p>启动测试<br> 分别启动tracker和storage服务，指令如下：</p>
 <pre class="line-numbers language-bash"><code class="language-bash"> fdfs_trackerd /etc/fdfs/tracker.conf start
@@ -537,7 +537,7 @@ tracker_server<span class="token operator">=</span>ali:22122
 <pre class="line-numbers language-bash"><code class="language-bash"> <span class="token function">netstat</span> -anp <span class="token operator">|</span> <span class="token function">grep</span> fdfs
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p> 出现下图所示结果，便说明服务启动成功。</p>
- <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-04/server-start.jpg">
+ <img src="www.image.aprilyolies.top/static/images/2019-04/server-start.jpg">
 <p> 测试文件上传，执行如下命令，会返回一个存储路径，记下这个路径，然后前往你在storage.conf文件中配置的store_path0/data/目录下，查看返回的路径下是否有你刚刚上传的文件，如果有，则说明上传是没有问题的。</p>
 <pre class="line-numbers language-bash"><code class="language-bash"> /usr/bin/fdfs_upload_file 待上传文件的路径
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
@@ -563,7 +563,7 @@ tracker_server<span class="token operator">=</span>ali:22122
 <pre class="line-numbers language-bash"><code class="language-bash">  /usr/local/nginx/sbin/nginx -V
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>  出现下图结果，则表示nginx安装成功。</p>
-  <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-04/nginx-install.jpg">
+  <img src="www.image.aprilyolies.top/static/images/2019-04/nginx-install.jpg">
 </li>
 <li><p>为nginx安装FastDFS模块</p>
 <blockquote>
@@ -592,7 +592,7 @@ tracker_server<span class="token operator">=</span>ali:22122
 <p>  c. 查看添加的FastDFS模块</p>
 <pre class="line-numbers language-bash"><code class="language-bash">  /usr/local/nginx/sbin/nginx -V
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-  <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-04/nginx-module.jpg">
+  <img src="www.image.aprilyolies.top/static/images/2019-04/nginx-module.jpg">
 <p>  d. 复制 fastdfs-nginx-module 源码中的配置文件到/etc/fdfs 目录， 并修改</p>
 <pre class="line-numbers language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 复制</span>
   <span class="token function">cd</span> /softpackages/fastdfs-nginx-module-master/src
@@ -627,7 +627,7 @@ tracker_server<span class="token operator">=</span>ali:22122
        ngx_fastdfs_module<span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-  <img width="500" src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-04/nginx-fdfs-router.jpg">
+  <img width="500" src="www.image.aprilyolies.top/static/images/2019-04/nginx-fdfs-router.jpg">
 </li>
 <li><p>启动Nginx（需要以root身份执行），测试下载</p>
 <pre class="line-numbers language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 启动Nginx服务器</span>
