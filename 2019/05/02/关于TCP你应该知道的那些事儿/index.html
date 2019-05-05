@@ -477,10 +477,10 @@ TCP慢启动、拥塞避免、快速重传、快速恢复
 <ul>
 <li>字节流式：应用层发送的数据会在TCP的发送端缓存起来，统一分片(例如一个应用层的数据包分成两个TCP包)或者打包(例如两个或者多个应用层的数据包打包成一个TCP数据包)发送，到接收端的时候接收端也是直接按照字节流将数据传递给应用层(这种情况就会产生数据包的粘包和拆包问题)。</li>
 </ul>
-<h3 id="TCP的封装和协议头的格式"><a href="#TCP的封装和协议头的格式" class="headerlink" title="TCP的封装和协议头的格式"></a>TCP的封装和协议头的格式</h3><img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/05-02-01.png">
+<h3 id="TCP的封装和协议头的格式"><a href="#TCP的封装和协议头的格式" class="headerlink" title="TCP的封装和协议头的格式"></a>TCP的封装和协议头的格式</h3><img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/05-02-01.png">
 <center style="margin:20px;">图 1 TCP封装在IP报文中的结构</center>
 
-<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/05-02-02.png">  
+<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/05-02-02.png">  
 <center style="margin:20px;">图 2 TCP报文头结构</center>
 
 <p>需要重点关注的字段如下：</p>
@@ -542,7 +542,7 @@ TCP慢启动、拥塞避免、快速重传、快速恢复
 </li>
 </ul>
 <h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p>三次握手的整个过程如下图所示，一般我们称呼主动发起连接(Active Opener)的一端为客户端(Client)，被动等待连接(Passive Opener)的称为服务器端(Server)。</p>
-<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/05-02-03.png">  
+<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/05-02-03.png">  
 <center style="margin:20px;">图 3 TCP三次握手</center>
 
 <p>详细过程：</p>
@@ -560,7 +560,7 @@ TCP慢启动、拥塞避免、快速重传、快速恢复
 </ul>
 <p>一般来说上面用来建立连接的初始系列号ISN(即x和y)的值是随机选取的。</p>
 <h3 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h3><p>数据传输结束后，通信的双方都可释放连接。现在如下图假设A 的应用进程先向其 TCP 发出连接释放报文段，并停止发送数据，主动关闭 TCP连接。则四次挥手的过程如下图所示：</p>
-<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/05-02-04.png">  
+<img src="https://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/05-02-04.png">  
 <center style="margin:20px;">图 4 TCP四次挥手</center>
 
 <p>详细过程：</p>
