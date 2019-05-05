@@ -4,10 +4,14 @@
 
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="解决浏览器访问GitHub和git clone龟速的问题, Java,Mysql,Netty,Spring">
+    <meta name="keywords" content="关于TCP你应该知道的那些事儿, Java,Mysql,Netty,Spring">
     <meta name="description" content="
-写在前面只是一些吐槽，咱们大天朝屏蔽掉一些负面信息的网站都能理解，为什么作为代码托管网站的GitHub也要躺着中枪呢？？因为下面的内容需要用到一些翻墙的技巧，所以不会的小伙伴还请先自行搜寻方法，由于可能违反相关规定，我这里不进行说明。
-正">
+
+本文内容摘录自：
+
+Ishs博主的TCP系列文章
+TCP慢启动、拥塞避免、快速重传、快速恢复
+概述及协议头概述一句话就是：TCP是一个面向连接的(connection-oriented)、可靠的(reliable)、字节流式(byte ">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,7 +19,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>解决浏览器访问GitHub和git clone龟速的问题 | AprilYoLies</title>
+    <title>关于TCP你应该知道的那些事儿 | AprilYoLies</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -260,13 +264,13 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/2.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/7.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        解决浏览器访问GitHub和git clone龟速的问题
+                        关于TCP你应该知道的那些事儿
                     </div>
                 </div>
             </div>
@@ -377,8 +381,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="../../../../tags/Git/" target="_blank">
-                                <span class="chip bg-color">Git</span>
+                            <a href="../../../../tags/TCP-IP/" target="_blank">
+                                <span class="chip bg-color">TCP/IP</span>
+                            </a>
+                        
+                            <a href="../../../../tags/计算机网络/" target="_blank">
+                                <span class="chip bg-color">计算机网络</span>
                             </a>
                         
                     </div>
@@ -389,8 +397,8 @@
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="../../../../categories/小技巧/" class="post-category" target="_blank">
-                                小技巧
+                            <a href="../../../../categories/计算机网络/" class="post-category" target="_blank">
+                                计算机网络
                             </a>
                         
                     </div>
@@ -401,21 +409,21 @@
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2019-04-19
+                    2019-05-02
                 </div>
 
                 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        601
+                        6.2k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        2 分
+                        22 分
                     </div>
                     
                 
@@ -432,29 +440,172 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <!-- toc -->
-<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>只是一些吐槽，咱们大天朝屏蔽掉一些负面信息的网站都能理解，为什么作为代码托管网站的GitHub也要躺着中枪呢？？因为下面的内容需要用到一些翻墙的技巧，所以不会的小伙伴还请先自行搜寻方法，由于可能违反相关规定，我这里不进行说明。</p>
-<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>GitHub主要是有两个方面的慢，一是通过浏览器进行GitHub网站的访问，巨慢有木有？？然后就是通过命令行工具进行clone操作时，正常情况下，我是没有高过10KB/s的。（关于这两种情况，只是我自己的理解，也不知道对不对，但是以下内容亲测有效）。</p>
+<blockquote>
+<p>本文内容摘录自：</p>
+</blockquote>
+<p><a href="https://www.cnblogs.com/lshs/p/?page=7" target="_blank" rel="noopener">Ishs博主的TCP系列文章</a></p>
+<p><a href="https://blog.csdn.net/itmacar/article/details/12278769" target="_blank" rel="noopener">TCP慢启动、拥塞避免、快速重传、快速恢复</a></p>
+<h2 id="概述及协议头"><a href="#概述及协议头" class="headerlink" title="概述及协议头"></a>概述及协议头</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>一句话就是：TCP是一个面向连接的(connection-oriented)、可靠的(reliable)、字节流式(byte stream)传输协议。</p>
 <ul>
-<li><p>通过浏览器访问GitHub慢</p>
-<p>  解决这个问题需要修改host文件，在其中加入如下两行即可。注意根据你所在地区的不同，下面的两个ip还需要你根据查询的情况进行适当的修改才行，顺带附上<a href="http://tool.chinaz.com/dns" target="_blank" rel="noopener">查询地址</a>（如果失效自行搜索）。</p>
-<pre class="line-numbers language-bash"><code class="language-bash">  192.30.253.113  github.com
-  151.101.185.194 global-ssl.fastly.netgithub.com
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<li><p>面向连接：在应用TCP协议进行通信之前双方通常需要通过三次握手来建立TCP连接，连接建立后才能进行正常的数据传输，因此广播和多播不会承载在TCP协议上。</p>
 </li>
-<li><p>通过git clone命令行慢<br>  根据我的理解，经过上述操作后，按理说git clone的速度应该就能得到保障的，但是实测的效果是速度基本没有提升。这样的话，我们就需要一部梯子，然后git通过内部代理走梯子来加速clone的速度。具体只需要在命令行执行如下两条指令即可，注意这里的端口号要根据自己的翻墙工具实际设置的端口来进行修改。下图就是我的翻墙工具的实际端口（这里一定要用<strong>Socks5</strong>的端口，因为我的电脑使用http的端口，速度是没有提升的）。</p>
-  <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-04/socket5port.jpg">
-<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token function">git</span> config --global http.proxy socks5://127.0.0.1:1086
-  <span class="token function">git</span> config --global https.proxy socks5://127.0.0.1:1086
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>  上述两条指令执行后，可以通过通过查看~/.gitconfig中的内容来确定是否设置代理成功，出现如下两个新增项就代表设置成功，快去体验一下满速的git clone吧。</p>
-<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token punctuation">[</span>http<span class="token punctuation">]</span>
-      proxy <span class="token operator">=</span> socks5://127.0.0.1:1086
-  <span class="token punctuation">[</span>https<span class="token punctuation">]</span>
-      proxy <span class="token operator">=</span> socks5://127.0.0.1:1086
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<li><p>可靠性：由于TCP处于多跳通信的IP层之上，而IP层并不提供可靠的传输，因此在TCP层看来就有四种常见传输错误问题，分别是 <font color="#ee0000">比特错误(packet bit errors)、包乱序(packet reordering)、包重复(packet duplication)、丢包(packet erasure或称为packet drops)</font>。TCP要提供可靠的传输，就需要有额外的机制处理这几种错误。因此个人理解可靠性体现在三个方面，首先TCP通过超时重传和快速重传两个常见手段来保证数据包的正确传输，也就是说接收端在没有收到数据包或者收到错误的数据包的时候会触发发送端的数据包重传(处理比特错误和丢包)。其次TCP接收端会缓存接收到的乱序到达数据，重排序后在向应用层提供有序的数据(处理包乱序)。最后TCP发送端会维持一个发送”窗口”动态的调整发送速率以适用接收端缓存限制和网络拥塞情况，避免了网络拥塞或者接收端缓存满而大量丢包的问题(降低丢包率)。因此可靠性需要TCP协议具有超时与重传管理、窗口管理、流量控制、拥塞控制等功能。以上内容可以用一个表格进行表示。</p>
 </li>
 </ul>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>这里的Socks5是个什么东西呢？有时间了了解一下。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">待解决的问题</th>
+<th style="text-align:left">应对的方案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">比特错误，超时丢包</td>
+<td style="text-align:left">数据包重传</td>
+</tr>
+<tr>
+<td style="text-align:left">包乱序，包重复</td>
+<td style="text-align:left">设置缓存区，统一对接收的一批数据进行处理</td>
+</tr>
+<tr>
+<td style="text-align:left">传输速度过快，导致接收端来不及处理，从而大量丢包，或者致使网络拥塞</td>
+<td style="text-align:left">通过发送窗口调整发送速率，以适应接收端缓存限制和网络拥塞状态</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>字节流式：应用层发送的数据会在TCP的发送端缓存起来，统一分片(例如一个应用层的数据包分成两个TCP包)或者打包(例如两个或者多个应用层的数据包打包成一个TCP数据包)发送，到接收端的时候接收端也是直接按照字节流将数据传递给应用层(这种情况就会产生数据包的粘包和拆包问题)。</li>
+</ul>
+<h3 id="TCP的封装和协议头的格式"><a href="#TCP的封装和协议头的格式" class="headerlink" title="TCP的封装和协议头的格式"></a>TCP的封装和协议头的格式</h3><img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/05-02-01.png">
+<center style="margin:20px;">图 1 TCP封装在IP报文中的结构</center>
+
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/05-02-02.png">  
+<center style="margin:20px;">图 2 TCP报文头结构</center>
+
+<p>需要重点关注的字段如下：</p>
+<ul>
+<li><p>TCP源端口(Source Port)：16位的源端口其中包含发送方应用程序对应的端口。源端口和源IP地址标示报文发送端的地址。</p>
+</li>
+<li><p>TCP目的端口(Destination port)：16位的目的端口域定义传输的目的。这个端口指明报文接收计算机上的应用程序地址接口。</p>
+</li>
+</ul>
+<p>TCP的源端口、目的端口、以及IP层的源IP地址、目的IP地址四元组唯一的标识了一个TCP连接，一个IP地址和一个端口号的组合叫做一个endpoint或者socket。也即一对endpoint或者一对socket唯一的标识了一个TCP连接。接收端的TCP层就是根据不同的端口号来将数据包传送给应用层的不同程序，这个过程叫做解复用(demultiplex)。相应的发送端会把应用层不同程序的数据映射到不同的端口号，这个过程叫做复用(multiplex)。</p>
+<ul>
+<li><p>TCP序列号（序列码SN,Sequence　Number）：32位的序列号标识了TCP报文中第一个byte在对应方向的传输中对应的字节序号。当SYN出现，序列码实际上是初始序列码（ISN），而第一个数据字节是ISN+1，单位是byte。比如发送端发送的一个TCP包净荷(不包含TCP头)为12byte，SN为5，则发送端接着发送的下一个数据包的时候，SN应该设置为5+12=17。通过系列号，TCP接收端可以识别出重复接收到的TCP包，从而丢弃重复包，同时对于乱序数据包也可以依靠系列号进行重排序，进而对高层提供有序的数据流。另外SYN标志和FIN标志在逻辑上也占用一个byte，当SYN标志位有效的时候，该字段也称为ISN(initial sequence number)，详细请参考后续的TCP连接管理。</p>
+</li>
+<li><p>TCP应答号(Acknowledgment   Number简称ACK Number或简称为ACK Field)：32位的ACK Number标识了报文发送端期望接收的字节序列。如果设置了ACK控制位，这个值表示一个准备接收的包的序列码，注意是准备接收的包，比如当前接收端接收到一个净荷为12byte的数据包，SN为5，则接收端可能会回复一个确认收到的数据包，如果这个数据包之前的数据也都已经收到了，这个数据包中的ACK Number则设置为12+5=17，表示17byte之前的数据都已经收到了。再举一个例子，如果在这个数据包之前有个SN为3，净荷为2byte的数据包丢失，则在接受端接收到这个SN为5的乱序数据包的时候，协议要求接收端必须要回复一个ACK确认包，这个确认包中的Ack Number只能设置为3。</p>
+</li>
+<li><p>头长(Header Length)：4位包括TCP头大小，指示TCP头的长度，即数据从何处开始。最大为15，单位是32比特(32-bit word)。</p>
+</li>
+<li><p>保留(Reserved)：4位值域，这些位必须是0。为了将来定义新的用途所保留，其中RFC3540将Reserved字段中的最后一位定义为Nonce标志。后续拥塞控制部分的讲解我们会简单介绍Nonce标志位。</p>
+</li>
+<li><p>标志(Code Bits)：8位标志位。</p>
+<ol start="0">
+<li><p>CWR(Congestion Window Reduce)：拥塞窗口减少标志被发送主机设置，用来表明它接收到了设置ECE标志的TCP包，发送端通过降低发送窗口的大小来降低发送速率</p>
+</li>
+<li><p>ECE(ECN Echo)：ECN响应标志被用来在TCP3次握手时表明一个TCP端是具备ECN功能的，并且表明接收到的TCP包的IP头部的ECN被设置为11。更多信息请参考RFC793。</p>
+</li>
+<li><p>URG(Urgent)：该标志位置位表示紧急(The urgent pointer) 标志有效。该标志位目前已经很少使用参考后面流量控制和窗口管理部分的介绍。</p>
+</li>
+<li><p>ACK(Acknowledgment)：取值1代表Acknowledgment Number字段有效，这是一个确认的TCP包，取值0则不是确认包。后续文章介绍中当ACK标志位有效的时候我们称呼这个包为ACK包，使用大写的ACK称呼。</p>
+</li>
+<li><p>PSH(Push)：该标志置位时，一般是表示发送端缓存中已经没有待发送的数据，接收端不将该数据进行队列处理，而是尽可能快将数据转由应用处理。在处理 telnet 或 rlogin 等交互模式的连接时，该标志总是置位的。</p>
+</li>
+<li><p>RST(Reset)：用于复位相应的TCP连接。通常在发生异常或者错误的时候会触发复位TCP连接。</p>
+</li>
+<li><p>SYN(Synchronize)：同步序列编号(Synchronize Sequence Numbers)有效。该标志仅在三次握手建立TCP连接时有效。它提示TCP连接的服务端检查序列编号，该序列编号为TCP连接初始端(一般是客户端)的初始序列编号。在这里，可以把TCP序列编号看作是一个范围从0到4294967295的32位计数器。通过TCP连接交换的数据中每一个字节都经过序列编号。在TCP报头中的序列编号栏包括了TCP分段中第一个字节的序列编号。类似的后续文章介绍中当这个SYN标志位有效的时候我们称呼这个包为SYN包。</p>
+</li>
+<li><p>FIN(Finish)：带有该标志置位的数据包用来结束一个TCP会话，但对应端口仍处于开放状态，准备接收后续数据。当FIN标志有效的时候我们称呼这个包为FIN包。</p>
+</li>
+</ol>
+</li>
+<li><p>窗口大小(Window Size)：16位，该值指示了从Ack Number开始还愿意接收多少byte的数据量，也即用来表示当前接收端的接收窗还有多少剩余空间。用于TCP的流量控制。</p>
+</li>
+<li><p>校验位(Checksum)：16位TCP头。发送端基于数据内容计算一个数值，接收端要与发送端数值结果完全一样，才能证明数据的有效性。接收端checksum校验失败的时候会直接丢掉这个数据包。CheckSum是根据伪头+TCP头+TCP数据三部分进行计算的。另外对于大的数据包，checksum并不能可靠的反应比特错误，应用层应该再添加自己的校验方式。</p>
+</li>
+<li><p>优先指针（紧急,Urgent  Pointer）：16位，指向后面是优先数据的字节，在URG标志设置了时才有效。如果URG标志没有被设置，紧急域作为填充。加快处理标示为紧急的数据段。</p>
+</li>
+<li><p>选项(Option)：长度不定，但长度必须以是32bits的整数倍。常见的选项包括MSS、SACK、Timestamp等等，后续的内容会分别介绍相关选项。</p>
+</li>
+</ul>
+<p>另外我们一般称呼链路层的发出去的数据包为帧(frame)，称呼网络层发给链路层的数据包为包(packet)，称呼传输层发给网络层的数据包为段(segment)。但是正如我们描述所用，段、包、帧也经常统称为数据包或者数据报文。</p>
+<p>对应用层来说TCP是一个双向对称的全双工(full-duplex)协议，也就是说应用层可以同时发送数据和接收数据。这就意味着数据流在一个方向上的传输是独立于另一个方向的传输的，每个方向上都有独立的SN。</p>
+<h2 id="三次握手与四次挥手"><a href="#三次握手与四次挥手" class="headerlink" title="三次握手与四次挥手"></a>三次握手与四次挥手</h2><p>TCP数据传输一般包含三个阶段，分别是连接建立(setup)、数据传输(established)和连接释放(teardown 也称为cleared 或 terminated)。</p>
+<p>在TCP的连接建立过程中一般需要处理下面三个问题</p>
+<ul>
+<li><p>要使每一方能够确知对方的存在。</p>
+</li>
+<li><p>要允许双方协商一些参数（如最大报文段长度，最大窗口大小，服务质量等）。</p>
+</li>
+<li><p>能够对传输实体资源（如缓存大小等）进行分配</p>
+</li>
+</ul>
+<h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p>三次握手的整个过程如下图所示，一般我们称呼主动发起连接(Active Opener)的一端为客户端(Client)，被动等待连接(Passive Opener)的称为服务器端(Server)。</p>
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/05-02-03.png">  
+<center style="margin:20px;">图 3 TCP三次握手</center>
+
+<p>详细过程：</p>
+<ul>
+<li><p>A和B的初始状态都是关闭状态，B进入LISTEN状态后被动打开，此时B等待接收客户端的SYN包建立连接。</p>
+</li>
+<li><p>A主动打开时，A 的 TCP 向 B 发出连接请求报文段，其首部中的同步位 SYN = 1，选择序号 seq = x，表明传送报文时的第一个字节序号是 x，由于SYN标志在逻辑上占用一个系列号，因此实际数据传输的时候，TCP传输的数据中第一个Byte对应的系列号为x+1。这个SYN包发送以后，A则进入SYN_SENT状态，等待B回复ACK确认包。</p>
+</li>
+<li><p>B 的 TCP 收到连接请求报文段后，则发回确认。B 在确认报文段中应使 SYN = 1，使标志位 ACK = 1， 其确认号ack = x + 1，自己选择的序号 seq = y。记得我们之前说过序列号SN实际代表传输了多少比特的数据净荷，实际上在TCP的SYN包中一般并不携带数据，但是由于SYN包和FIN包在协议规定在逻辑上面占1个Byte，因此B在接收到这个SYN包后回复的ack=x + 1。后面我们会讲到消耗序列号SN就意味着这个数据包一旦丢失可以进行重传操作，由于SYN消耗一个byte的序列号，因此SYN数据包丢失的时候是会触发重传的。在B收到A的SYN包并且发送ACK确认包后，B则进入SYN_RCVD状态。</p>
+</li>
+<li><p>A 收到此报文段后向 B 给出确认，其 ACK = 1，确认号 ack = y + 1。此时A进入ESTABLISHED状态，A 的 TCP 通知上层应用进程，连接已经建立。</p>
+</li>
+<li><p>B 的 TCP 收到主机 A 的确认后，B也进入ESTABLISHED状态，同时通知其上层应用进程当前TCP 连接已经建立。</p>
+</li>
+</ul>
+<p>一般来说上面用来建立连接的初始系列号ISN(即x和y)的值是随机选取的。</p>
+<h3 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h3><p>数据传输结束后，通信的双方都可释放连接。现在如下图假设A 的应用进程先向其 TCP 发出连接释放报文段，并停止发送数据，主动关闭 TCP连接。则四次挥手的过程如下图所示：</p>
+<img src="http://pqxjajlr4.bkt.clouddn.com/static/images/2019-05/05-02-04.png">  
+<center style="margin:20px;">图 4 TCP四次挥手</center>
+
+<p>详细过程：</p>
+<ul>
+<li><p>初始状态下A和B都是处于ESTABLISHED状态，当应用层没有待发数据而指示A关闭TCP连接的时候，A 设置连接释放报文段首部的标志位 FIN = 1，ACK=1，其序号seq = u，确认号ack=v，等待 B 的确认。此时A进入FIN_WAIT_1状态</p>
+</li>
+<li><p>B 收到A的FIN包的时候，发出确认，由于FIN包与SYN包类似都在逻辑上占1byte，因此确认号 ack = u + 1，而这个报文段自己的序号 seq = v。此时B进入CLOSE_WAIT状态，TCP 服务器进程通知高层应用进程。</p>
+</li>
+<li><p>当A收到B的ACK确认包后，A进入FIN_WAIT_2状态，关于这个状态我们后续在进一步介绍。</p>
+</li>
+<li><p>若 B 已经没有要向 A 发送的数据，其应用进程就通知 TCP 释放连接。B 设置连接释放报文首部的FIN=1，ACK=1，报文序列号seq=v，确认号ack=u+1。此时B进入LAST_ACK状态。</p>
+</li>
+<li><p>A 收到连接释放报文段后，必须发出确认，在确认报文段中 ACK = 1，确认号 ack = v + 1，自己的序号 seq = u +1。 此时A进入TIME_WAIT状态。在TIME_WAIT状态下，A经过2MSL时间后就进入关闭状态，关于TIME_WAIT状态我们后续进一步介绍。</p>
+</li>
+<li><p>在B接收到A的确认包后，B立即进入关闭状态。A和B都进入关闭状态后整个TCP连接释放。</p>
+</li>
+</ul>
+<h3 id="三次挥手"><a href="#三次挥手" class="headerlink" title="三次挥手"></a>三次挥手</h3><p>在四次挥手关闭TCP连接的时候，有时会省略第二条ACK消息，只存在第一条FIN消息、第三条FIN+ACK消息以及第四条FIN消息，从上图四次挥手的过程中可以看到其实第二条消息的ACK Number和第三条消息的ACK Number是相同的，省略第二条的时候其实是第三条消息捎带了第二条消息的ACK，后面完整介绍TCP的状态机的时候，会看到这种省略第二条消息的状态消息。</p>
+<h2 id="TCP慢启动、拥塞控制、快速重传、快速回复"><a href="#TCP慢启动、拥塞控制、快速重传、快速回复" class="headerlink" title="TCP慢启动、拥塞控制、快速重传、快速回复"></a>TCP慢启动、拥塞控制、快速重传、快速回复</h2><p>为了防止网络的拥塞现象，TCP提出了一系列的拥塞控制机制。最初由V. Jacobson在1988年的论文中提出的TCP的拥塞控制由<font color="#ee0000">“慢启动(Slow start)”和“拥塞避免(Congestion avoidance)”</font>组成，后来TCP Reno版本中又针对性的加入了<font color="#ee0000">“快速重传(Fast retransmit)”、“快速恢复(Fast Recovery)”</font>算法，再后来在TCP NewReno中又对“快速恢复”算法进行了改进，近些年又出现了<font color="#ee0000">选择性应答( selective acknowledgement,SACK)算法</font>，还有其他方面的大大小小的改进，成为网络研究的一个热点。</p>
+<p>TCP的拥塞控制主要原理依赖于一个拥塞窗口(cwnd)来控制，在之前我们还讨论过TCP还有一个对端通告的接收窗口(rwnd)用于流量控制。窗口值的大小就代表能够发送出去的但还没有收到ACK的最大数据报文段，显然窗口越大那么数据发送的速度也就越快，但是也有越可能使得网络出现拥塞，如果窗口值为1，那么就简化为一个停等协议，每发送一个数据，都要等到对方的确认才能发送第二个数据包，显然数据传输效率低下。TCP的拥塞控制算法就是要在这两者之间权衡，选取最好的cwnd值，从而使得网络吞吐量最大化且不产生拥塞。</p>
+<p>由于需要考虑拥塞控制和流量控制两个方面的内容，因此TCP的真正的发送窗口=min(rwnd, cwnd)。但是rwnd是由对端确定的，网络环境对其没有影响，所以在考虑拥塞的时候我们一般不考虑rwnd的值，我们暂时只讨论如何确定cwnd值的大小。关于cwnd的单位，在TCP中是以字节来做单位的，我们假设TCP每次传输都是按照MSS大小来发送数据的，因此你可以认为cwnd按照数据包个数来做单位也可以理解，所以有时我们说cwnd增加1也就是相当于字节数增加1个MSS大小。</p>
+<h3 id="慢启动"><a href="#慢启动" class="headerlink" title="慢启动"></a>慢启动</h3><p>最初的TCP在连接建立成功后会向网络中发送大量的数据包，这样很容易导致网络中路由器缓存空间耗尽，从而发生拥塞。因此新建立的连接不能够一开始就大量发送数据包，而只能根据网络情况逐步增加每次发送的数据量，以避免上述现象的发生。具体来说，当新建连接时，cwnd初始化为1个最大报文段(MSS)大小，发送端开始按照拥塞窗口大小发送数据，每当有一个报文段被确认，cwnd就增加1个MSS大小。这样cwnd的值就随着网络往返时间(Round Trip Time,RTT)呈指数级增长，事实上，慢启动的速度一点也不慢，只是它的起点比较低一点而已。我们可以简单计算下：</p>
+<p>开始          —&gt;     cwnd = 1</p>
+<p>经过1个RTT后   —&gt;     cwnd = 2*1 = 2</p>
+<p>经过2个RTT后   —&gt;     cwnd = 2*2= 4</p>
+<p>经过3个RTT后   —&gt;     cwnd = 4*2 = 8</p>
+<p>如果带宽为W，那么经过RTT*log2W时间就可以占满带宽。</p>
+<h3 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h3><p>从慢启动可以看到，cwnd可以很快的增长上来，从而最大程度利用网络带宽资源，但是cwnd不能一直这样无限增长下去，一定需要某个限制。TCP使用了一个叫慢启动门限(ssthresh)的变量，当cwnd超过该值后，慢启动过程结束，进入拥塞避免阶段。对于大多数TCP实现来说，ssthresh的值是65536(同样以字节计算)。拥塞避免的主要思想是加法增大，也就是cwnd的值不再指数级往上升，开始加法增加。此时当窗口中所有的报文段都被确认时，cwnd的大小加1，cwnd的值就随着RTT开始线性增加，这样就可以避免增长过快导致网络拥塞，慢慢的增加调整到网络的最佳值。</p>
+<p>上面讨论的两个机制都是没有检测到拥塞的情况下的行为，那么当发现拥塞了cwnd又该怎样去调整呢？</p>
+<p>首先来看TCP是如何确定网络进入了拥塞状态的，TCP认为网络拥塞的主要依据是它重传了一个报文段。上面提到过，TCP对每一个报文段都有一个定时器，称为重传定时器(RTO)，当RTO超时且还没有得到数据确认，那么TCP就会对该报文段进行重传，当发生超时时，那么出现拥塞的可能性就很大，某个报文段可能在网络中某处丢失，并且后续的报文段也没有了消息，在这种情况下，TCP反应比较“强烈”：</p>
+<p>a. 把ssthresh降低为cwnd值的一半。</p>
+<p>b. 把cwnd重新设置为1。</p>
+<p>c. 重新进入慢启动过程。</p>
+<p>从整体上来讲，TCP拥塞控制窗口变化的原则是AIMD原则，即加法增大、乘法减小。可以看出TCP的该原则可以较好地保证流之间的公平性，因为一旦出现丢包，那么立即减半退避，可以给其他新建的流留有足够的空间，从而保证整个网络的公平性。</p>
+<h3 id="快速重传"><a href="#快速重传" class="headerlink" title="快速重传"></a>快速重传</h3><p>其实TCP还有一种情况会进行重传：那就是收到3个相同的ACK。TCP在收到乱序到达包时就会立即发送ACK，TCP利用3个相同的ACK来判定数据包的丢失，此时进行快速重传，快速重传做的事情有：</p>
+<p>a. 把ssthresh设置为cwnd的一半。</p>
+<p>b. 把cwnd再设置为ssthresh的值(具体实现有些为ssthresh+3)。</p>
+<p>c. 重新进入拥塞避免阶段（即加法递增的阶段）。</p>
+<h3 id="快速回复"><a href="#快速回复" class="headerlink" title="快速回复"></a>快速回复</h3><p>后来的“快速恢复”算法是在上述的“快速重传”算法后添加的，当收到3个重复ACK时，TCP最后进入的不是拥塞避免阶段，而是快速恢复阶段。快速重传和快速恢复算法一般同时使用。快速恢复的思想是“数据包守恒”原则，即同一个时刻在网络中的数据包数量是恒定的，只有当“老”数据包离开了网络后，才能向网络中发送一个“新”的数据包，如果发送方收到一个重复的ACK，那么根据TCP的ACK机制就表明有一个数据包离开了网络，于是cwnd加1。如果能够严格按照该原则那么网络中很少会发生拥塞，事实上拥塞控制的目的也就在修正违反该原则的地方。</p>
+<p>具体来说快速恢复的主要步骤是：</p>
+<p>a. 当收到3个重复ACK时，把ssthresh设置为cwnd的一半，把cwnd设置为ssthresh的值加3，然后重传丢失的报文段，加3的原因是因为收到3个重复的ACK，表明有3个“老”的数据包离开了网络。</p>
+<p>b. 再收到重复的ACK时，拥塞窗口增加1。</p>
+<p>c. 当收到新的数据包的ACK时，把cwnd设置为第一步中的ssthresh的值。原因是因为该ACK确认了新的数据，说明重复ACK时的数据都已收到，该恢复过程已经结束，可以回到恢复之前的状态了，也即再次进入拥塞避免状态。</p>
+<p><del>可以看出Reno的快速重传算法是针对一个包的重传情况的，然而在实际中，一个重传超时可能导致许多的数据包的重传，因此当多个数据包从一个数据窗口中丢失时并且触发快速重传和快速恢复算法时，问题就产生了</del> (摘抄过来的内容，没太看懂啥意思)。 因此NewReno出现了，它在Reno快速恢复的基础上稍加了修改，可以恢复一个窗口内多个包丢失的情况。具体来讲就是：Reno在收到一个新的数据的ACK时就退出了快速恢复状态了，而NewReno需要收到该窗口内所有数据包的确认后才会退出快速恢复状态，从而更一步提高吞吐量。</p>
+<h3 id="选择性重传"><a href="#选择性重传" class="headerlink" title="选择性重传"></a>选择性重传</h3><p>SACK（选择性重传）就是改变TCP的确认机制，最初的TCP只确认当前已连续收到的数据，SACK则把乱序等信息会全部告诉对方，从而减少数据发送方重传的盲目性。比如说序号1，2，3，5，7的数据收到了，那么普通的ACK只会确认序列号4，而SACK会把当前的5，7已经收到的信息在SACK选项里面告知对端，从而提高性能，当使用SACK的时候，NewReno算法可以不使用，因为SACK本身携带的信息就可以使得发送方有足够的信息来知道需要重传哪些包，而不需要重传哪些包。</p>
 
             </div>
             <hr>
@@ -602,7 +753,7 @@
                     </span>
                     <a href="https://aprilyolies.top" class="b-link-green">AprilYoLies</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href class="b-link-green">解决浏览器访问GitHub和git clone龟速的问题</a>
+                    <a href class="b-link-green">关于TCP你应该知道的那些事儿</a>
                 </p>
             </div>
         </div>
@@ -884,49 +1035,55 @@
         
         <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="../../20/java-kai-fa-chang-yong-gong-ju-lei-hui-zong/">
+                <a href>
                     <div class="card-image">
                         
-                        <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/3.jpg" class="responsive-img" alt="Java开发常用工具类汇总">
+                        <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/7.jpg" class="responsive-img" alt="关于TCP你应该知道的那些事儿">
                         
-                        <span class="card-title">Java开发常用工具类汇总</span>
+                        <span class="card-title">关于TCP你应该知道的那些事儿</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-前言用于记录一些常用的工具类，方便以后使用时的查找。
-正文
-编解码相关，比如MD5、BASE64
-  &lt;dependency>
-      &lt;groupId>commons-codec&lt;/groupId>
-      &
+
+本文内容摘录自：
+
+Ishs博主的TCP系列文章
+TCP慢启动、拥塞避免、快速重传、快速恢复
+概述及协议头概述一句话就是：TCP是一个面向连接的(connection-oriented)、可靠的(reliable)、字节流式(byte 
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-04-20
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-02
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="../../../../categories/开发工具/" class="post-category" target="_blank">
-                                    开发工具
+                            <a href="../../../../categories/计算机网络/" class="post-category" target="_blank">
+                                    计算机网络
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="../../../../tags/Maven/" target="_blank">
-                        <span class="chip bg-color">Maven</span>
+                    <a href="../../../../tags/TCP-IP/" target="_blank">
+                        <span class="chip bg-color">TCP/IP</span>
+                    </a>
+                    
+                    <a href="../../../../tags/计算机网络/" target="_blank">
+                        <span class="chip bg-color">计算机网络</span>
                     </a>
                     
                 </div>
@@ -940,32 +1097,34 @@
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="../fastdfs-dan-ji-huan-jing-xia-de-da-jian/">
+                <a href="../../01/MySQL索引背后的数据结构及算法原理/">
                     <div class="card-image">
                         
-                        <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/1.jpg" class="responsive-img" alt="FastDFS单机环境下的搭建">
+                        <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/6.jpg" class="responsive-img" alt="MySQL索引背后的数据结构及算法原理">
                         
-                        <span class="card-title">FastDFS单机环境下的搭建</span>
+                        <span class="card-title">MySQL索引背后的数据结构及算法原理</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-FastDFS简单介绍FastDFS是一个开源的分布式文件系统，主要由跟踪服务器（Tracker Server）、存储服务器（Storage Server）、客户端（client）三部分组成。
-Storage Server以组（Group
+
+ 本文转载自 MySQL索引背后的数据结构及算法原理
+
+摘要本文以MySQL数据库为研究对象，讨论与数据库索引相关的一些话题。特别需要说明的是，MySQL支持诸多存储引擎，而各种存储引擎对索引的支持也各不相同，因此MySQL数据库支持多
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-04-19
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-01
                             </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="../../../../categories/后端开发/" class="post-category" target="_blank">
-                                    后端开发
+                            <a href="../../../../categories/数据库/" class="post-category" target="_blank">
+                                    数据库
                                 </a>
                             
                             
@@ -975,12 +1134,16 @@ Storage Server以组（Group
                 
                 <div class="card-action article-tags">
                     
-                    <a href="../../../../tags/FastDFS/" target="_blank">
-                        <span class="chip bg-color">FastDFS</span>
+                    <a href="../../../../tags/数据结构/" target="_blank">
+                        <span class="chip bg-color">数据结构</span>
                     </a>
                     
-                    <a href="../../../../tags/Linux/" target="_blank">
-                        <span class="chip bg-color">Linux</span>
+                    <a href="../../../../tags/MySQL/" target="_blank">
+                        <span class="chip bg-color">MySQL</span>
+                    </a>
+                    
+                    <a href="../../../../tags/索引/" target="_blank">
+                        <span class="chip bg-color">索引</span>
                     </a>
                     
                 </div>

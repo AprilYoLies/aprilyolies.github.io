@@ -4,14 +4,15 @@
 
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="Java开发常用工具类汇总, Java,Mysql,Netty,Spring">
+    <meta name="keywords" content="Git常用指令总结, Java,Mysql,Netty,Spring">
     <meta name="description" content="
-前言用于记录一些常用的工具类，方便以后使用时的查找。
-正文
-编解码相关，比如MD5、BASE64
-  &amp;lt;dependency&gt;
-      &amp;lt;groupId&gt;commons-codec&amp;lt;/groupId&gt;
-      &amp;">
+前言自己在学习 Git 过程中摘录下来的一些常用指令，方便自己今后需要使用时进行查询，学习的途径主要是两个，在下面给出链接。
+廖雪峰老师Git教程
+Git版本视屏教程
+集中式 VS 分布式
+集中式
+
+必须联网才能工作，如果在局域网内还好，">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -19,7 +20,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Java开发常用工具类汇总 | AprilYoLies</title>
+    <title>Git常用指令总结 | AprilYoLies</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -264,13 +265,13 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/3.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/5.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        Java开发常用工具类汇总
+                        Git常用指令总结
                     </div>
                 </div>
             </div>
@@ -381,8 +382,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="../../../../tags/Maven/" target="_blank">
-                                <span class="chip bg-color">Maven</span>
+                            <a href="../../../../tags/Git/" target="_blank">
+                                <span class="chip bg-color">Git</span>
                             </a>
                         
                     </div>
@@ -405,21 +406,21 @@
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2019-04-20
+                    2019-04-24
                 </div>
 
                 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        223
+                        927
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        1 分
+                        3 分
                     </div>
                     
                 
@@ -436,58 +437,166 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <!-- toc -->
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>用于记录一些常用的工具类，方便以后使用时的查找。</p>
-<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><ul>
-<li><p>编解码相关，比如MD5、BASE64</p>
-<pre class="line-numbers language-java"><code class="language-java">  <span class="token operator">&lt;</span>dependency<span class="token operator">></span>
-      <span class="token operator">&lt;</span>groupId<span class="token operator">></span>commons<span class="token operator">-</span>codec<span class="token operator">&lt;</span><span class="token operator">/</span>groupId<span class="token operator">></span>
-      <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>commons<span class="token operator">-</span>codec<span class="token operator">&lt;</span><span class="token operator">/</span>artifactId<span class="token operator">></span>
-      <span class="token operator">&lt;</span>version<span class="token operator">></span><span class="token number">1.10</span><span class="token operator">&lt;</span><span class="token operator">/</span>version<span class="token operator">></span>
-  <span class="token operator">&lt;</span><span class="token operator">/</span>dependency<span class="token operator">></span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>自己在学习 Git 过程中摘录下来的一些常用指令，方便自己今后需要使用时进行查询，学习的途径主要是两个，在下面给出链接。</p>
+<p><a href="https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" target="_blank" rel="noopener">廖雪峰老师Git教程</a></p>
+<p><a href="https://www.codecasts.com/series/use-git-in-your-own-way" target="_blank" rel="noopener">Git版本视屏教程</a></p>
+<h2 id="集中式-VS-分布式"><a href="#集中式-VS-分布式" class="headerlink" title="集中式 VS 分布式"></a>集中式 VS 分布式</h2><ul>
+<li><p>集中式</p>
+<ol>
+<li><p>必须联网才能工作，如果在局域网内还好，带宽够大，速度够快，可如果在互联网上，遇到网速慢的话，可能提交一个10M的文件就需要5分钟。</p>
 </li>
-<li><p>基础通用操作相关，比如字符串操作、日期操作</p>
-<pre class="line-numbers language-java"><code class="language-java">  <span class="token operator">&lt;</span>dependency<span class="token operator">></span>
-      <span class="token operator">&lt;</span>groupId<span class="token operator">></span>commons<span class="token operator">-</span>lang<span class="token operator">&lt;</span><span class="token operator">/</span>groupId<span class="token operator">></span>
-      <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>commons<span class="token operator">-</span>lang<span class="token operator">&lt;</span><span class="token operator">/</span>artifactId<span class="token operator">></span>
-      <span class="token operator">&lt;</span>version<span class="token operator">></span><span class="token number">2.6</span><span class="token operator">&lt;</span><span class="token operator">/</span>version<span class="token operator">></span>
-  <span class="token operator">&lt;</span><span class="token operator">/</span>dependency<span class="token operator">></span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<li><p>必须存在中央服务器，干活的时候，用的都是自己的电脑，所以要先从中央服务器取得最新的版本，然后开始干活，干完活了，再把自己的活推送给中央服务器。</p>
 </li>
-<li><p>文件IO操作，如删除文件、删除目录、拷贝文件</p>
-<pre class="line-numbers language-java"><code class="language-java">  <span class="token operator">&lt;</span>dependency<span class="token operator">></span>
-      <span class="token operator">&lt;</span>groupId<span class="token operator">></span>commons<span class="token operator">-</span>io<span class="token operator">&lt;</span><span class="token operator">/</span>groupId<span class="token operator">></span>
-      <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>commons<span class="token operator">-</span>io<span class="token operator">&lt;</span><span class="token operator">/</span>artifactId<span class="token operator">></span>
-      <span class="token operator">&lt;</span>version<span class="token operator">></span><span class="token number">2.4</span><span class="token operator">&lt;</span><span class="token operator">/</span>version<span class="token operator">></span>
-  <span class="token operator">&lt;</span><span class="token operator">/</span>dependency<span class="token operator">></span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<li><p>安全性不高，因为存在中央服务器，如果服务器出故障，将会导致整个版本控制系统崩溃。</p>
 </li>
-<li><p>JavaBean操作，可以省去getter、setter方法</p>
-<pre class="line-numbers language-java"><code class="language-java">  <span class="token operator">&lt;</span>dependency<span class="token operator">></span>
-      <span class="token operator">&lt;</span>groupId<span class="token operator">></span>org<span class="token punctuation">.</span>projectlombok<span class="token operator">&lt;</span><span class="token operator">/</span>groupId<span class="token operator">></span>
-      <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>lombok<span class="token operator">&lt;</span><span class="token operator">/</span>artifactId<span class="token operator">></span>
-  <span class="token operator">&lt;</span><span class="token operator">/</span>dependency<span class="token operator">></span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</ol>
 </li>
-<li><p>Json操作相关</p>
-<pre class="line-numbers language-java"><code class="language-java">  <span class="token operator">&lt;</span>dependency<span class="token operator">></span>
-      <span class="token operator">&lt;</span>groupId<span class="token operator">></span>com<span class="token punctuation">.</span>alibaba<span class="token operator">&lt;</span><span class="token operator">/</span>groupId<span class="token operator">></span>
-      <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>fastjson<span class="token operator">&lt;</span><span class="token operator">/</span>artifactId<span class="token operator">></span>
-      <span class="token operator">&lt;</span>version<span class="token operator">></span><span class="token number">1.2</span><span class="token punctuation">.</span><span class="token number">31</span><span class="token operator">&lt;</span><span class="token operator">/</span>version<span class="token operator">></span>
-  <span class="token operator">&lt;</span><span class="token operator">/</span>dependency<span class="token operator">></span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<li><p>分布式</p>
+<ol>
+<li><p>分布式版本控制系统根本没有“中央服务器”，每个人的电脑上都是一个完整的版本库，这样，你工作的时候，就不需要联网了，因为版本库就在你自己的电脑上。</p>
 </li>
-<li><p>Yaml文件操作相关</p>
-<pre class="line-numbers language-java"><code class="language-java">  <span class="token operator">&lt;</span>dependency<span class="token operator">></span>
-      <span class="token operator">&lt;</span>groupId<span class="token operator">></span>org<span class="token punctuation">.</span>yaml<span class="token operator">&lt;</span><span class="token operator">/</span>groupId<span class="token operator">></span>
-      <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>snakeyaml<span class="token operator">&lt;</span><span class="token operator">/</span>artifactId<span class="token operator">></span>
-      <span class="token operator">&lt;</span>version<span class="token operator">></span><span class="token number">1.10</span><span class="token operator">&lt;</span><span class="token operator">/</span>version<span class="token operator">></span>
-  <span class="token operator">&lt;</span><span class="token operator">/</span>dependency<span class="token operator">></span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<li><p>分布式版本控制系统的安全性要高很多，因为每个人电脑里都有完整的版本库，某一个人的电脑坏掉了不要紧，随便从其他人那里复制一个就可以了。</p>
+</li>
+</ol>
 </li>
 </ul>
-<hr>
-<h2 id="未完待续"><a href="#未完待续" class="headerlink" title="未完待续~~"></a>未完待续~~</h2>
+<h2 id="常用-Git-指令"><a href="#常用-Git-指令" class="headerlink" title="常用 Git 指令"></a>常用 Git 指令</h2><ul>
+<li><p>创建 Git 版本库</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> init
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>将文件添加到 Git 版本库</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> add
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>提交更改内容</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> commit -m <span class="token string">"提交信息"</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>查看版本库状态</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> status
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>查看文件修改的内容</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> <span class="token function">diff</span> 文件名
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>查看 Git 提交日志</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> log --oneline --graph
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>版本回退</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true"># --hard 选项会导致代码也会被修改到版本ID时刻</span>
+<span class="token comment" spellcheck="true"># HEAD^ 表示上一个版本，HEAD^^ 表示上上一个版本</span>
+$ <span class="token function">git</span> reset --hard 版本ID号
+$ <span class="token function">git</span> reset --hard HEAD^
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>查看历史命令，用来确定期望的回退版本号</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> reflog
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>丢弃工作区的修改，即让文件回到最近一次 git commit 或 git add 时的状态，这个指令有时也可以用来作为恢复误删的文件</p>
+<pre class="line-numbers language-bash"><code class="language-bash">  $ <span class="token function">git</span> checkout -- 文件名
+  <span class="token comment" spellcheck="true"># git reset 命令既可以回退版本，也可以把暂存区的修改回退到工作区。</span>
+  $ <span class="token function">git</span> reset HEAD 文件名
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>删除版本库中的文件</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> <span class="token function">rm</span> 文件名
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>添加远程仓库</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> remote add 别名 远程仓库地址
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>查看远程仓库信息</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> remote -v
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>推送指定分支到远程仓库</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> push 远程仓库（别名） 分支名
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>指定本地分支与远程分支的链接，未指定将会导致 git pull 失败</p>
+<pre class="line-numbers language-bash"><code class="language-bash">  $ <span class="token function">git</span> branch --set-upstream-to 本地分支名 远程分支
+  <span class="token comment" spellcheck="true"># 例如</span>
+  $ <span class="token function">git</span> branch --set-upstream-to dev origin/dev
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>拉取远程仓库指定分支到本地</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> pull
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>拷贝远程仓库全部分支到本地</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> clone 远程仓库地址
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>创建并切换分支</p>
+<pre class="line-numbers language-bash"><code class="language-bash">  $ <span class="token function">git</span> checkout -b 分支名字
+
+  <span class="token comment" spellcheck="true"># 相当于以下两条命令</span>
+  $ <span class="token function">git</span> branch dev
+  $ <span class="token function">git</span> checkout dev
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>切换分支，需要分支存在</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> branch dev
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>查看当前分支</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> branch
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>合并目标分支到当前分支</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> merge 目标分支
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>删除指定分支</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> branch -d 分支名
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>临时存储当前工作现场</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> stash
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>查看存储的工作现场</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> stash list
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>恢复工作现场</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> stash pop
+<span class="token comment" spellcheck="true"># 上述指令等价于</span>
+$ <span class="token function">git</span> stash apply
+$ <span class="token function">git</span> stash drop
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>变基</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> rebase
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>打一个新标签</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> tag v1.0
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>查看所有标签</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> tag
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>为指定提交打标签</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> tag v0.9 提交ID号 -m <span class="token string">"消息"</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>查看标签说明消息</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> show <span class="token operator">&lt;</span>tagname<span class="token operator">></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>删除标签</p>
+<pre class="line-numbers language-bash"><code class="language-bash">$ ggit tag -d v0.1
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+</ul>
+
             </div>
             <hr>
 
@@ -634,7 +743,7 @@
                     </span>
                     <a href="https://aprilyolies.top" class="b-link-green">AprilYoLies</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href class="b-link-green">Java开发常用工具类汇总</a>
+                    <a href class="b-link-green">Git常用指令总结</a>
                 </p>
             </div>
         </div>
@@ -918,7 +1027,67 @@
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="../tong-guo-fastdfs-de-java-ke-hu-duan-shang-chuan-tu-pian-lian-jie-chao-shi-de-jie-jue-guo-cheng/">
+                <a href="../../../05/01/MySQL索引背后的数据结构及算法原理/">
+                    <div class="card-image">
+                        
+                        <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/6.jpg" class="responsive-img" alt="MySQL索引背后的数据结构及算法原理">
+                        
+                        <span class="card-title">MySQL索引背后的数据结构及算法原理</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+
+ 本文转载自 MySQL索引背后的数据结构及算法原理
+
+摘要本文以MySQL数据库为研究对象，讨论与数据库索引相关的一些话题。特别需要说明的是，MySQL支持诸多存储引擎，而各种存储引擎对索引的支持也各不相同，因此MySQL数据库支持多
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-01
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="../../../../categories/数据库/" class="post-category" target="_blank">
+                                    数据库
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="../../../../tags/数据结构/" target="_blank">
+                        <span class="chip bg-color">数据结构</span>
+                    </a>
+                    
+                    <a href="../../../../tags/MySQL/" target="_blank">
+                        <span class="chip bg-color">MySQL</span>
+                    </a>
+                    
+                    <a href="../../../../tags/索引/" target="_blank">
+                        <span class="chip bg-color">索引</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="../../20/通过FastDFS的Java客户端上传图片连接超时的解决过程/">
                     <div class="card-image">
                         
                         <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/4.jpg" class="responsive-img" alt="通过FastDFS的Java客户端上传图片连接超时的解决过程">
@@ -934,9 +1103,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-04-20
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-04-20
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -958,56 +1127,6 @@
                     
                     <a href="../../../../tags/Java/" target="_blank">
                         <span class="chip bg-color">Java</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="../../19/jie-jue-liu-lan-qi-fang-wen-github-he-git-clone-gui-su-de-wen-ti/">
-                    <div class="card-image">
-                        
-                        <img src="http://pqxjajlr4.bkt.clouddn.com/static/images/face-img/2.jpg" class="responsive-img" alt="解决浏览器访问GitHub和git clone龟速的问题">
-                        
-                        <span class="card-title">解决浏览器访问GitHub和git clone龟速的问题</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-写在前面只是一些吐槽，咱们大天朝屏蔽掉一些负面信息的网站都能理解，为什么作为代码托管网站的GitHub也要躺着中枪呢？？因为下面的内容需要用到一些翻墙的技巧，所以不会的小伙伴还请先自行搜寻方法，由于可能违反相关规定，我这里不进行说明。
-正
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-04-19
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fa fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="../../../../categories/小技巧/" class="post-category" target="_blank">
-                                    小技巧
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="../../../../tags/Git/" target="_blank">
-                        <span class="chip bg-color">Git</span>
                     </a>
                     
                 </div>
