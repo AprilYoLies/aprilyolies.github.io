@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://aprilyolies.top/"/>
-  <updated>2019-05-06T11:02:02.746Z</updated>
+  <updated>2019-05-06T11:06:55.463Z</updated>
   <id>https://aprilyolies.top/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://aprilyolies.top/2019/05/06/JVM%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E7%9B%B8%E5%85%B3%E5%B9%B2%E8%B4%A7/"/>
     <id>https://aprilyolies.top/2019/05/06/JVM内存区域相关干货/</id>
     <published>2019-05-06T09:23:37.000Z</published>
-    <updated>2019-05-06T11:02:02.746Z</updated>
+    <updated>2019-05-06T11:06:55.463Z</updated>
     
     <summary type="html">
     
@@ -41,9 +41,7 @@
       <category term="后端开发" scheme="https://aprilyolies.top/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
     
     
-      <category term="FastDFS" scheme="https://aprilyolies.top/tags/FastDFS/"/>
-    
-      <category term="Linux" scheme="https://aprilyolies.top/tags/Linux/"/>
+      <category term="JVM" scheme="https://aprilyolies.top/tags/JVM/"/>
     
   </entry>
   
