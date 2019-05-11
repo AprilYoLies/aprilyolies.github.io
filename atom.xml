@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://aprilyolies.top/"/>
-  <updated>2019-05-11T05:12:51.157Z</updated>
+  <updated>2019-05-11T06:58:29.837Z</updated>
   <id>https://aprilyolies.top/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://aprilyolies.top/2019/05/11/Spring%E4%B8%AD%E5%B8%B8%E7%94%A8Aware%E7%BB%93%E5%B0%BE%E6%8E%A5%E5%8F%A3%E5%8F%8A%E4%BD%BF%E7%94%A8/"/>
     <id>https://aprilyolies.top/2019/05/11/Spring中常用Aware结尾接口及使用/</id>
     <published>2019-05-11T04:48:28.000Z</published>
-    <updated>2019-05-11T05:12:51.157Z</updated>
+    <updated>2019-05-11T06:58:29.837Z</updated>
     
     <summary type="html">
     
@@ -29,7 +29,8 @@
       
         
         
-          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;在 Spring 中，有一个特殊的约定，就是被 Spring 容器管理的 bean，如果实现了 Spring 提供的以 Aware
+          &lt;blockquote&gt;
+&lt;p&gt;部分内容参考 &lt;a href=&quot;https://blog.csdn.net/javaloveiphone/article/details/52143126&quot; target=&quot;_blank&quot;
         
       
     
