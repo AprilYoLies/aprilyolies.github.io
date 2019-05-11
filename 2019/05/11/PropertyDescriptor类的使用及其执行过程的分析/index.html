@@ -4,15 +4,8 @@
 
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="Git常用指令总结, Java,Mysql,Netty,Spring">
-    <meta name="description" content="
-前言自己在学习 Git 过程中摘录下来的一些常用指令，方便自己今后需要使用时进行查询，学习的途径主要是两个，在下面给出链接。
-廖雪峰老师Git教程
-Git版本视屏教程
-集中式 VS 分布式
-集中式
-
-必须联网才能工作，如果在局域网内还好，">
+    <meta name="keywords" content="PropertyDescriptor类的使用及其执行过程的分析, Java,Mysql,Netty,Spring">
+    <meta name="description" content="前言PropertyDescriptor 是位于 java.beans 包下的一个类，其注释对其的解释为： PropertyDescriptor 描述了 Java Bean 的一个属性，我们可以通过一对 getter 和 setter 方法">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -20,7 +13,7 @@ Git版本视屏教程
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Git常用指令总结 | AprilYoLies</title>
+    <title>PropertyDescriptor类的使用及其执行过程的分析 | AprilYoLies</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -265,13 +258,13 @@ Git版本视屏教程
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://image.aprilyolies.top/static/images/face-img/5.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/11.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        Git常用指令总结
+                        PropertyDescriptor类的使用及其执行过程的分析
                     </div>
                 </div>
             </div>
@@ -382,8 +375,8 @@ Git版本视屏教程
                     
                     <div class="article-tag">
                         
-                            <a href="../../../../tags/Git/" target="_blank">
-                                <span class="chip bg-color">Git</span>
+                            <a href="../../../../tags/Spring/" target="_blank">
+                                <span class="chip bg-color">Spring</span>
                             </a>
                         
                     </div>
@@ -394,8 +387,8 @@ Git版本视屏教程
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="../../../../categories/开发工具/" class="post-category" target="_blank">
-                                开发工具
+                            <a href="../../../../categories/后台开发/" class="post-category" target="_blank">
+                                后台开发
                             </a>
                         
                     </div>
@@ -406,21 +399,21 @@ Git版本视屏教程
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2019-04-24
+                    2019-05-11
                 </div>
 
                 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        927
+                        1.3k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        3 分
+                        5 分
                     </div>
                     
                 
@@ -436,166 +429,140 @@ Git版本视屏教程
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <!-- toc -->
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>自己在学习 Git 过程中摘录下来的一些常用指令，方便自己今后需要使用时进行查询，学习的途径主要是两个，在下面给出链接。</p>
-<p><a href="https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" target="_blank" rel="noopener">廖雪峰老师Git教程</a></p>
-<p><a href="https://www.codecasts.com/series/use-git-in-your-own-way" target="_blank" rel="noopener">Git版本视屏教程</a></p>
-<h2 id="集中式-VS-分布式"><a href="#集中式-VS-分布式" class="headerlink" title="集中式 VS 分布式"></a>集中式 VS 分布式</h2><ul>
-<li><p>集中式</p>
-<ol>
-<li><p>必须联网才能工作，如果在局域网内还好，带宽够大，速度够快，可如果在互联网上，遇到网速慢的话，可能提交一个10M的文件就需要5分钟。</p>
-</li>
-<li><p>必须存在中央服务器，干活的时候，用的都是自己的电脑，所以要先从中央服务器取得最新的版本，然后开始干活，干完活了，再把自己的活推送给中央服务器。</p>
-</li>
-<li><p>安全性不高，因为存在中央服务器，如果服务器出故障，将会导致整个版本控制系统崩溃。</p>
-</li>
-</ol>
-</li>
-<li><p>分布式</p>
-<ol>
-<li><p>分布式版本控制系统根本没有“中央服务器”，每个人的电脑上都是一个完整的版本库，这样，你工作的时候，就不需要联网了，因为版本库就在你自己的电脑上。</p>
-</li>
-<li><p>分布式版本控制系统的安全性要高很多，因为每个人电脑里都有完整的版本库，某一个人的电脑坏掉了不要紧，随便从其他人那里复制一个就可以了。</p>
-</li>
-</ol>
-</li>
-</ul>
-<h2 id="常用-Git-指令"><a href="#常用-Git-指令" class="headerlink" title="常用 Git 指令"></a>常用 Git 指令</h2><ul>
-<li><p>创建 Git 版本库</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> init
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>将文件添加到 Git 版本库</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> add
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>提交更改内容</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> commit -m <span class="token string">"提交信息"</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>查看版本库状态</p>
-<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> status
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>查看文件修改的内容</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> <span class="token function">diff</span> 文件名
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>查看 Git 提交日志</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> log --oneline --graph
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>版本回退</p>
-<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true"># --hard 选项会导致代码也会被修改到版本ID时刻</span>
-<span class="token comment" spellcheck="true"># HEAD^ 表示上一个版本，HEAD^^ 表示上上一个版本</span>
-$ <span class="token function">git</span> reset --hard 版本ID号
-$ <span class="token function">git</span> reset --hard HEAD^
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-</li>
-<li><p>查看历史命令，用来确定期望的回退版本号</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> reflog
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>丢弃工作区的修改，即让文件回到最近一次 git commit 或 git add 时的状态，这个指令有时也可以用来作为恢复误删的文件</p>
-<pre class="line-numbers language-bash"><code class="language-bash">  $ <span class="token function">git</span> checkout -- 文件名
-  <span class="token comment" spellcheck="true"># git reset 命令既可以回退版本，也可以把暂存区的修改回退到工作区。</span>
-  $ <span class="token function">git</span> reset HEAD 文件名
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-</li>
-<li><p>删除版本库中的文件</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> <span class="token function">rm</span> 文件名
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>添加远程仓库</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> remote add 别名 远程仓库地址
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>查看远程仓库信息</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> remote -v
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>推送指定分支到远程仓库</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> push 远程仓库（别名） 分支名
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>指定本地分支与远程分支的链接，未指定将会导致 git pull 失败</p>
-<pre class="line-numbers language-bash"><code class="language-bash">  $ <span class="token function">git</span> branch --set-upstream-to 本地分支名 远程分支
-  <span class="token comment" spellcheck="true"># 例如</span>
-  $ <span class="token function">git</span> branch --set-upstream-to dev origin/dev
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-</li>
-<li><p>拉取远程仓库指定分支到本地</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> pull
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>拷贝远程仓库全部分支到本地</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> clone 远程仓库地址
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>创建并切换分支</p>
-<pre class="line-numbers language-bash"><code class="language-bash">  $ <span class="token function">git</span> checkout -b 分支名字
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>PropertyDescriptor 是位于 java.beans 包下的一个类，其注释对其的解释为： PropertyDescriptor 描述了 Java Bean 的一个属性，我们可以通过一对 getter 和 setter 方法对其进行访问。</p>
+<p>我对其产生兴趣是因为在看 Spring 源码的过程中，发现 Spring 会通过 <code>org.springframework.beans.BeanWrapperImpl</code> 对其管理的 bean 进行包装，然后调用它的 <code>org.springframework.beans.PropertyAccessor#setPropertyValues(org.springframework.beans.PropertyValues)</code> 方法对属性进行填充，其中参数 <code>PropertyValues</code> 就包含 PropertyDescriptor 属性。在对属性进行填充时，实际上是先获取 <code>PropertyValues</code> 对象的 WriteMethod，然后调用其 invoke 方法，最终通过反射的方式完成属性设置。</p>
+<h2 id="举个栗子"><a href="#举个栗子" class="headerlink" title="举个栗子"></a>举个栗子</h2><p>如果是要通过 Spring 对 bean 的管理来重现上边的过程比较的麻烦，所以这里手写一个小栗子来模拟这个过程。这里只有两个类，User 为用户类，我们这里就是要对它的属性进行访问，另外一个就是 App 类，所有的逻辑都在其中实现，代码很简单，我们主要是为了观察 setter 方法被执行的过程。</p>
+<blockquote>
+<p>User 类</p>
+</blockquote>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">User</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> String id<span class="token punctuation">;</span>
 
-  <span class="token comment" spellcheck="true"># 相当于以下两条命令</span>
-  $ <span class="token function">git</span> branch dev
-  $ <span class="token function">git</span> checkout dev
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-</li>
-<li><p>切换分支，需要分支存在</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> branch dev
+    <span class="token keyword">private</span> String userName<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">User</span><span class="token punctuation">(</span>String id<span class="token punctuation">,</span> String userName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>id <span class="token operator">=</span> id<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>userName <span class="token operator">=</span> userName<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> id<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setId</span><span class="token punctuation">(</span>String id<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>id <span class="token operator">=</span> id<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getUserName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> userName<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setUserName</span><span class="token punctuation">(</span>String userName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>userName <span class="token operator">=</span> userName<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> String <span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token string">"User{"</span> <span class="token operator">+</span>
+                <span class="token string">"id='"</span> <span class="token operator">+</span> id <span class="token operator">+</span> <span class="token string">'\''</span> <span class="token operator">+</span>
+                <span class="token string">", userName='"</span> <span class="token operator">+</span> userName <span class="token operator">+</span> <span class="token string">'\''</span> <span class="token operator">+</span>
+                <span class="token string">'}'</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>App 类</p>
+</blockquote>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">import</span> java<span class="token punctuation">.</span>beans<span class="token punctuation">.</span>PropertyDescriptor<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>lang<span class="token punctuation">.</span>reflect<span class="token punctuation">.</span>Method<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">App</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+        User user <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token string">"12"</span><span class="token punctuation">,</span> <span class="token string">"eva"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        Class<span class="token operator">&lt;</span><span class="token operator">?</span> <span class="token keyword">extends</span> <span class="token class-name">User</span><span class="token operator">></span> clazz <span class="token operator">=</span> user<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        PropertyDescriptor pd <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PropertyDescriptor</span><span class="token punctuation">(</span><span class="token string">"userName"</span><span class="token punctuation">,</span> User<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        Method m <span class="token operator">=</span> pd<span class="token punctuation">.</span><span class="token function">getWriteMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        m<span class="token punctuation">.</span><span class="token function">invoke</span><span class="token punctuation">(</span>user<span class="token punctuation">,</span><span class="token string">"tim"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>执行结果如下：</p>
+<pre class="line-numbers language-js"><code class="language-js">User<span class="token punctuation">{</span>id<span class="token operator">=</span><span class="token string">'12'</span><span class="token punctuation">,</span> userName<span class="token operator">=</span><span class="token string">'tim'</span><span class="token punctuation">}</span> 
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>查看当前分支</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> branch
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>合并目标分支到当前分支</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> merge 目标分支
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>删除指定分支</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> branch -d 分支名
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>临时存储当前工作现场</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> stash
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>查看存储的工作现场</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> stash list
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>恢复工作现场</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> stash pop
-<span class="token comment" spellcheck="true"># 上述指令等价于</span>
-$ <span class="token function">git</span> stash apply
-$ <span class="token function">git</span> stash drop
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-</li>
-<li><p>变基</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> rebase
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>打一个新标签</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> tag v1.0
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>查看所有标签</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> tag
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>为指定提交打标签</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> tag v0.9 提交ID号 -m <span class="token string">"消息"</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>查看标签说明消息</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> show <span class="token operator">&lt;</span>tagname<span class="token operator">></span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>删除标签</p>
-<pre class="line-numbers language-bash"><code class="language-bash">$ ggit tag -d v0.1
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-</ul>
+<p>其实代码逻辑很简单，我们仅仅关心 user 实例的 userName 字段被修改的过程，可以看到我们的 PropertyDescriptor 对象是通过其构造函数得到的，并且传入了字段信息为 “userName”，所以我们获取到的 PropertyDescriptor 就是 “userName” 这个字段所代表的 Java Bean 的属性，<code>Method m = pd.getWriteMethod();</code> 就是获取的这个字段的 setter 方法。然后我们调用 invoke 方法，这里有两个参数：此方法所在的实例和此方法的参数。因为获取到的是一个 Method 对象，它有一个特殊的字段我们要注意 <code>java.lang.reflect.Method#methodAccessor</code>，这里我把它的源码贴出来：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">package</span> sun<span class="token punctuation">.</span>reflect<span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>lang<span class="token punctuation">.</span>reflect<span class="token punctuation">.</span>InvocationTargetException<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">/** This interface provides the declaration for
+    java.lang.reflect.Method.invoke(). Each Method object is
+    configured with a (possibly dynamically-generated) class which
+    implements this interface.
+*/</span>
+
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">MethodAccessor</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">/** Matches specification in {@link java.lang.reflect.Method} */</span>
+    <span class="token keyword">public</span> Object <span class="token function">invoke</span><span class="token punctuation">(</span>Object obj<span class="token punctuation">,</span> Object<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span>
+        <span class="token keyword">throws</span> IllegalArgumentException<span class="token punctuation">,</span> InvocationTargetException<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到这个这个接口的唯一一个方法的签名和 Method 类的的 invoke 方法的签名是一模一样的，而且注释中也说了每一个 Method 对象都会包含一个实现了这个接口的对象。通过查看 Method 类的 invoke 方法，可以发现它最终也就是调用了 MethodAccessor 实现类的 invoke 方法。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> Object <span class="token function">invoke</span><span class="token punctuation">(</span>Object obj<span class="token punctuation">,</span> Object<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> args<span class="token punctuation">)</span>
+        <span class="token keyword">throws</span> IllegalAccessException<span class="token punctuation">,</span> IllegalArgumentException<span class="token punctuation">,</span>
+           InvocationTargetException
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>override<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>Reflection<span class="token punctuation">.</span><span class="token function">quickCheckMemberAccess</span><span class="token punctuation">(</span>clazz<span class="token punctuation">,</span> modifiers<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> caller <span class="token operator">=</span> Reflection<span class="token punctuation">.</span><span class="token function">getCallerClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">checkAccess</span><span class="token punctuation">(</span>caller<span class="token punctuation">,</span> clazz<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> modifiers<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    MethodAccessor ma <span class="token operator">=</span> methodAccessor<span class="token punctuation">;</span>             <span class="token comment" spellcheck="true">// read volatile</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ma <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        ma <span class="token operator">=</span> <span class="token function">acquireMethodAccessor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> ma<span class="token punctuation">.</span><span class="token function">invoke</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>MethodAccessor 的实现类有两个 <code>sun.reflect.DelegatingMethodAccessorImpl</code> 和 <code>sun.reflect.NativeMethodAccessorImpl</code>，通过 idea 的调试功能，可以看到 Method 包含的是 DelegatingMethodAccessorImpl 这个实现类，我们继续查看它对 invoke 方法的实现，很简单，就是直接调用了它所包含的 <code>MethodAccessor</code> 实现类的 invoke 方法，注意这里 <code>MethodAccessor</code> 的实现类变成了 <code>NativeMethodAccessorImpl</code>，好了那就直接看看 <code>NativeMethodAccessorImpl</code> 的 invoke 方法实现吧： </p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> Object <span class="token function">invoke</span><span class="token punctuation">(</span>Object obj<span class="token punctuation">,</span> Object<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span>
+        <span class="token keyword">throws</span> IllegalArgumentException<span class="token punctuation">,</span> InvocationTargetException
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// We can't inflate methods belonging to vm-anonymous classes because</span>
+    <span class="token comment" spellcheck="true">// that kind of class can't be referred to by name, hence can't be</span>
+    <span class="token comment" spellcheck="true">// found from the generated bytecode.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">++</span>numInvocations <span class="token operator">></span> ReflectionFactory<span class="token punctuation">.</span><span class="token function">inflationThreshold</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>ReflectUtil<span class="token punctuation">.</span><span class="token function">isVMAnonymousClass</span><span class="token punctuation">(</span>method<span class="token punctuation">.</span><span class="token function">getDeclaringClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        MethodAccessorImpl acc <span class="token operator">=</span> <span class="token punctuation">(</span>MethodAccessorImpl<span class="token punctuation">)</span>
+            <span class="token keyword">new</span> <span class="token class-name">MethodAccessorGenerator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+                <span class="token function">generateMethod</span><span class="token punctuation">(</span>method<span class="token punctuation">.</span><span class="token function">getDeclaringClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                method<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                method<span class="token punctuation">.</span><span class="token function">getParameterTypes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                method<span class="token punctuation">.</span><span class="token function">getReturnType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                method<span class="token punctuation">.</span><span class="token function">getExceptionTypes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                method<span class="token punctuation">.</span><span class="token function">getModifiers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        parent<span class="token punctuation">.</span><span class="token function">setDelegate</span><span class="token punctuation">(</span>acc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> <span class="token function">invoke0</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">void</span> <span class="token function">setParent</span><span class="token punctuation">(</span>DelegatingMethodAccessorImpl parent<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>parent <span class="token operator">=</span> parent<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">native</span> Object <span class="token function">invoke0</span><span class="token punctuation">(</span>Method m<span class="token punctuation">,</span> Object obj<span class="token punctuation">,</span> Object<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到在 invoke 方法中，是最后调用了 invoke0 方法，而且在 java 中有个特点，就是如果一个方法是以数字 0 结尾，那么通常这个方法就是一个本地方法，这里也不例外，最后 invoke0 就是一个本地方法。本地方法对我们就是一个黑盒，但是我们可以通过其传入的参数猜测一下他的作用。</p>
+<p>一共三个参数, 分别是 method obj 和 orgs，通过 idea 的 debug 直视化功能，我们可以很直观的看到三个参数的值分别为 <code>public void User.setUserName(java.lang.String)</code>，<code>User{id=&#39;12&#39;, userName=&#39;eva&#39;}</code>，<code>tim</code> ，这不正好就是我们期望调用的方法、参数和对象吗？好了，提前在目标方法中打上断点，再直接下一步，可以看到程序停在了 User 类的 setUsername 方法上了，这样方法的调用过程就分析完毕。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>之前在看 Aop 的实现原理时，发现动态代理的过程也会执行上述的代码，但是当时并没有看懂各种类之间是什么关系，这次通过一个比较简单的例子重新走了一个这个过程，大致理清了下通过反射调用的过程。但是对于 Aop 的增强方法的链式调用过程还是很模糊，有时间了再去看看 Aop 实现的过程。</p>
 
             </div>
             <hr>
@@ -743,7 +710,7 @@ $ <span class="token function">git</span> stash drop
                     </span>
                     <a href="https://aprilyolies.top" class="b-link-green">AprilYoLies</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href class="b-link-green">Git常用指令总结</a>
+                    <a href class="b-link-green">PropertyDescriptor类的使用及其执行过程的分析</a>
                 </p>
             </div>
         </div>
@@ -1025,51 +992,46 @@ $ <span class="token function">git</span> stash drop
         
         <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="../../../05/01/MySQL索引背后的数据结构及算法原理/">
+                <a href>
                     <div class="card-image">
                         
-                        <img src="https://image.aprilyolies.top/static/images/face-img/6.jpg" class="responsive-img" alt="MySQL索引背后的数据结构及算法原理">
                         
-                        <span class="card-title">MySQL索引背后的数据结构及算法原理</span>
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="PropertyDescriptor类的使用及其执行过程的分析">
+                        
+                        <span class="card-title">PropertyDescriptor类的使用及其执行过程的分析</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文以MySQL数据库为研究对象，讨论与数据库索引相关的一些话题。特别需要说明的是，MySQL支持诸多存储引擎，而各种存储引擎对索引的支持也各不相同，因此MySQL数据库支持多种索引类型，如BTree索引，哈希索引，全文索引等等。
+                            PropertyDescriptor 是位于 java.beans 包下的一个类，其注释对其的解释为： PropertyDescriptor 描述了 Java Bean 的一个属性，我们可以通过一对 getter 和 setter 方法对其进行访问。
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-01
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-11
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="../../../../categories/数据库/" class="post-category" target="_blank">
-                                    数据库
+                            <a href="../../../../categories/后台开发/" class="post-category" target="_blank">
+                                    后台开发
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="../../../../tags/数据结构/" target="_blank">
-                        <span class="chip bg-color">数据结构</span>
-                    </a>
-                    
-                    <a href="../../../../tags/MySQL/" target="_blank">
-                        <span class="chip bg-color">MySQL</span>
-                    </a>
-                    
-                    <a href="../../../../tags/索引/" target="_blank">
-                        <span class="chip bg-color">索引</span>
+                    <a href="../../../../tags/Spring/" target="_blank">
+                        <span class="chip bg-color">Spring</span>
                     </a>
                     
                 </div>
@@ -1083,30 +1045,31 @@ $ <span class="token function">git</span> stash drop
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="../../20/通过FastDFS的Java客户端上传图片连接超时的解决过程/">
+                <a href="../Spring中常用Aware结尾接口及使用/">
                     <div class="card-image">
                         
-                        <img src="https://image.aprilyolies.top/static/images/face-img/4.jpg" class="responsive-img" alt="通过FastDFS的Java客户端上传图片连接超时的解决过程">
                         
-                        <span class="card-title">通过FastDFS的Java客户端上传图片连接超时的解决过程</span>
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Spring中常用Aware结尾接口及使用">
+                        
+                        <span class="card-title">Spring中常用Aware结尾接口及使用</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            在上一篇文章中，我搭建了一个 FastDFS 图片服务器，通过FastDFS提供的命令行工具进行文件上传是成功的，然后就是测试一下通过Java客户端来进行图片的上传操作，很遗憾测试没有通过，控制台打印如下错误信息：
+                            在 Spring 中，有一个特殊的约定，就是被 Spring 容器管理的 bean，如果实现了 Spring 提供的以 Aware 结尾的接口，那么在对 bean 进行实例化的过程中，容器会调用相应的接口方法，通过这个特性，我们可以获取容器或者 bean 相关的一些属性。
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-04-20
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-11
                             </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="../../../../categories/后端开发/" class="post-category" target="_blank">
-                                    后端开发
+                            <a href="../../../../categories/后台开发/" class="post-category" target="_blank">
+                                    后台开发
                                 </a>
                             
                             
@@ -1116,12 +1079,8 @@ $ <span class="token function">git</span> stash drop
                 
                 <div class="card-action article-tags">
                     
-                    <a href="../../../../tags/FastDFS/" target="_blank">
-                        <span class="chip bg-color">FastDFS</span>
-                    </a>
-                    
-                    <a href="../../../../tags/Java/" target="_blank">
-                        <span class="chip bg-color">Java</span>
+                    <a href="../../../../tags/Spring/" target="_blank">
+                        <span class="chip bg-color">Spring</span>
                     </a>
                     
                 </div>

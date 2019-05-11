@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://aprilyolies.top/"/>
-  <updated>2019-05-11T06:58:29.837Z</updated>
+  <updated>2019-05-11T10:45:22.813Z</updated>
   <id>https://aprilyolies.top/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>PropertyDescriptor类的使用及其执行过程的分析</title>
+    <link href="https://aprilyolies.top/2019/05/11/PropertyDescriptor%E7%B1%BB%E7%9A%84%E4%BD%BF%E7%94%A8%E5%8F%8A%E5%85%B6%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B%E7%9A%84%E5%88%86%E6%9E%90/"/>
+    <id>https://aprilyolies.top/2019/05/11/PropertyDescriptor类的使用及其执行过程的分析/</id>
+    <published>2019-05-11T09:27:49.000Z</published>
+    <updated>2019-05-11T10:45:22.813Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;PropertyDescriptor 是位于 java.beans 包下的一个类，其注释对其的解释为：
+        
+      
+    
+    </summary>
+    
+      <category term="后台开发" scheme="https://aprilyolies.top/categories/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="Spring" scheme="https://aprilyolies.top/tags/Spring/"/>
+    
+  </entry>
   
   <entry>
     <title>Spring中常用Aware结尾接口及使用</title>
