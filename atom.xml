@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://aprilyolies.top/"/>
-  <updated>2019-05-11T10:47:21.123Z</updated>
+  <updated>2019-05-12T10:28:48.777Z</updated>
   <id>https://aprilyolies.top/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Dubbo基于ExtensionLoader实现的SPI拓展</title>
+    <link href="https://aprilyolies.top/2019/05/12/Dubbo%E7%9A%84SPI%E6%8B%93%E5%B1%95/"/>
+    <id>https://aprilyolies.top/2019/05/12/Dubbo的SPI拓展/</id>
+    <published>2019-05-12T08:55:58.000Z</published>
+    <updated>2019-05-12T10:28:48.777Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;blockquote&gt;
+&lt;p&gt;本文内容转载自 &lt;a href=&quot;https://my.oschina.net/bieber/blog/418949&quot; target=&quot;_blank&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="后台开发" scheme="https://aprilyolies.top/categories/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="Dubbo" scheme="https://aprilyolies.top/tags/Dubbo/"/>
+    
+  </entry>
   
   <entry>
     <title>PropertyDescriptor类的使用及其执行过程的分析</title>

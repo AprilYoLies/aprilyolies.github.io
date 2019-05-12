@@ -1,0 +1,1390 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="Dubbo基于ExtensionLoader实现的SPI拓展, Java,Mysql,Netty,Spring">
+    <meta name="description" content="
+本文内容转载自 从ExtensionLoader看Dubbo插件化
+
+前言最近在看 Dubbo 的源码，因为 Dubbo 集成了 Spring 框架，根据 Dubbo 的 XML 配置方式（当然也可以是通过注解的方式），不难想到应该从 D">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Dubbo基于ExtensionLoader实现的SPI拓展 | AprilYoLies</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+        code[class*="language-"], pre[class*="language-"] {
+            white-space: pre !important;
+        }
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="../../../../index.html" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">AprilYoLies</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">AprilYoLies</div>
+        <div class="logo-desc">
+            
+            干燥的空气，尘埃的味道，我在其中…踏上旅途！
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/AprilYoLies" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/AprilYoLies" class="github-corner tooltipped hide-on-med-and-down" target="_blank" data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewbox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://image.aprilyolies.top/static/images/face-img/11.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        Dubbo基于ExtensionLoader实现的SPI拓展
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="../../../../tags/Dubbo/" target="_blank">
+                                <span class="chip bg-color">Dubbo</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="../../../../categories/后台开发/" class="post-category" target="_blank">
+                                后台开发
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-05-12
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        4.1k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        16 分
+                    </div>
+                    
+                
+				
+				
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="fa fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p>本文内容转载自 <a href="https://my.oschina.net/bieber/blog/418949" target="_blank" rel="noopener">从ExtensionLoader看Dubbo插件化</a></p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近在看 Dubbo 的源码，因为 Dubbo 集成了 Spring 框架，根据 Dubbo 的 XML 配置方式（当然也可以是通过注解的方式），不难想到应该从 Dubbo 对应的 NamespaceHandler 作为分析的出发点。</p>
+<p>因为 DubboNamespaceHandler 继承了 NamespaceHandlerSupport 抽象类，所以在 DubboNamespaceHandler 中需要实现 init() 方法的逻辑，主要就是向 Spring 容器中注册相关标签的解析器，这样在遇上对应标签后，将会调用匹配的解析器来生成对应的 bean，相关的代码如下：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DubboNamespaceHandler</span> <span class="token keyword">extends</span> <span class="token class-name">NamespaceHandlerSupport</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">static</span> <span class="token punctuation">{</span>
+        Version<span class="token punctuation">.</span><span class="token function">checkDuplicate</span><span class="token punctuation">(</span>DubboNamespaceHandler<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"application"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ApplicationConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"module"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ModuleConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"registry"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>RegistryConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"monitor"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>MonitorConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"provider"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ProviderConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"consumer"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ConsumerConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"protocol"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ProtocolConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"service"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ServiceBean<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"reference"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ReferenceBean<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"annotation"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>AnnotationBean<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里我最关注的就是 service 标签所对应的 ServiceBean，它实现了众多的 Spring 功能性接口，Spring 容器会在特殊的时刻调用相应的方法，而 dubbo 的服务发布，就是在 <code>com.alibaba.dubbo.config.spring.ServiceBean#onApplicationEvent</code> 方法中完成的，具体的过程比较复杂，其中涉及到了一个 ExtensionLoader 类，实现的功能比较多，使得自己源码分析的过程比较晕，遂去 google 了一下这个类的作用，确实找到了一篇比较好的文章，所以这里将其转载下来，方便以后回顾查看。</p>
+<h2 id="SPI-与-Dubbo"><a href="#SPI-与-Dubbo" class="headerlink" title="SPI 与 Dubbo"></a>SPI 与 Dubbo</h2><p>了解 SPI 的人知道，它只是提供一种协议，并没有提供相关插件化实施的接口，不像 OSGI 那样有一成套实施插件化 API。它只是规定在 META-INF 目录下提供接口的实现描述文件，框架本身定义接口、规范，第三方只需要将自己的实现在 META-INF 下描述清楚，那么框架就会自动加载你的实现，至于怎么加载，JDK 并没有提供相关 API，而是框架设计者需要考虑和实现的,并且在 META-INF 目录下面对规则的描述，也是需要框架设计者来规定。比如 Dubbo 的规则是在 META-INF/dubbo、META-INF/dubbo/internal 或者 META-INF/services 下面以需要实现的接口的全限定名去创建一个文件，并且在文件中以键值对的方式来规定实现类和别名的关系。下图便是 Dubbo 的 META-INF 目录的详细规则。 </p>
+<div style="text-align:center;"><img src="https://image.aprilyolies.top/static/images/common/d149eb8ac4c66cc0d02d31c58f347e2f.jpg" width="600"></div>
+
+<p>这里简单的介绍一下 Dubbo 的插件实现方式和规则，以及提到 SPI 是一种插件化的规范，并没有提供实施的 API，是需要框架自己去实现的。Dubbo 对这一块的实现全部都集中在类 ExtensionLoader 中，那么接下来将围绕这个类来介绍 Dubbo 插件化的实现，在介绍 Dubbo 插件化实施之前，需要知道 Dubbo 框架是以 URL 为总线的模式，即运行过程中所有的状态数据信息都可以通过 URL 来获取，比如当前系统采用什么序列化，采用什么通信，采用什么负载均衡等信息，都是通过 URL 的参数来呈现的，所以在框架运行过程中，运行到某个阶段需要相应的数据，都可以通过对应的 Key 从URL的参数列表中获取。</p>
+<h2 id="ExtensionLoader-的-activate-模块"><a href="#ExtensionLoader-的-activate-模块" class="headerlink" title="ExtensionLoader 的 activate 模块"></a>ExtensionLoader 的 activate 模块</h2><p>ExtensionLoader 是一个单例工厂类，它对外暴露 getExtensionLoader 静态方法返回一个ExtensionLoader 实体，这个方法的入参是一个 Class 类型，这个方法的意思是返回某个接口的 ExtensionLoader。那么对于某一个接口，只会有一个 ExtensionLoader 实体。ExtensionLoader 实体对外暴露了下图中的一些接口来获取扩展实现。</p>
+<div style="text-align:center;"><img src="https://image.aprilyolies.top/static/images/common/ea3cf01bb9df9937deee1c88da09274d.jpg" width="400"></div>
+
+<p>上图的方法归为几类，分别是 activate extension、adaptive extension、default extension、get extension by name 以及 supported extension。activate extension 都需要传入 url 参数，这里涉及到 Activate 注解，这个注解主要用处是标注在插件接口实现类上，用来配置该扩展实现类激活条件。在 Dubbo 框架里面的 Filter 接口的各种实现类都通过 Activate 标注，用来描述该 Filter 什么时候生效。比如 MonitorFilter 通过 Activate 标注用来告诉 Dubbo 框架这个 Filter 是在服务提供端和消费端会生效的；而 TimeoutFilter 则是只在服务提供端生效，消费端是不会调用该 Filter； ValidationFilter 要激活的条件除了在消费端和服务提供端激活，它还配置了 value，这个表述另一个激活条件，上面介绍要获取 activate extension 都需要传入URL对象，那么这个 value 配置的值则表述URL必须有指定的参数才可以激活这个扩展。例如 ValidationFilter 则表示URL中必须包含参数 validation(Constants.VALIDATION_KEY 常量的值就是 validation)，否则消费端和服务端都不会激活这个扩展实现，仔细的同学还会发现在 ValidationFilter 中的 Activate 注解还有一个参数 order，这是表示一种排序规则。因为一个接口的实现有多种，返回的结果是一个列表，如果不指定排序规则，那么可能列表的排序不可控，为了达到排序可控，添加了 order 属性用来控制排序，其中 order 的值越大，那么该扩展实现排序就越靠前。除了通过 order 来控制排序，还有 before 和 after 来配置当前扩展的位置，before 和 after 配置的值是扩展的别名。下边是简化的接口信息：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Activate</span><span class="token punctuation">(</span>group <span class="token operator">=</span> <span class="token punctuation">{</span>Constants<span class="token punctuation">.</span>PROVIDER<span class="token punctuation">,</span> Constants<span class="token punctuation">.</span>CONSUMER<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MonitorFilter</span> <span class="token keyword">implements</span> <span class="token class-name">Filter</span> <span class="token punctuation">{</span>……<span class="token punctuation">}</span>
+<span class="token annotation punctuation">@Activate</span><span class="token punctuation">(</span>group <span class="token operator">=</span> Constants<span class="token punctuation">.</span>PROVIDER<span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TimeoutFilter</span> <span class="token keyword">implements</span> <span class="token class-name">Filter</span> <span class="token punctuation">{</span>……<span class="token punctuation">}</span>
+<span class="token annotation punctuation">@Activate</span><span class="token punctuation">(</span>group <span class="token operator">=</span> <span class="token punctuation">{</span> Constants<span class="token punctuation">.</span>CONSUMER<span class="token punctuation">,</span> Constants<span class="token punctuation">.</span>PROVIDER <span class="token punctuation">}</span><span class="token punctuation">,</span> value <span class="token operator">=</span> Constants<span class="token punctuation">.</span>VALIDATION_KEY<span class="token punctuation">,</span> order <span class="token operator">=</span> <span class="token number">10000</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ValidationFilter</span> <span class="token keyword">implements</span> <span class="token class-name">Filter</span> <span class="token punctuation">{</span>……<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面基本对 activate 介绍的差不多了，在 Dubbo 框架中对这个用的最多的就是 Filter 的各种实现，因为 Dubbo 的调用会经过一个过滤器链。哪些 Filter 实现类被包含在调用链中，是通过各种Filter实现类的 Activate 注解来控制的。包括上面说的排序，也可以理解为过滤器链中各个 Filter 的前后顺序。这里的顺序需要注意一个地方，即排序均是对框架本身实现的扩展进行排序，用户自定义的扩展默认是追加在列表后面。说到这里具体例子：</p>
+<pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">dubbo:</span>reference</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span>”fooRef”</span> <span class="token attr-name">interface</span><span class="token attr-value"><span class="token punctuation">=</span>”com.foo.Foo”</span> <span class="token attr-name">filter</span><span class="token attr-value"><span class="token punctuation">=</span>”A,B,C”/</span><span class="token punctuation">></span></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>假设上面是一个有效的消费端服务引用，其中配置了一个 filter 属性，并且通过逗号隔开配置了三个过滤器 A,B,C（A,B,C 均为 Filter 实现的别名），那么对于接口 Foo 调用的过滤器链是怎么样的呢？首先 Dubbo 会加载默认的过滤器（一般消费端有三个 ConsumerContextFilter,MonitorFilter,FutureFilter），并且对这些默认的过滤器实现进行排序（ActivateComparator 实现排序逻辑），这写默认过滤器实现会在过滤器链的前面，后面紧接着的才是 A，B，C 三个自定义过滤器。</p>
+<h2 id="ExtensionLoader-的-adaptive-模块"><a href="#ExtensionLoader-的-adaptive-模块" class="headerlink" title="ExtensionLoader 的 adaptive 模块"></a>ExtensionLoader 的 adaptive 模块</h2><p>上面介绍了 activate extension,下面介绍 ExtensionLoader 另一个重要模块 adaptive extension。Dubbo 框架提供的各种接口均有很多种类的实现，在引用具体实现的时候不可能通过硬编码制定引用哪个实现，这样整个框架的灵活性严重降低。所以为了能够适配一个接口的各种实现，便有了 adaptive extension 这一说。对一个接口实现的适配器 Dubbo 提供两种途径，第一种途径是手动对某个接口实现对应的适配器，第二种是 Dubbo 框架动态生成适配器类。先对第一种途径进行介绍，这种途径也最好理解，对于这种途径 Dubbo 也提供了一个注解 Adaptive，他用来标注在接口的某个实现上，表示这个实现并不是提供具体业务支持，而是作为该接口的适配器。比如 ExtensionFactory 的实现类 AdaptiveExtensionFactory 就是实现适配的功能，这个类被Adaptive进行了标注，那么在调用 <code>ExtensionLoader.getExtensionLoader(ExtensionFactory.class).getAdaptiveExtension()</code> 的时候将会返回 AdaptiveExtensionFactory 实体，用来适配 ExtensionFactory 接口的 SPIExtensionFactory 和 SpringExtensionFactory 两种实现，在 AdaptiveExtensionFactory 将会根据运行时的状态来确定具体调用 ExtensionFactory 的哪个实现。</p>
+<p>而第二种相对于第一种来说就隐晦一点，是 ExtensionLoader 通过分析接口配置的 adaptive 规则动态生成 adaptive 类并且加载到 ClassLoader 中，从而来实现动态适配。配置 adaptive 的规则也是通过 Adaptive 注解来设置，该注解有一个 value 属性，通过设置这个属性便可以设置该接口的 Adaptive 的规则，上面说过服务调用的所有数据均可以从 URL 获取（Dubbo 的 URL 总线模式），那么需要 Dubbo 帮我们动态生成 adaptive 的扩展接口的方法入参必须包含 URL，这样才能根据运行状态动态选择具体实现。这里列举一下 Transporter 接口中配置 adaptive 规则。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@SPI</span><span class="token punctuation">(</span><span class="token string">"netty"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Transporter</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">/**
+     * Bind a server.
+     * 
+     * @see com.alibaba.dubbo.remoting.Transporters#bind(URL, Receiver, ChannelHandler)
+     * @param url server url
+     * @param handler
+     * @return server
+     * @throws RemotingException 
+     */</span>
+    <span class="token annotation punctuation">@Adaptive</span><span class="token punctuation">(</span><span class="token punctuation">{</span>Constants<span class="token punctuation">.</span>SERVER_KEY<span class="token punctuation">,</span> Constants<span class="token punctuation">.</span>TRANSPORTER_KEY<span class="token punctuation">}</span><span class="token punctuation">)</span>
+    Server <span class="token function">bind</span><span class="token punctuation">(</span>URL url<span class="token punctuation">,</span> ChannelHandler handler<span class="token punctuation">)</span> <span class="token keyword">throws</span> RemotingException<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">/**
+     * Connect to a server.
+     * 
+     * @see com.alibaba.dubbo.remoting.Transporters#connect(URL, Receiver, ChannelListener)
+     * @param url server url
+     * @param handler
+     * @return client
+     * @throws RemotingException 
+     */</span>
+    <span class="token annotation punctuation">@Adaptive</span><span class="token punctuation">(</span><span class="token punctuation">{</span>Constants<span class="token punctuation">.</span>CLIENT_KEY<span class="token punctuation">,</span> Constants<span class="token punctuation">.</span>TRANSPORTER_KEY<span class="token punctuation">}</span><span class="token punctuation">)</span>
+    Client <span class="token function">connect</span><span class="token punctuation">(</span>URL url<span class="token punctuation">,</span> ChannelHandler handler<span class="token punctuation">)</span> <span class="token keyword">throws</span> RemotingException<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Transporter 接口提供了两个方法，一个是 connect（用来创建客户端连接），另一个是 bind（用来绑定服务端端口提供服务），并且这两个方法上面均通过 Adaptive 注解配置了 value 属性，bind 配置的是 server 和 transporter，connect 配置的是 client 和 transporter。那么配置这些值有什么用呢？下面看看 ExtensionLoader 根据这些生成了什么样的 adaptive 代码。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">package</span> com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">;</span>
+<span class="token keyword">import</span> com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>extension<span class="token punctuation">.</span>ExtensionLoader<span class="token punctuation">;</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Transporter</span>$Adpative <span class="token keyword">implements</span> <span class="token class-name">com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>Transporter</span><span class="token punctuation">{</span>
+<span class="token keyword">public</span> com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>Client <span class="token function">connect</span><span class="token punctuation">(</span>
+com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>URL arg0<span class="token punctuation">,</span> com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>ChannelHandler arg1<span class="token punctuation">)</span> 
+<span class="token keyword">throws</span> com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>RemotingException <span class="token punctuation">{</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>arg0 <span class="token operator">==</span> null<span class="token punctuation">)</span> 
+<span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"url == null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>URL url <span class="token operator">=</span> arg0<span class="token punctuation">;</span>
+String extName <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span><span class="token string">"client"</span><span class="token punctuation">,</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span><span class="token string">"transporter"</span><span class="token punctuation">,</span> <span class="token string">"netty"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span>extName <span class="token operator">==</span> null<span class="token punctuation">)</span> 
+<span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Fail to get extension(com.alibaba.dubbo.remoting.Transporter) name from url("</span> <span class="token operator">+</span> url<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">") use keys([client, transporter])"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>Transporter extension <span class="token operator">=</span> <span class="token punctuation">(</span>com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>Transporter<span class="token punctuation">)</span>ExtensionLoader<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span>
+<span class="token punctuation">(</span>com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>Transporter<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getExtension</span><span class="token punctuation">(</span>extName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">return</span> extension<span class="token punctuation">.</span><span class="token function">connect</span><span class="token punctuation">(</span>arg0<span class="token punctuation">,</span> arg1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">public</span> com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>Server <span class="token function">bind</span><span class="token punctuation">(</span>
+com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>URL arg0<span class="token punctuation">,</span> com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>ChannelHandler arg1<span class="token punctuation">)</span> 
+<span class="token keyword">throws</span> com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>RemotingException <span class="token punctuation">{</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>arg0 <span class="token operator">==</span> null<span class="token punctuation">)</span> 
+<span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"url == null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>URL url <span class="token operator">=</span> arg0<span class="token punctuation">;</span>
+String extName <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span><span class="token string">"server"</span><span class="token punctuation">,</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span><span class="token string">"transporter"</span><span class="token punctuation">,</span> <span class="token string">"netty"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span>extName <span class="token operator">==</span> null<span class="token punctuation">)</span> 
+<span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Fail to get extension(com.alibaba.dubbo.remoting.Transporter) name from url("</span> <span class="token operator">+</span> url<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">") use keys([server, transporter])"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>Transporter extension <span class="token operator">=</span> <span class="token punctuation">(</span>com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>Transporter<span class="token punctuation">)</span>ExtensionLoader<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span>
+<span class="token punctuation">(</span>com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>Transporter<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getExtension</span><span class="token punctuation">(</span>extName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">return</span> extension<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span>arg0<span class="token punctuation">,</span> arg1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面是 ExtensionLoader 自动生成的 Transporter$Adpative 类，并且实现了 Transporter 接口，下面我们分别看看在它 connect 和 bind 中分别做了哪些逻辑。先看看 bind 方法代码段：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>Server <span class="token function">bind</span><span class="token punctuation">(</span>
+com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>URL arg0<span class="token punctuation">,</span> com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>ChannelHandler arg1<span class="token punctuation">)</span> 
+<span class="token keyword">throws</span> com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>RemotingException <span class="token punctuation">{</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>arg0 <span class="token operator">==</span> null<span class="token punctuation">)</span> 
+<span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"url == null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>URL url <span class="token operator">=</span> arg0<span class="token punctuation">;</span>
+String extName <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span><span class="token string">"server"</span><span class="token punctuation">,</span> url<span class="token punctuation">.</span><span class="token function">getParameter</span><span class="token punctuation">(</span><span class="token string">"transporter"</span><span class="token punctuation">,</span> <span class="token string">"netty"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span>extName <span class="token operator">==</span> null<span class="token punctuation">)</span> 
+<span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Fail to get extension(com.alibaba.dubbo.remoting.Transporter) name from url("</span> <span class="token operator">+</span> url<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">") use keys([server, transporter])"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>Transporter extension <span class="token operator">=</span> <span class="token punctuation">(</span>com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>Transporter<span class="token punctuation">)</span>ExtensionLoader<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span>
+<span class="token punctuation">(</span>com<span class="token punctuation">.</span>alibaba<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>remoting<span class="token punctuation">.</span>Transporter<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getExtension</span><span class="token punctuation">(</span>extName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">return</span> extension<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span>arg0<span class="token punctuation">,</span> arg1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到bind方法先对 url 参数(arg0)进行了非空判断，然后便是调用 url.getParameter 方法，首先是获取 server 参数，然后再获取 transporter 参数，最后如果两个参数均没有，extName便是netty。获取完参数之后，紧接着对 extName 进行非空判断，接下来便是获取 Transporter 的 ExtensionLoader，最后获取别名为 extName 的 Transporter 实现，并调用对应的 bind 来进行绑定服务端口操作。connect 也是类似，只是它首先是从 url 中获取 client 参数，再获取 transporter 参数，同样的如果最后两个参数都没有，那么 extName 也是 netty，最终也是依据 extName 获取对已的接口扩展实现，调用 connect 方法。</p>
+<p>到这里或许你已经明白了 ExtensionLoader 是怎么动态生成 adaptive,上面从 url 中获取 server， client 还是 transporter 参数均是在 Transporter 接口的方法通过 Adaptive 注解配置的 value 属性所决定。其中 netty 是通过注解 SPI 制定当前接口的一种默认实现。这便是 Dubbo 通过 ExtensionLoader 动态生成 adaptive 类来动态适配接口的所有实现。</p>
+<p>上面对 activate 和 adaptive 进行了详细的介绍，这两部分对应 ExtensionLoader 的实现分别是方法 getActivateExtension(URL url, String[] values, String group) 和createAdaptiveExtensionClassCode()，如果感兴趣，可以去查看 ExtensionLoader 源码。接下来对get extension by name 和 default extension 介绍一下，get extension by name 这个没什么好介绍的，就是通过接口实现的别名来获取某一个具体的服务。而 default extension 需要做一下详细介绍，Dubbo 的 SPI 规范除了上面说的在制定文件夹下面描述服务的实现信息之外，在被实现的接口必须标注 SPI 注解，用来告诉 Dubbo 这个接口是通过 SPI 来进行扩展实现的，否则 ExtensionLoader 则不会对这个接口创建 ExtensionLoader 实体，并且调用 ExtensionLoader.getExtensionLoader 方法会出现 IllegalArgumentException 异常。那说这些和默认扩展实现有什么关系呢？在接口上标注 SPI 注解的时候可以配置一个 value 属性用来描述这个接口的默认实现别名，例如上面 Transporter 的 @SPI(“netty”)就是指定 Transporter 默认实现是 NettyTransporter，因为 NettyTransporter 的别名是 netty。这里再对服务别名补充有点，别名是站在某一个接口的维度来区分不同实现的，所以一个接口的实现不能有相同的别名，否则 Dubbo 框架将启动失败，当然不同接口的各自实现别名可以相同。到此 ExtensionLoader 的实现原则和基本原理介绍完了，接下来我们来看看怎么基于 Dubbo 的 ExtensionLoader 来实施我们自己的插件化。</p>
+<h2 id="测试-ExtensionLoader-的动态加载机制"><a href="#测试-ExtensionLoader-的动态加载机制" class="headerlink" title="测试 ExtensionLoader 的动态加载机制"></a>测试 ExtensionLoader 的动态加载机制</h2><p>插件化的第一步是抽象一个接口，从定义了插件的规范，那么我们先创建一个 IHelloService 接口，并且标注了 SPI 注解，同时指定默认实现是别名为 default 的扩展实现。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@SPI</span><span class="token punctuation">(</span><span class="token string">"default"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IHelloService</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Adaptive</span>
+    String <span class="token function">sayHello</span><span class="token punctuation">(</span>URL url<span class="token punctuation">,</span> String msg<span class="token punctuation">,</span> ExtentionType type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>那么接下来就是对这个插件接口提供不同的实现，需要我自己来实现一个适配类。适配类如下：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Adaptive</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloServiceAdaptor</span> <span class="token keyword">implements</span> <span class="token class-name">IHelloService</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> String <span class="token function">sayHello</span><span class="token punctuation">(</span>URL url<span class="token punctuation">,</span> String msg<span class="token punctuation">,</span> ExtentionType type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        ExtensionLoader extensionLoader <span class="token operator">=</span> ExtensionLoader<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span>IHelloService<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        IHelloService extension <span class="token operator">=</span> <span class="token punctuation">(</span>IHelloService<span class="token punctuation">)</span> extensionLoader<span class="token punctuation">.</span><span class="token function">getDefaultExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">switch</span> <span class="token punctuation">(</span>type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">case</span> DEFAULT<span class="token operator">:</span>
+                extension <span class="token operator">=</span> <span class="token punctuation">(</span>IHelloService<span class="token punctuation">)</span> extensionLoader<span class="token punctuation">.</span><span class="token function">getExtension</span><span class="token punctuation">(</span><span class="token string">"default"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> OTHER<span class="token operator">:</span>
+                extension <span class="token operator">=</span> <span class="token punctuation">(</span>IHelloService<span class="token punctuation">)</span> extensionLoader<span class="token punctuation">.</span><span class="token function">getExtension</span><span class="token punctuation">(</span><span class="token string">"other"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> extension<span class="token punctuation">.</span><span class="token function">sayHello</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> msg<span class="token punctuation">,</span> type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>相应类 ExtentionType 枚举类：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">enum</span> ExtentionType <span class="token punctuation">{</span>
+    DEFAULT<span class="token punctuation">,</span>
+    OTHER
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可见在 AdaptiveExtension 中将会根据 ExtensionType 分发扩展的具体实现，并触发 sayHello 方法。然后再对 IHelloService 接口提供了两种实现：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DefaultHelloImpl</span> <span class="token keyword">implements</span> <span class="token class-name">IHelloService</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> String <span class="token function">sayHello</span><span class="token punctuation">(</span>URL url<span class="token punctuation">,</span> String msg<span class="token punctuation">,</span> ExtentionType type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token string">"default say "</span> <span class="token operator">+</span> msg<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">OtherHelloImpl</span> <span class="token keyword">implements</span> <span class="token class-name">IHelloService</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> String <span class="token function">sayHello</span><span class="token punctuation">(</span>URL url<span class="token punctuation">,</span> String msg<span class="token punctuation">,</span> ExtentionType type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token string">"other say "</span> <span class="token operator">+</span> msg<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>并且在 META-INF/dubbo 下面创建了文件 com.bieber.dubbo.extension.IHelloService 其中内容如下（注意要将 META-INF 目录置于 resources 资源路径下）：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">default</span><span class="token operator">=</span>com<span class="token punctuation">.</span>aprilyolies<span class="token punctuation">.</span>extension<span class="token punctuation">.</span>DefaultHelloImpl
+other<span class="token operator">=</span>com<span class="token punctuation">.</span>aprilyolies<span class="token punctuation">.</span>extension<span class="token punctuation">.</span>OtherHelloImpl
+adaptive<span class="token operator">=</span>com<span class="token punctuation">.</span>aprilyolies<span class="token punctuation">.</span>extension<span class="token punctuation">.</span>HelloServiceAdaptor
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>最后是一个启动类：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">App</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        ExtensionLoader extensionLoader <span class="token operator">=</span> ExtensionLoader<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span>IHelloService<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        IHelloService extension <span class="token operator">=</span> <span class="token punctuation">(</span>IHelloService<span class="token punctuation">)</span> extensionLoader<span class="token punctuation">.</span><span class="token function">getAdaptiveExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>extension<span class="token punctuation">.</span><span class="token function">sayHello</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">URL</span><span class="token punctuation">(</span><span class="token string">"dubbo"</span><span class="token punctuation">,</span> <span class="token string">"127.0.0.1"</span><span class="token punctuation">,</span> <span class="token number">1234</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"hello"</span><span class="token punctuation">,</span> ExtentionType<span class="token punctuation">.</span>OTHER<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>关于 Dubbo 插件化的内容介绍完了，其实可以把 ExtensionLoader 当作是 Spring 的 IOC 容器，只不过 IOC 容器里面做的事情是帮我们初始化和管理 bean，我们可以根据我们需要的 bean 类型或者 bean 的 id 来获取对应的 bean 实体，Dubbo 里面 ExtensionLoader 类的作用比较相似，只不过它管理的是插件，同样我们可以根据具体插件实现别名和插件接口来获取我们想要的插件实现。另一个不同点是 Spring 是通过 XML 的方式告诉 Spring 我的 bean 的实现类全路径，而 Dubbo 则是通过 SPI 的方式告诉 ExtensionLoader 具体实现类信息。如果你理解了这个，那么你就理解 ExtensionLoader 了。</p>
+
+            </div>
+            <hr>
+
+            
+            <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.88rem;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-large waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fa fa-close"></i></a>
+            <h4 class="reward-title">请作者喝一杯咖啡吧！！</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechatpay.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="https://aprilyolies.top" class="b-link-green">AprilYoLies</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href class="b-link-green">Dubbo基于ExtensionLoader实现的SPI拓展</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+        <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments input[type=text],
+    #vcomments input[type=email],
+    #vcomments input[type=url],
+    #vcomments textarea {
+        box-sizing: border-box;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #42b983;
+        font-weight: 500;
+        text-decoration: underline;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div id="vcomments" class="card-content"></div>
+</div>
+
+<script src="/libs/valine/av-min.js"></script>
+<script src="/libs/valine/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: '6EGjo7zur3lPWW013mEcJkzC-gzGzoHsz',
+        appKey: 'H4QEnPnNWPBOkgGA8QcY8x2w',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'true' === 'true',
+        avatar: 'mm',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: '既然都来了，留下点什么再走吧！！'
+    });
+</script>
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href>
+                    <div class="card-image">
+                        
+                        <img src="https://image.aprilyolies.top/static/images/face-img/11.jpg" class="responsive-img" alt="Dubbo基于ExtensionLoader实现的SPI拓展">
+                        
+                        <span class="card-title">Dubbo基于ExtensionLoader实现的SPI拓展</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            最近在看 Dubbo 的源码，因为 Dubbo 集成了 Spring 框架，根据 Dubbo 的 XML 配置方式，不难想到应该从 Dubbo 对应的 NamespaceHandler 作为分析的出发点。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-12
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="../../../../categories/后台开发/" class="post-category" target="_blank">
+                                    后台开发
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="../../../../tags/Dubbo/" target="_blank">
+                        <span class="chip bg-color">Dubbo</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="../../11/PropertyDescriptor类的使用及其执行过程的分析/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="PropertyDescriptor类的使用及其执行过程的分析">
+                        
+                        <span class="card-title">PropertyDescriptor类的使用及其执行过程的分析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            PropertyDescriptor 是位于 java.beans 包下的一个类，其注释对其的解释为： PropertyDescriptor 描述了 Java Bean 的一个属性，我们可以通过一对 getter 和 setter 方法对其进行访问。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-11
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="../../../../categories/后台开发/" class="post-category" target="_blank">
+                                    后台开发
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="../../../../tags/Spring/" target="_blank">
+                        <span class="chip bg-color">Spring</span>
+                    </a>
+                    
+                    <a href="../../../../tags/JDK/" target="_blank">
+                        <span class="chip bg-color">JDK</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('120')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: AprilYoLies<br />'
+            + '作者: EvaJohnson<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h2, h3, h4, h5'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4, h5').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            PoweredBy&nbsp;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>&nbsp;&copy;
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">40.6k</span>
+            
+
+            
+			
+                <br>
+                
+                <span id="busuanzi_container_site_pv">
+                    <i class="fa fa-heart-o"></i>
+                    本站总访问量 <span id="busuanzi_value_site_pv" class="white-color"></span>
+                </span>
+                
+                
+                <span id="busuanzi_container_site_uv">
+                    <i class="fa fa-users"></i>
+                    次,&nbsp;访客数 <span id="busuanzi_value_site_uv" class="white-color"></span> 人.
+                </span>
+                
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/AprilYoLies" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:aprilyolies@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=863821569" class="tooltipped" data-tooltip="QQ联系我: 863821569" data-position="top" data-delay="50">
+        <i class="fa fa-qq"></i>
+    </a>
+
+
+
+    <a href="../../../../atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字" class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>
