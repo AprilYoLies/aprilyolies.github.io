@@ -35,7 +35,8 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
 <body>
@@ -576,10 +577,10 @@
 <div style="text-align:center;"><img src="https://image.aprilyolies.top/static/images/common/28ab52d590152a2d5f25bf51e6bcba1c.jpg" width="600"></div>
 
 <p>这两种对象访问方式各有优势。使用句柄来访问的最大好处是 reference 中存储的是稳定的句柄地址，在对象被移动时只会改变句柄中的实例数据指针，而 reference 本身不需要修改。使用直接指针访问方式最大的好处就是速度快，它节省了一次指针定位的时间开销。</p>
-<h2 id="重点补充内容"><a href="#重点补充内容" class="headerlink" title="重点补充内容"></a>重点补充内容</h2><h3 id="String-类和常量池"><a href="#String-类和常量池" class="headerlink" title="String 类和常量池"></a>String 类和常量池</h3><h4 id="String-对象的两种创建方式："><a href="#String-对象的两种创建方式：" class="headerlink" title="String 对象的两种创建方式："></a>String 对象的两种创建方式：</h4><pre class=" language-java"><code class="language-java">String str1 <span class="token operator">=</span> <span class="token string">"abcd"</span><span class="token punctuation">;</span>
+<h2 id="重点补充内容"><a href="#重点补充内容" class="headerlink" title="重点补充内容"></a>重点补充内容</h2><h3 id="String-类和常量池"><a href="#String-类和常量池" class="headerlink" title="String 类和常量池"></a>String 类和常量池</h3><h4 id="String-对象的两种创建方式："><a href="#String-对象的两种创建方式：" class="headerlink" title="String 对象的两种创建方式："></a>String 对象的两种创建方式：</h4><pre class="line-numbers language-java"><code class="language-java">String str1 <span class="token operator">=</span> <span class="token string">"abcd"</span><span class="token punctuation">;</span>
 String str2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span><span class="token string">"abcd"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>str1<span class="token operator">==</span>str2<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//false</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>这两种不同的创建方法是有差别的，第一种方式是在常量池中拿对象，第二种方式是直接在堆内存空间创建一个新的对象。</p>
 <div style="text-align:center;"><img src="https://image.aprilyolies.top/static/images/common/17b6abea0296c9c89f3ae44fe17989e1.jpg" width="450"></div>
 
@@ -590,14 +591,14 @@ System<span class="token punctuation">.</span>out<span class="token punctuation"
 <li><p>如果不是用双引号声明的 String 对象，可以使用 String 提供的 intern 方法。 <code>String.intern()</code> 是一个 Native 方法，它的作用是：如果运行时常量池中已经包含一个等于此 String 对象内容的字符串，则返回常量池中该字符串的引用；如果没有，则在常量池中创建与此 String 内容相同的字符串，并返回常量池中创建的字符串的引用。</p>
 </li>
 </ul>
-<pre class=" language-java"><code class="language-java">String s1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span><span class="token string">"计算机"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre class="line-numbers language-java"><code class="language-java">String s1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span><span class="token string">"计算机"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 String s2 <span class="token operator">=</span> s1<span class="token punctuation">.</span><span class="token function">intern</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 String s3 <span class="token operator">=</span> <span class="token string">"计算机"</span><span class="token punctuation">;</span>
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>s2<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//计算机</span>
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>s1 <span class="token operator">==</span> s2<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//false，因为一个是堆内存中的String对象一个是常量池中的String对象，</span>
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>s3 <span class="token operator">==</span> s2<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//true，因为两个都是常量池中的String对象</span>
-</code></pre>
-<h4 id="String-字符串拼接"><a href="#String-字符串拼接" class="headerlink" title="String 字符串拼接"></a>String 字符串拼接</h4><pre class=" language-java"><code class="language-java">String str1 <span class="token operator">=</span> <span class="token string">"str"</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="String-字符串拼接"><a href="#String-字符串拼接" class="headerlink" title="String 字符串拼接"></a>String 字符串拼接</h4><pre class="line-numbers language-java"><code class="language-java">String str1 <span class="token operator">=</span> <span class="token string">"str"</span><span class="token punctuation">;</span>
 String str2 <span class="token operator">=</span> <span class="token string">"ing"</span><span class="token punctuation">;</span>
 String str3 <span class="token operator">=</span> <span class="token string">"str"</span> <span class="token operator">+</span> <span class="token string">"ing"</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//常量池中的对象</span>
 String str4 <span class="token operator">=</span> str1 <span class="token operator">+</span> str2<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//在堆上创建的新的对象      </span>
@@ -605,24 +606,24 @@ String str5 <span class="token operator">=</span> <span class="token string">"st
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>str3 <span class="token operator">==</span> str4<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//false</span>
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>str3 <span class="token operator">==</span> str5<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//true</span>
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>str4 <span class="token operator">==</span> str5<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//false</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <div style="text-align:center;"><img src="https://image.aprilyolies.top/static/images/common/b2c180fb29a66c4e9bd8f725fdac9a04.jpg" width="400"></div>
 
 <p>尽量避免多个字符串拼接，因为这样会重新创建对象。如果需要改变字符串的话，可以使用 StringBuilder 或者 StringBuffer。</p>
 <h4 id="String-s1-new-String-“abc”-这句话创建了几个对象？"><a href="#String-s1-new-String-“abc”-这句话创建了几个对象？" class="headerlink" title="String s1 = new String(“abc”);这句话创建了几个对象？"></a>String s1 = new String(“abc”);这句话创建了几个对象？</h4><p>创建了两个对象。</p>
 <p>验证：</p>
-<pre class=" language-java"><code class="language-java">String s1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span><span class="token string">"abc"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 堆内存的地址值</span>
+<pre class="line-numbers language-java"><code class="language-java">String s1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span><span class="token string">"abc"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 堆内存的地址值</span>
 String s2 <span class="token operator">=</span> <span class="token string">"abc"</span><span class="token punctuation">;</span>
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>s1 <span class="token operator">==</span> s2<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 输出false,因为一个是堆内存，一个是常量池的内存，故两者是不同的。</span>
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>s1<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>s2<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 输出true</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>结果：</p>
-<pre class=" language-java"><code class="language-java"><span class="token boolean">false</span>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token boolean">false</span>
 <span class="token boolean">true</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <h3 id="8种基本类型的包装类和常量池"><a href="#8种基本类型的包装类和常量池" class="headerlink" title="8种基本类型的包装类和常量池"></a>8种基本类型的包装类和常量池</h3><p>Java 基本类型的包装类的大部分都实现了常量池技术，即Byte,Short,Integer,Long,Character,Boolean；这5种包装类默认创建了数值[-128，127]的相应类型的缓存数据，但是超出此范围仍然会去创建新的对象。</p>
 <p>两种浮点数类型的包装类 Float,Double 并没有实现常量池技术。</p>
-<pre class=" language-java"><code class="language-java">Integer i1 <span class="token operator">=</span> <span class="token number">33</span><span class="token punctuation">;</span>
+<pre class="line-numbers language-java"><code class="language-java">Integer i1 <span class="token operator">=</span> <span class="token number">33</span><span class="token punctuation">;</span>
 Integer i2 <span class="token operator">=</span> <span class="token number">33</span><span class="token punctuation">;</span>
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>i1 <span class="token operator">==</span> i2<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 输出true</span>
 Integer i11 <span class="token operator">=</span> <span class="token number">333</span><span class="token punctuation">;</span>
@@ -631,9 +632,9 @@ System<span class="token punctuation">.</span>out<span class="token punctuation"
 Double i3 <span class="token operator">=</span> <span class="token number">1.2</span><span class="token punctuation">;</span>
 Double i4 <span class="token operator">=</span> <span class="token number">1.2</span><span class="token punctuation">;</span>
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>i3 <span class="token operator">==</span> i4<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 输出false</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><code>java.lang.Integer#valueOf(int)</code>的实现就能说明这一点。</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
   * Returns an {@code Integer} instance representing the specified
   * {@code int} value.  If a new {@code Integer} instance is not
   * required, this method should generally be used in preference to
@@ -653,15 +654,15 @@ System<span class="token punctuation">.</span>out<span class="token punctuation"
       <span class="token keyword">return</span> IntegerCache<span class="token punctuation">.</span>cache<span class="token punctuation">[</span>i <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token operator">-</span>IntegerCache<span class="token punctuation">.</span>low<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
   <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Integer</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><code>Integer i1 = 40;</code> Java 在编译的时候会直接将代码封装成 <code>Integer i1 = Integer.valueOf(40);</code> ，从而使用常量池中的对象。</p>
 <p><code>Integer i1 = new Integer(40);</code> 这种情况下会创建新的对象。</p>
-<pre class=" language-java"><code class="language-java">Integer i1 <span class="token operator">=</span> <span class="token number">40</span><span class="token punctuation">;</span>
+<pre class="line-numbers language-java"><code class="language-java">Integer i1 <span class="token operator">=</span> <span class="token number">40</span><span class="token punctuation">;</span>
 Integer i2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Integer</span><span class="token punctuation">(</span><span class="token number">40</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>i1<span class="token operator">==</span>i2<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//输出false</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>再看一个例子：</p>
-<pre class=" language-java"><code class="language-java">Integer i1 <span class="token operator">=</span> <span class="token number">40</span><span class="token punctuation">;</span>
+<pre class="line-numbers language-java"><code class="language-java">Integer i1 <span class="token operator">=</span> <span class="token number">40</span><span class="token punctuation">;</span>
 Integer i2 <span class="token operator">=</span> <span class="token number">40</span><span class="token punctuation">;</span>
 Integer i3 <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
 Integer i4 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Integer</span><span class="token punctuation">(</span><span class="token number">40</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -674,15 +675,15 @@ System<span class="token punctuation">.</span>out<span class="token punctuation"
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"i4 = i5   "</span> <span class="token operator">+</span> <span class="token punctuation">(</span>i4 <span class="token operator">==</span> i5<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"i4 = i5+i6   "</span> <span class="token operator">+</span> <span class="token punctuation">(</span>i4 <span class="token operator">==</span> i5 <span class="token operator">+</span> i6<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   
 System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"40 = i5+i6   "</span> <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token number">40</span> <span class="token operator">==</span> i5 <span class="token operator">+</span> i6<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>输出结果：</p>
-<pre class=" language-java"><code class="language-java">i1 <span class="token operator">=</span> i2   <span class="token boolean">true</span>
+<pre class="line-numbers language-java"><code class="language-java">i1 <span class="token operator">=</span> i2   <span class="token boolean">true</span>
 i1 <span class="token operator">=</span> i2<span class="token operator">+</span>i3   <span class="token boolean">true</span>
 i1 <span class="token operator">=</span> i4   <span class="token boolean">false</span>
 i4 <span class="token operator">=</span> i5   <span class="token boolean">false</span>
 i4 <span class="token operator">=</span> i5<span class="token operator">+</span>i6   <span class="token boolean">true</span>
 <span class="token number">40</span> <span class="token operator">=</span> i5<span class="token operator">+</span>i6   <span class="token boolean">true</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>解释：</p>
 <p>语句i4 == i5 + i6，因为+这个操作符不适用于Integer对象，首先i5和i6进行自动拆箱操作，进行数值相加，即i4 == 40。然后Integer对象无法与数值进行直接比较，所以i4自动拆箱转为int值40，最终这条语句转为40 == 40进行数值比较。</p>
 <h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>

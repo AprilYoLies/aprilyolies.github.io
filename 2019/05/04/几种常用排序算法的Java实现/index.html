@@ -35,7 +35,8 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
 <body>
@@ -508,7 +509,7 @@
 <h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><p>冒泡排序是非常简单的排序算法，他的基本思想是依次交换相邻的数据，使得未排序的元素中的最大值排到最后，经过 n - 1 轮排序后，数列将呈现有序态，当然考虑性能，如果在某一轮交换中，没有出现两个元素交换的情况，这时就说明数据已经是排好序的，即可提前退出循环得到排序的结果。下图是冒泡排序的过程：</p>
 <img width="500" src="https://image.aprilyolies.top/static/images/2019-05/05-05-01.jpg">
 <p>可以看到第一趟排序后，最大的元素已经在数列最后了，第二趟对剩下的元素进行同样的交换操作，完成后，第二大的元素排在倒数第二位。依次类推，进行 n - 1 趟排序操作后，数列就是从小到大排列了。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BubbleSort</span> <span class="token punctuation">{</span>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BubbleSort</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">/*
      * 冒泡排序
      */</span>
@@ -564,11 +565,11 @@
         System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h3><p>选择排序的思想其实跟冒泡排序有点相似，只是冒泡排序中数据的交换相对频繁，而选择排序只是在确定交换位置后才会进行交换，先看看基本的实现过程：</p>
 <img width="700" src="https://image.aprilyolies.top/static/images/2019-05/05-05-02.jpg">
 <p>可以看到整个排序的过程也会进行 n - 1 趟，假设当前是第 i 趟，那么选择排序就是从 i 及之后的所有元素中找到最小的那个元素的位置记为 j，然后将位置 i 和 j 的元素进行交换。这样本趟排序就结束了，接下来进行下一趟的排序操作，执行 n - 1 趟完成后，就得到最终结果。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SelectSort</span> <span class="token punctuation">{</span>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SelectSort</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">/*
      * 选择排序
      */</span>
@@ -608,7 +609,7 @@
         System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h3><p>插入排序跟选择排序非常相似，他们的区别是：</p>
 <ul>
 <li>选择排序 从当前及后续所有的元素中选中最小的那个元素和当前位置的元素进行交换。</li>
@@ -616,7 +617,7 @@
 </ul>
 <img width="700" src="https://image.aprilyolies.top/static/images/2019-05/05-05-03.jpg">
 <p>可以看到整个数据分为两个区，当前元素之前的为有序区，后边的为无序区，插入排序就是将当前元素插入到有序区中，如果元素比较多，那么对有序区进行二分查找来确定插入位置，将会极大的提高排序效率。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">InsertSort</span> <span class="token punctuation">{</span>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">InsertSort</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">/*
      * 直接插入排序
      */</span>
@@ -651,7 +652,7 @@
         System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><p>堆排序是一种比较复杂的排序方式，它利用了一种叫做二叉堆的数据结构（还有其它类型的堆结构，如果想要深入了解，请参看<a href="https://www.cnblogs.com/skywang12345/p/3603935.html" target="_blank" rel="noopener">这篇</a>博文），所以在介绍堆排序之前我们需要先简单了解下二叉堆这种数据结构。</p>
 <h4 id="二叉堆基本概念及性质"><a href="#二叉堆基本概念及性质" class="headerlink" title="二叉堆基本概念及性质"></a>二叉堆基本概念及性质</h4><p>二叉堆是完全二元树或者是近似完全二元树，按照数据的排列方式可以分为两种：最大堆和最小堆。</p>
 <ul>
@@ -710,7 +711,7 @@
 <center>利用最大堆排序数据的过程</center>
 
 <p>因为这个排序过程的右边界一直在变，所以调整的条件较为苛刻，具体的细节请看下边代码中的注释。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HeapSort</span> <span class="token punctuation">{</span>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HeapSort</span> <span class="token punctuation">{</span>
     <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">heapSort</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> a<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> maxHeap <span class="token operator">=</span> <span class="token function">arrToMaxHeap</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">return</span> <span class="token function">sortHeap</span><span class="token punctuation">(</span>maxHeap<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -803,7 +804,7 @@
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h3><p>归并排序的核心是将两个有序数列合并为一个有序数列，其基本思路是将所有的元素看成独立的部分，然后两两合并得到一个较大元素，然后再将较大的元素两两合并得到一个更大的部分，依次类推，直到最后只有一个元素，这就是最终排序好的结果，理解这个该过程后，就可以很容易想到利用用递归的思想进行编程。</p>
 <img width="700" src="https://image.aprilyolies.top/static/images/2019-05/05-05-09.jpg">
 <center>归并排序基本过程</center>
@@ -814,7 +815,7 @@
 <li>待合并的元素个数为 2，那么就将这两个元素排序后直接返回。</li>
 </ol>
 <p>关于这两点，请看代码实现。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MergeSort</span> <span class="token punctuation">{</span>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MergeSort</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">/**
      * 递归调用归并排序函数
      * @param a 原数组
@@ -868,7 +869,7 @@
         System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><p>快速排序采用的是分治的策略，大致就是先让数据做到宏观有序，然后缩小范围，在小的范围内再让数据做到宏观有序，这样逐级逼近，直到最后全部有序。基本的流程如下：</p>
 <ol>
 <li>从区间范围内的数据中任意取一个数作为参考点。</li>
@@ -880,7 +881,7 @@
 <center>快速排序的基本过程</center>
 
 <p>这里的过程很清晰了，唯一要注意的就是队规的结束条件是区间长度小于 2，详细的请看下边代码实现。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FastSort</span> <span class="token punctuation">{</span>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FastSort</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">/*
      * 快速排序
      */</span>
@@ -919,7 +920,7 @@
         System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>本文介绍了六种常用的排序算法的思想，并给出了相应的代码实现，因为写这个文章的主要目的是方便自己以后进行回顾，所以内容省略了很多细节的部分，这是建立在我已经了解过那些细节的基础之上，如果你是一名初学者，可能在看这篇文章时会有些模糊不清，那么建议你还是看看本文开头引用中所提到的那位大神的博客，这里也十分感谢大佬的配图。</p>
 
             </div>

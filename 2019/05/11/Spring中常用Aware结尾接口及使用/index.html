@@ -35,7 +35,8 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
 <body>
@@ -436,7 +437,7 @@
 </blockquote>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在 Spring 中，有一个特殊的约定，就是被 Spring 容器管理的 bean，如果实现了 Spring 提供的以 Aware 结尾的接口，那么在对 bean 进行实例化的过程中，容器会调用相应的接口方法，通过这个特性，我们可以获取容器或者 bean 相关的一些属性。比较常用的就有 <code>BeanFactoryAware</code>、<code>BeanNameAware</code>、<code>ApplicationContextAware</code>、<code>ResourceLoaderAware</code>、<code>ServletContextAware</code> 等等。</p>
 <h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><p>这里以 <code>BeanNameAware</code>、<code>ApplicationContextAware</code> 为例，演示相关接口的使用方法。相关的代码来自 Dubbo 框架的 <code>com.alibaba.dubbo.config.spring.ServiceBean</code>。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ServiceBean</span><span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token keyword">extends</span> <span class="token class-name">ServiceConfig</span><span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token keyword">implements</span> <span class="token class-name">InitializingBean</span><span class="token punctuation">,</span> DisposableBean<span class="token punctuation">,</span> ApplicationContextAware<span class="token punctuation">,</span> ApplicationListener<span class="token punctuation">,</span> BeanNameAware <span class="token punctuation">{</span>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ServiceBean</span><span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token keyword">extends</span> <span class="token class-name">ServiceConfig</span><span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token keyword">implements</span> <span class="token class-name">InitializingBean</span><span class="token punctuation">,</span> DisposableBean<span class="token punctuation">,</span> ApplicationContextAware<span class="token punctuation">,</span> ApplicationListener<span class="token punctuation">,</span> BeanNameAware <span class="token punctuation">{</span>
 
     <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">long</span> serialVersionUID <span class="token operator">=</span> 213195494150089726L<span class="token punctuation">;</span>
 
@@ -473,10 +474,10 @@
         <span class="token keyword">this</span><span class="token punctuation">.</span>beanName <span class="token operator">=</span> name<span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>代码中只保留了与 Aware 接口相关的内容，可以看到 <code>ServiceBean</code> 实现了 <code>BeanNameAware</code>、<code>ApplicationContextAware</code> 接口，对应的方法为 <code>com.alibaba.dubbo.config.spring.ServiceBean#setBeanName</code> 和 <code>com.alibaba.dubbo.config.spring.ServiceBean#setApplicationContext</code>，这两个方法将会被容器调用，带来的结果就是 <code>ServiceBean</code> 可以直接获取到容器上下文环境 <code>ApplicationContext</code> 和当前 bean 在容器中的表示的 <code>BeanName</code>。</p>
 <p>类似的我们也可以自己实现这两个接口，并根据自己的需求来做出相应的函数实现，具体的代码如下：</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">//实现BeanNameAware接口，并重写setBeanName()方法，让Bean获取自己在BeanFactory配置中的名字（根据情况是id或者name）</span>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">//实现BeanNameAware接口，并重写setBeanName()方法，让Bean获取自己在BeanFactory配置中的名字（根据情况是id或者name）</span>
 <span class="token comment" spellcheck="true">//实现ApplicationContextAware接口，并重写setApplicationContext()方法</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyApplicationContext</span> <span class="token keyword">implements</span> <span class="token class-name">BeanNameAware</span><span class="token punctuation">,</span>ApplicationContextAware<span class="token punctuation">{</span>
     <span class="token keyword">private</span> String beanName<span class="token punctuation">;</span>
@@ -495,10 +496,10 @@
         System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">hashCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>然后在 Spring 配置文件中加上如下 bean 节点，那么容器中所管理的 MyApplicationContext 在实例化过程中将会执行这两个方法。</p>
-<pre class=" language-xml"><code class="language-xml">&lt;bean name ="myContext" class="com.jsun.test.springDemo.aware.MyApplicationContext"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>bean</span><span class="token punctuation">></span></span>
-</code></pre>
+<pre class="line-numbers language-xml"><code class="language-xml">&lt;bean name ="myContext" class="com.jsun.test.springDemo.aware.MyApplicationContext"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>bean</span><span class="token punctuation">></span></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这里只是以 <code>BeanNameAware</code>、<code>ApplicationContextAware</code> 接口进行了说明，其他的 Aware 结尾的接口的使用方法类似，表示获取到某种属性的能力。不仅如此，Spring 中的其他很多的接口的设计也是采用了这种思想，比如 <code>ServiceBean</code> 实现的 <code>DisposableBean</code>,<code>ApplicationListener</code> 接口。这是一种很优秀的设计思想，Spring 容器在其初始化的特殊时刻将会统一调用实现了对应接口的实例的对应方法。</p>
 
             </div>

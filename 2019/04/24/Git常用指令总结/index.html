@@ -39,7 +39,8 @@ Git版本视屏教程
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
 <body>
@@ -461,138 +462,138 @@ Git版本视屏教程
 </ul>
 <h2 id="常用-Git-指令"><a href="#常用-Git-指令" class="headerlink" title="常用 Git 指令"></a>常用 Git 指令</h2><ul>
 <li><p>创建 Git 版本库</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> init
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> init
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>将文件添加到 Git 版本库</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> add
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> add
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>提交更改内容</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> commit -m <span class="token string">"提交信息"</span>
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> commit -m <span class="token string">"提交信息"</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>查看版本库状态</p>
-<pre class=" language-bash"><code class="language-bash"><span class="token function">git</span> status
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> status
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>查看文件修改的内容</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> <span class="token function">diff</span> 文件名
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> <span class="token function">diff</span> 文件名
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>查看 Git 提交日志</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> log --oneline --graph
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> log --oneline --graph
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>版本回退</p>
-<pre class=" language-bash"><code class="language-bash"><span class="token comment" spellcheck="true"># --hard 选项会导致代码也会被修改到版本ID时刻</span>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true"># --hard 选项会导致代码也会被修改到版本ID时刻</span>
 <span class="token comment" spellcheck="true"># HEAD^ 表示上一个版本，HEAD^^ 表示上上一个版本</span>
 $ <span class="token function">git</span> reset --hard 版本ID号
 $ <span class="token function">git</span> reset --hard HEAD^
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>查看历史命令，用来确定期望的回退版本号</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> reflog
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> reflog
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>丢弃工作区的修改，即让文件回到最近一次 git commit 或 git add 时的状态，这个指令有时也可以用来作为恢复误删的文件</p>
-<pre class=" language-bash"><code class="language-bash">  $ <span class="token function">git</span> checkout -- 文件名
+<pre class="line-numbers language-bash"><code class="language-bash">  $ <span class="token function">git</span> checkout -- 文件名
   <span class="token comment" spellcheck="true"># git reset 命令既可以回退版本，也可以把暂存区的修改回退到工作区。</span>
   $ <span class="token function">git</span> reset HEAD 文件名
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>删除版本库中的文件</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> <span class="token function">rm</span> 文件名
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> <span class="token function">rm</span> 文件名
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>添加远程仓库</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> remote add 别名 远程仓库地址
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> remote add 别名 远程仓库地址
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>查看远程仓库信息</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> remote -v
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> remote -v
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>推送指定分支到远程仓库</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> push 远程仓库（别名） 分支名
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> push 远程仓库（别名） 分支名
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>指定本地分支与远程分支的链接，未指定将会导致 git pull 失败</p>
-<pre class=" language-bash"><code class="language-bash">  $ <span class="token function">git</span> branch --set-upstream-to 本地分支名 远程分支
+<pre class="line-numbers language-bash"><code class="language-bash">  $ <span class="token function">git</span> branch --set-upstream-to 本地分支名 远程分支
   <span class="token comment" spellcheck="true"># 例如</span>
   $ <span class="token function">git</span> branch --set-upstream-to dev origin/dev
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>拉取远程仓库指定分支到本地</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> pull
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> pull
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>拷贝远程仓库全部分支到本地</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> clone 远程仓库地址
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> clone 远程仓库地址
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>创建并切换分支</p>
-<pre class=" language-bash"><code class="language-bash">  $ <span class="token function">git</span> checkout -b 分支名字
+<pre class="line-numbers language-bash"><code class="language-bash">  $ <span class="token function">git</span> checkout -b 分支名字
 
   <span class="token comment" spellcheck="true"># 相当于以下两条命令</span>
   $ <span class="token function">git</span> branch dev
   $ <span class="token function">git</span> checkout dev
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>切换分支，需要分支存在</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> branch dev
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> branch dev
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>查看当前分支</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> branch
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> branch
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>合并目标分支到当前分支</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> merge 目标分支
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> merge 目标分支
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>删除指定分支</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> branch -d 分支名
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> branch -d 分支名
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>临时存储当前工作现场</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> stash
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> stash
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>查看存储的工作现场</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> stash list
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> stash list
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>恢复工作现场</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> stash pop
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> stash pop
 <span class="token comment" spellcheck="true"># 上述指令等价于</span>
 $ <span class="token function">git</span> stash apply
 $ <span class="token function">git</span> stash drop
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>变基</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> rebase
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> rebase
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>打一个新标签</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> tag v1.0
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> tag v1.0
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>查看所有标签</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> tag
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> tag
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>为指定提交打标签</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> tag v0.9 提交ID号 -m <span class="token string">"消息"</span>
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> tag v0.9 提交ID号 -m <span class="token string">"消息"</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>查看标签说明消息</p>
-<pre class=" language-bash"><code class="language-bash">$ <span class="token function">git</span> show <span class="token operator">&lt;</span>tagname<span class="token operator">></span>
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ <span class="token function">git</span> show <span class="token operator">&lt;</span>tagname<span class="token operator">></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>删除标签</p>
-<pre class=" language-bash"><code class="language-bash">$ ggit tag -d v0.1
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">$ ggit tag -d v0.1
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 </ul>
 

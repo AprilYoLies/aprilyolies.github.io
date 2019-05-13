@@ -34,7 +34,8 @@ Storage Server以组（Group">
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
 <body>
@@ -442,27 +443,27 @@ Storage Server以组（Group">
 <ol>
 <li><p>下载并安装libfastcommon</p>
 <p> 如果下载速度慢，可以先看看我的另外一篇文件来提高下载速度，<a href="/2019/04/19/解决浏览器访问GitHub和git-clone龟速的问题/" title="链接">链接</a>奉上。</p>
-<pre class=" language-bash"><code class="language-bash"> <span class="token function">wget</span> https://github.com/happyfish100/libfastcommon/archive/V1.0.7.tar.gz
+<pre class="line-numbers language-bash"><code class="language-bash"> <span class="token function">wget</span> https://github.com/happyfish100/libfastcommon/archive/V1.0.7.tar.gz
  <span class="token function">tar</span> -zxvf V1.0.7.tar.gz
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p> 进入解压出来的文件夹libfastcommon-1.0.7，执行编译与安装。</p>
-<pre class=" language-bash"><code class="language-bash"> <span class="token function">cd</span> libfastcommon-1.0.7
+<pre class="line-numbers language-bash"><code class="language-bash"> <span class="token function">cd</span> libfastcommon-1.0.7
  make.sh
  make.sh <span class="token function">install</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>下载并安装FastDFS</p>
-<pre class=" language-bash"><code class="language-bash"> <span class="token function">wget</span> https://github.com/happyfish100/fastdfs/archive/V5.05.tar.gz
+<pre class="line-numbers language-bash"><code class="language-bash"> <span class="token function">wget</span> https://github.com/happyfish100/fastdfs/archive/V5.05.tar.gz
  <span class="token function">tar</span> -zxvf V5.05.tar.gz
  <span class="token function">cd</span> fastdfs-5.05
  make.sh
  make.sh <span class="token function">install</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p> 安装完成后，会在系统/etc/fdfs/目录下生成两个启动脚本（fdfs_tracker, fdfs_storage）和三个配置模板文件（client.conf.sample, storage.conf.sample, tracker.conf.sample），另外附带安装的还有一些命令行工具，比如用于测试文件上传的fdfs_upload_file等。</p>
 </li>
 <li><p>Tracker参数配置</p>
 <p> 配置文件在/etc/fdfs/下，需要自行将tracker.conf.sample模板拷贝并重命名为tracker.conf。配置文件主要修改如下几项配置：</p>
-<pre class=" language-bash"><code class="language-bash"> <span class="token comment" spellcheck="true"># 配置文件是否不生效，false 为生效</span>
+<pre class="line-numbers language-bash"><code class="language-bash"> <span class="token comment" spellcheck="true"># 配置文件是否不生效，false 为生效</span>
  disabled<span class="token operator">=</span>false
 
  <span class="token comment" spellcheck="true"># 提供服务的端口</span>
@@ -473,10 +474,10 @@ Storage Server以组（Group">
 
  <span class="token comment" spellcheck="true"># HTTP 服务端口</span>
  http.server_port<span class="token operator">=</span>80
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>storage参数配置<br> 操作同步骤3类似，不过这次操作的是storage配置文件，主要修改的参数如下：</p>
-<pre class=" language-bash"><code class="language-bash"> <span class="token comment" spellcheck="true"># 配置文件是否不生效，false 为生效</span>
+<pre class="line-numbers language-bash"><code class="language-bash"> <span class="token comment" spellcheck="true"># 配置文件是否不生效，false 为生效</span>
  disabled<span class="token operator">=</span>false 
 
  <span class="token comment" spellcheck="true"># 指定此 storage server 所在 组(卷)</span>
@@ -512,39 +513,39 @@ Storage Server以组（Group">
 
  <span class="token comment" spellcheck="true"># 访问端口</span>
  http.server_port<span class="token operator">=</span>80
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>修改client.conf配置文件</p>
-<pre class=" language-bash"><code class="language-bash"><span class="token comment" spellcheck="true"># Client 的数据和日志目录(同样需要保证路径存在)</span>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true"># Client 的数据和日志目录(同样需要保证路径存在)</span>
 base_path<span class="token operator">=</span>/home/eva/fastdfs/client
 
 <span class="token comment" spellcheck="true"># Tracker端口</span>
 tracker_server<span class="token operator">=</span>ali:22122
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>开放服务端口<br> 主要是开放三个端口 22122， 23000， 80，我这里使用的是CentOS 7操作系统，相应的指令为：</p>
-<pre class=" language-bash"><code class="language-bash"> firewall-cmd --zone<span class="token operator">=</span>public --add-port<span class="token operator">=</span>端口号/tcp --permanet
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash"> firewall-cmd --zone<span class="token operator">=</span>public --add-port<span class="token operator">=</span>端口号/tcp --permanet
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p> 另外要注意的是，如果你使用的是云服务器，那么还需要配置云端防火墙规则，比如我的阿里云服务器配置规则如下：</p>
  <img src="https://image.aprilyolies.top/static/images/2019-04/aliyun-firewall.jpg">
 </li>
 <li><p>启动测试<br> 分别启动tracker和storage服务，指令如下：</p>
-<pre class=" language-bash"><code class="language-bash"> fdfs_trackerd /etc/fdfs/tracker.conf start
+<pre class="line-numbers language-bash"><code class="language-bash"> fdfs_trackerd /etc/fdfs/tracker.conf start
  fdfs_storaged /etc/fdfs/storage.conf start
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p> 查看服务启动情况(root身份下执行)：</p>
-<pre class=" language-bash"><code class="language-bash"> <span class="token function">netstat</span> -anp <span class="token operator">|</span> <span class="token function">grep</span> fdfs
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash"> <span class="token function">netstat</span> -anp <span class="token operator">|</span> <span class="token function">grep</span> fdfs
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p> 出现下图所示结果，便说明服务启动成功。</p>
  <img src="https://image.aprilyolies.top/static/images/2019-04/server-start.jpg">
 <p> 测试文件上传，执行如下命令，会返回一个存储路径，记下这个路径，然后前往你在storage.conf文件中配置的store_path0/data/目录下，查看返回的路径下是否有你刚刚上传的文件，如果有，则说明上传是没有问题的。</p>
-<pre class=" language-bash"><code class="language-bash"> /usr/bin/fdfs_upload_file 待上传文件的路径
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash"> /usr/bin/fdfs_upload_file 待上传文件的路径
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>测试下载<br> 下载需要借助于nginx服务器，所以我们先安装nginx，过程中缺少的安装环境请通过包管理工具自行安装解决。</p>
 <ul>
 <li><p>下载并安装nginx，执行如下指令执行即可(过程可能需要以root身份执行)。</p>
-<pre class=" language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 下载</span>
+<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 下载</span>
   <span class="token function">wget</span> -c https://nginx.org/download/nginx-1.12.1.tar.gz
 
   <span class="token comment" spellcheck="true"># 解压</span>
@@ -557,10 +558,10 @@ tracker_server<span class="token operator">=</span>ali:22122
   <span class="token comment" spellcheck="true"># 编译安装</span>
   <span class="token function">make</span>
   <span class="token function">make</span> <span class="token function">install</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>  操作完成后，如果执行</p>
-<pre class=" language-bash"><code class="language-bash">  /usr/local/nginx/sbin/nginx -V
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">  /usr/local/nginx/sbin/nginx -V
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>  出现下图结果，则表示nginx安装成功。</p>
   <img src="https://image.aprilyolies.top/static/images/2019-04/nginx-install.jpg">
 </li>
@@ -569,7 +570,7 @@ tracker_server<span class="token operator">=</span>ali:22122
 <p>对fastdfs-nginx-module 的说明：FastDFS 通过 Tracker 服务器，将文件放在 Storage 服务器存储， 但是同组存储服务器之间需要进行文件复制，有同步延迟的问题。 假设 Tracker 服务器将文件上传到192.168.51.128，上传成功后文件 ID已经返回给客户端。此时 FastDFS 存储集群机制会将这个文件同步到同组存储服务器192.168.51.129上，在文件还没有复制完成的情况下，客户端如果用这个文件 ID 在 192.168.51.129 上取文件,就会出现文件无法访问的错误。而 fastdfs-nginx-module 可以重定向文件链接到源服务器取文件，避免客户端由于复制延迟导致的文件无法访问错误。</p>
 </blockquote>
 <p>  a. 下载解压重命名</p>
-<pre class=" language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 下载</span>
+<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 下载</span>
   <span class="token function">wget</span> https://github.com/happyfish100/fastdfs-nginx-module/archive/5e5f3566bbfa57418b5506aaefbe107a42c9fcb1.zip
 
   <span class="token comment" spellcheck="true"># 解压</span>
@@ -577,9 +578,9 @@ tracker_server<span class="token operator">=</span>ali:22122
 
   <span class="token comment" spellcheck="true"># 重命名</span>
   <span class="token function">mv</span> fastdfs-nginx-module-5e5f3566bbfa57418b5506aaefbe107a42c9fcb1  fastdfs-nginx-module-master
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>  b .在Nginx中添加FastDFS模块</p>
-<pre class=" language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 进入解压包目录</span>
+<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 进入解压包目录</span>
   <span class="token function">cd</span> /softpackages/nginx-1.12.1/
 
   <span class="token comment" spellcheck="true"># 添加模块</span>
@@ -587,17 +588,17 @@ tracker_server<span class="token operator">=</span>ali:22122
 
   <span class="token comment" spellcheck="true"># 重新编译、安装</span>
   <span class="token function">make</span> <span class="token operator">&amp;&amp;</span> <span class="token function">make</span> <span class="token function">install</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>  c. 查看添加的FastDFS模块</p>
-<pre class=" language-bash"><code class="language-bash">  /usr/local/nginx/sbin/nginx -V
-</code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">  /usr/local/nginx/sbin/nginx -V
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
   <img src="https://image.aprilyolies.top/static/images/2019-04/nginx-module.jpg">
 <p>  d. 复制 fastdfs-nginx-module 源码中的配置文件到/etc/fdfs 目录， 并修改</p>
-<pre class=" language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 复制</span>
+<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 复制</span>
   <span class="token function">cd</span> /softpackages/fastdfs-nginx-module-master/src
   <span class="token function">cp</span> mod_fastdfs.conf /etc/fdfs/
-</code></pre>
-<pre class=" language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 连接超时时间</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 连接超时时间</span>
   connect_timeout<span class="token operator">=</span>10
 
   <span class="token comment" spellcheck="true"># Tracker Server</span>
@@ -611,30 +612,30 @@ tracker_server<span class="token operator">=</span>ali:22122
 
   <span class="token comment" spellcheck="true"># Storage 配置的store_path0路径，必须和storage.conf中的一致</span>
   store_path0<span class="token operator">=</span>/home/eva/fastdfs/path0
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>  e. 复制FastDFS的部分配置文件到/etc/fdfs目录</p>
-<pre class=" language-bash"><code class="language-bash">  <span class="token function">cd</span> /softpackages/fastdfs-5.05/conf/
+<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token function">cd</span> /softpackages/fastdfs-5.05/conf/
   <span class="token function">cp</span> http.conf /etc/fdfs/
   <span class="token function">cp</span> mime.types /etc/fdfs/
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>  f. 为nginx添加一条FastDFS的路由映射(即在80端口Server节点下添加以下内容)</p>
-<pre class=" language-bash"><code class="language-bash">  <span class="token function">vi</span> /usr/local/nginx/conf/nginx.conf
+<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token function">vi</span> /usr/local/nginx/conf/nginx.conf
 
-</code></pre>
-<pre class=" language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 将这个内容加在80端口的server节点下</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 将这个内容加在80端口的server节点下</span>
   location ~/group<span class="token punctuation">(</span><span class="token punctuation">[</span>0-9<span class="token punctuation">]</span><span class="token punctuation">)</span>/M00 <span class="token punctuation">{</span>
        ngx_fastdfs_module<span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
   <img width="500" src="https://image.aprilyolies.top/static/images/2019-04/nginx-fdfs-router.jpg">
 </li>
 <li><p>启动Nginx（需要以root身份执行），测试下载</p>
-<pre class=" language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 启动Nginx服务器</span>
+<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token comment" spellcheck="true"># 启动Nginx服务器</span>
   nginx -s start
 
   <span class="token comment" spellcheck="true"># 查看监听状态</span>
   <span class="token function">netstat</span> -anpt <span class="token operator">|</span> <span class="token function">grep</span> nginx
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>  在浏览器输入如下地址，查看下载结果。</p>
 <p>  http://服务器IP地址/group1/上传文件时返回的相应地址</p>
 </li>
