@@ -409,14 +409,14 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        1.2k
+                        1.4k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        5 分
+                        6 分
                     </div>
                     
                 
@@ -448,42 +448,44 @@
 </ul>
 <p>这三个文件需要放在 classpath 根目录的 META-INF 文件夹目录之下，在定义好这三个文件后，就可以测试自定义的标签的解析了。这么说比较抽象，还是举个栗子进行说明。</p>
 <h3 id="定义一个-xsd-文件"><a href="#定义一个-xsd-文件" class="headerlink" title="定义一个 xsd 文件"></a>定义一个 xsd 文件</h3><p>定义一个 xsd 文件来对自定义命名空间的标签进行约束，因为 xsd 文件的编写规则我们不是很清楚，所以要想实现更加复杂的约束，就需要深入的去学习 xml 和 xsd 规则，这里给个<a href="https://www.runoob.com/schema/schema-tutorial.html" target="_blank" rel="noopener">学习地址</a>。</p>
-<pre class="line-numbers language-xsd"><code class="language-xsd"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xsd:schema xmlns="https://www.aprilyolies.top/schema/beehive" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetnamespace="https://www.aprilyolies.top/schema/beehive">
+<pre class="line-numbers language-xml"><code class="language-xml"><span class="token prolog">&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>schema</span> <span class="token attr-name">xmlns</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>https://www.aprilyolies.top/schema/beehive<span class="token punctuation">"</span></span>
+            <span class="token attr-name"><span class="token namespace">xmlns:</span>xsd</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://www.w3.org/2001/XMLSchema<span class="token punctuation">"</span></span>
+            <span class="token attr-name">targetNamespace</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>https://www.aprilyolies.top/schema/beehive<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
 
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace">
-    <xsd:import namespace="http://www.springframework.org/schema/beans">
-    <xsd:import namespace="http://www.springframework.org/schema/tool">
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>import</span> <span class="token attr-name">namespace</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://www.w3.org/XML/1998/namespace<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>import</span> <span class="token attr-name">namespace</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://www.springframework.org/schema/beans<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>import</span> <span class="token attr-name">namespace</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://www.springframework.org/schema/tool<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
 
-    <xsd:annotation>
-        <xsd:documentation><!--[CDATA[ Namespace support for the beehive test. ]]--></xsd:documentation>
-    </xsd:annotation>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>annotation</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>documentation</span><span class="token punctuation">></span></span><span class="token cdata">&lt;![CDATA[ Namespace support for the beehive test. ]]></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>documentation</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>annotation</span><span class="token punctuation">></span></span>
 
-    <xsd:complextype name="mybeanType">
-        <xsd:attribute name="id" type="xsd:ID">
-            <xsd:annotation>
-                <xsd:documentation><!--[CDATA[ The unique identifier for a bean. ]]--></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="name" type="xsd:string" use="required">
-            <xsd:annotation>
-                <xsd:documentation><!--[CDATA[ The mybean name. ]]--></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="class" type="xsd:string" use="required">
-            <xsd:annotation>
-                <xsd:documentation><!--[CDATA[ The version. ]]--></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
-    </xsd:complextype>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>complexType</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>mybeanType<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>attribute</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>xsd:ID<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>annotation</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>documentation</span><span class="token punctuation">></span></span><span class="token cdata">&lt;![CDATA[ The unique identifier for a bean. ]]></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>documentation</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>annotation</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>attribute</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>attribute</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>name<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>xsd:string<span class="token punctuation">"</span></span> <span class="token attr-name">use</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>required<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>annotation</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>documentation</span><span class="token punctuation">></span></span><span class="token cdata">&lt;![CDATA[ The mybean name. ]]></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>documentation</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>annotation</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>attribute</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>attribute</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>class<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>xsd:string<span class="token punctuation">"</span></span> <span class="token attr-name">use</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>required<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>annotation</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>documentation</span><span class="token punctuation">></span></span><span class="token cdata">&lt;![CDATA[ The version. ]]></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>documentation</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>annotation</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>attribute</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>complexType</span><span class="token punctuation">></span></span>
 
 
-    <xsd:element name="mybean" type="mybeanType">
-        <xsd:annotation>
-            <xsd:documentation><!--[CDATA[ The mybean config ]]--></xsd:documentation>
-        </xsd:annotation>
-    </xsd:element>
-</xsd:import></xsd:import></xsd:import></xsd:schema>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>element</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>mybean<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>mybeanType<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>annotation</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">xsd:</span>documentation</span><span class="token punctuation">></span></span><span class="token cdata">&lt;![CDATA[ The mybean config ]]></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>documentation</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>annotation</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>element</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">xsd:</span>schema</span><span class="token punctuation">></span></span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="spring-handlers-文件"><a href="#spring-handlers-文件" class="headerlink" title="spring.handlers 文件"></a>spring.handlers 文件</h3><p>spring.handlers 文件用于指定自定义命名空间的处理器类。</p>
 <pre class="line-numbers language-java"><code class="language-java">https\<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span>www<span class="token punctuation">.</span>aprilyolies<span class="token punctuation">.</span>top<span class="token operator">/</span>schema<span class="token operator">/</span>beehive<span class="token operator">=</span>com<span class="token punctuation">.</span>aprilyolies<span class="token punctuation">.</span>beehive<span class="token punctuation">.</span>BeehiveNamespaceHandler
@@ -492,7 +494,7 @@
 <pre class="line-numbers language-java"><code class="language-java">https\<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span>www<span class="token punctuation">.</span>aprilyolies<span class="token punctuation">.</span>top<span class="token operator">/</span>schema<span class="token operator">/</span>beehive<span class="token punctuation">.</span>xsd<span class="token operator">=</span>META<span class="token operator">-</span>INF<span class="token operator">/</span>beehive<span class="token punctuation">.</span>xsd
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>上述的三个文件的存放位置十分讲究，请参看下图：</p>
-<div style="text-align:center;"><img src="https://image.aprilyolies.top/static/images/common/36bc45f42d690d099224f123cf4c7f06.jpg" width="400"></div>
+<div style="text-align:center;"><img src="https://image.aprilyolies.top/static/images/common/36bc45f42d690d099224f123cf4c7f06.jpg" width="250"></div>
 
 <h3 id="测试自定义命名空间"><a href="#测试自定义命名空间" class="headerlink" title="测试自定义命名空间"></a>测试自定义命名空间</h3><h4 id="编写-spring-的配置文件"><a href="#编写-spring-的配置文件" class="headerlink" title="编写 spring 的配置文件"></a>编写 spring 的配置文件</h4><p>这是启动 spring ioc 容器的配置文件，熟悉 spring 使用的小伙伴都不会陌生。注意这里的 beehive 就是我们自定义的命名空间，而 mybean 就是我们自定义的标签。</p>
 <pre class="line-numbers language-xml"><code class="language-xml"><span class="token prolog">&lt;?xml version="1.0" encoding="UTF-8"?></span>
@@ -1209,7 +1211,7 @@
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">41.8k</span>
+                <span class="white-color">42k</span>
             
 
             
