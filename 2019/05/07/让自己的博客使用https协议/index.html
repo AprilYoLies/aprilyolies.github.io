@@ -32,8 +32,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css"></head>
 
 
 <body>
@@ -439,15 +438,15 @@
             <div id="articleContent">
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在构建好自己的博客系统后，就是进行博客的上线了，考虑到国内访问 GitHub 速度较慢，我这里的选择的阿里云的服务器，同时还申请了一个域名。静态资源服务器选择的是 nginx，为什么选择 nginx 呢？emmm…. 只是因为我就知道这个，整个的发布过程还算容易，只是中间有个小细节需要注意，<strong>如果你想要你的博客支持 https 协议那么在你的博客页面中，任何的资源请求都必须是 https 的，</strong> 否则在浏览器的地址栏前边就会提示不安全的页面。另外由于在 markdown 插入图片是一个非常麻烦的事情，所以在文章中提到了一种通过七牛云做图床，然后快速给 markdown 插入图片的方法。</p>
 <h2 id="添加-https-支持"><a href="#添加-https-支持" class="headerlink" title="添加 https 支持"></a>添加 https 支持</h2><h3 id="为-nginx-添加-http-ssl-module"><a href="#为-nginx-添加-http-ssl-module" class="headerlink" title="为 nginx 添加 http_ssl_module"></a>为 nginx 添加 http_ssl_module</h3><p>你能看到这篇文章，相信你已经完成了自己的博客上线了，并且是采用的自己的服务器和域名，因为通 GitHub Page 来部署自己的博客的话，默认就是支持 https 协议的。我的 nginx 是通过源码包安装的，通常在未指定其他参数的情况下，安装的 nginx 是不带 ssl（https 的实现就是基于此）模块的，如果不确定的话，你也可以通过执行 <code>/path/to/nginx/nginx -V</code> 指令进行确认，如果输出结果有 <code>--with-http_ssl_module</code> 相关内容则代码你的 nginx 是支持 https 协议的，否则你需要为已安装的 nginx 添加 http_ssl_module，方法很简单，只需要下载相应版本的 nginx 的源码包，解压后进入源码包，再依次执行下边两条指令即可：</p>
-<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true"># 添加 http_ssl_module 模块</span>
+<pre class=" language-bash"><code class="language-bash"><span class="token comment" spellcheck="true"># 添加 http_ssl_module 模块</span>
 ./configure --with-http_ssl_module
 <span class="token comment" spellcheck="true"># 重新编译，注意不是 make install（会覆盖现在的配置）</span>
 <span class="token function">make</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</code></pre>
 <p>重新执行以下 <code>/path/to/nginx/nginx -V</code> 确认模块添加成功。</p>
 <h3 id="为-nginx-添加-https-证书"><a href="#为-nginx-添加-https-证书" class="headerlink" title="为 nginx 添加 https 证书"></a>为 nginx 添加 https 证书</h3><p>我的域名也是在阿里云购买的，同时可以在阿里云购买免费的认证证书，按照相应的步骤操作就行了，申请证书完成后就等待申请通过吧，通常都很快，通过后就能把你申请的证书下载下来了，解压后有两个文件，一个是证书文件，另外一个是钥匙串。你需要做的就是将这两个文件上传到你的 nginx 服务器中，随便一个位置就好，后边的 nginx 配置中需要引用这两个文件。</p>
 <p>执行 <code>vim /path/to/nginx.conf/nginx.conf</code> 编辑 nginx 配置文件，修改 HTTPS Server 节点内容如下：</p>
-<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true"># HTTPS server</span>
+<pre class=" language-bash"><code class="language-bash"><span class="token comment" spellcheck="true"># HTTPS server</span>
 server <span class="token punctuation">{</span>
     listen       443 ssl<span class="token punctuation">;</span>
     server_name  www.aprilyolies.top<span class="token punctuation">;</span>   <span class="token comment" spellcheck="true"># 自己的域名</span>
@@ -467,10 +466,10 @@ server <span class="token punctuation">{</span>
         index  index.html index.htm<span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</code></pre>
 <p>修改完成后执行 <code>nginx -s reload</code> 重启 nginx 服务即可，通过浏览器访问一下你的博客吧，是不是那个熟悉的 https 标志回来了？</p>
 <h3 id="设置重定向规则"><a href="#设置重定向规则" class="headerlink" title="设置重定向规则"></a>设置重定向规则</h3><p>这里还有个问题，就是访问时必须要指定是 https 协议，否则还是走的 http 协议，这对于电脑小白来说或许是个安全隐患。所以在这里，我们还得为 nginx 加一点配置：</p>
-<pre class="line-numbers language-bash"><code class="language-bash">server <span class="token punctuation">{</span>
+<pre class=" language-bash"><code class="language-bash">server <span class="token punctuation">{</span>
     listen       80 default_server<span class="token punctuation">;</span>
     listen       <span class="token punctuation">[</span>::<span class="token punctuation">]</span>:80 default_server<span class="token punctuation">;</span>
     server_name  www.aprilyolies.top<span class="token punctuation">;</span>
@@ -487,7 +486,7 @@ server <span class="token punctuation">{</span>
         index  index.html index.htm<span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</code></pre>
 <p>没错，就是在 HTTP Server 节点下加上 <code>return 301 https://$server_name$request_uri;</code> 这样一句，意思就是通过 http 协议进行的请求都重定向到 https 协议之上。这样你再通过浏览器访问时，就一定是使用 https 协议了。 </p>
 <p><strong>再提醒一句：如果你想要你的博客支持 https 协议那么在你的博客页面中，任何的资源请求都必须是 https 的。</strong></p>
 <h2 id="轻松方便的为-markdown-添加图片"><a href="#轻松方便的为-markdown-添加图片" class="headerlink" title="轻松方便的为 markdown 添加图片"></a>轻松方便的为 markdown 添加图片</h2><p>如果你现在文章的图片还是选择直接保存到自己的服务器，或者说是不反感现在插入图片的那一系列繁琐的过程，那么下边的内容可能就适合你了，但我还是强烈建议你将剩下的内容看完，因为你会爱上这种操作方式的。</p>
@@ -519,7 +518,7 @@ server <span class="token punctuation">{</span>
 <div style="text-align:center;"><img src="https://image.aprilyolies.top/static/images/common/bf8122f4faf612ecaa6baad1e2fc8e0a.jpg" width="800"></div>
 
 <p>修改脚本内容，注意内容中的中文注释，只需要修改其中三行即可。</p>
-<pre class="line-numbers language-bash"><code class="language-bash">-- config start
+<pre class=" language-bash"><code class="language-bash">-- config start
 property bucket <span class="token keyword">:</span> <span class="token punctuation">(</span>system attribute <span class="token string">"bucket"</span><span class="token punctuation">)</span>
 property bucketDomain <span class="token keyword">:</span> <span class="token punctuation">(</span>system attribute <span class="token string">"bucketDomain"</span><span class="token punctuation">)</span>
 property AccessKey <span class="token keyword">:</span> <span class="token punctuation">(</span>system attribute <span class="token string">"AccessKey"</span><span class="token punctuation">)</span>
@@ -613,7 +612,7 @@ on upload<span class="token punctuation">(</span>fileName, filePath, fileType<sp
 end upload
 
 -- ref:https://discussions.apple.com/thread/2379870?start<span class="token operator">=</span>0<span class="token operator">&amp;</span>tstart<span class="token operator">=</span>0
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</code></pre>
 <h4 id="配置-qshell-执行环境"><a href="#配置-qshell-执行环境" class="headerlink" title="配置 qshell 执行环境"></a>配置 qshell 执行环境</h4><p>很简单，将第二个下载链接下载的压缩包解开，然后将其中对应 mac 版本的 qshell_darwin_x64 重命名为 qshell 丢到 <code>/usr/local/bin</code> 路径下，并增加执行权限。</p>
 <p>执行 <code>qshell account -- access_key secret_key username</code> 添加一个用户。</p>
 <h2 id="测试一键上传图片功能"><a href="#测试一键上传图片功能" class="headerlink" title="测试一键上传图片功能"></a>测试一键上传图片功能</h2><p>请保证你的剪切板中有一张图片，可以选择复制一张图片，或者通过截图的方式做到。然后请在任何可以输入文本的地方按下 workflow 中设置的快捷键。是不是出现了符合 markdown 语法的图片引用了呢？然后再去七牛云空间看看，是不是剪切板中的那张图片已经被上传了呢？如果都没问题那就表示设置成功了哈，慢慢享用吧。</p>
@@ -1143,43 +1142,6 @@ end upload
 </article>
 </div>
 
-
-<script>
-    $('#articleContent').on('copy', function (e) {
-        // IE8 or earlier browser is 'undefined'
-        if (typeof window.getSelection === 'undefined') return;
-
-        var selection = window.getSelection();
-        // if the selection is short let's not annoy our users.
-        if (('' + selection).length < Number.parseInt('120')) {
-            return;
-        }
-
-        // create a div outside of the visible area and fill it with the selected text.
-        var bodyElement = document.getElementsByTagName('body')[0];
-        var newdiv = document.createElement('div');
-        newdiv.style.position = 'absolute';
-        newdiv.style.left = '-99999px';
-        bodyElement.appendChild(newdiv);
-        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
-
-        // we need a <pre> tag workaround.
-        // otherwise the text inside "pre" loses all the line breaks!
-        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
-            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
-        }
-
-        var url = document.location.href;
-        newdiv.innerHTML += '<br />'
-            + '来源: AprilYoLies<br />'
-            + '作者: EvaJohnson<br />'
-            + '链接: <a href="' + url + '">' + url + '</a><br />'
-            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
-
-        selection.selectAllChildren(newdiv);
-        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
-    });
-</script>
 
 
     </div>
