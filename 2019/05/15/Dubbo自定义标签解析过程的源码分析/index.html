@@ -1,0 +1,1702 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="Dubbo自定义标签解析过程的源码分析, Java,Mysql,Netty,Spring">
+    <meta name="description" content="前言今年找实习的过程不是很顺利，主要是因为没有实际的项目，所以希望在秋招之前能够自己动手做出一点小东西出来，现在有两个想法，一个就是做一个简易的 rpc 框架，使用的方式跟 dubbo 一样，能够整合 spring 容器。另外一个就是分布式">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Dubbo自定义标签解析过程的源码分析 | AprilYoLies</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+        code[class*="language-"], pre[class*="language-"] {
+            white-space: pre !important;
+        }
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-xonokai.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="../../../../index.html" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">AprilYoLies</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">AprilYoLies</div>
+        <div class="logo-desc">
+            
+            干燥的空气，尘埃的味道，我在其中…踏上旅途！
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/AprilYoLies" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/AprilYoLies" class="github-corner tooltipped hide-on-med-and-down" target="_blank" data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewbox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://image.aprilyolies.top/static/images/face-img/13.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        Dubbo自定义标签解析过程的源码分析
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="../../../../tags/Spring/" target="_blank">
+                                <span class="chip bg-color">Spring</span>
+                            </a>
+                        
+                            <a href="../../../../tags/Dubbo/" target="_blank">
+                                <span class="chip bg-color">Dubbo</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="../../../../categories/后台开发/" class="post-category" target="_blank">
+                                后台开发
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-05-15
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        4.1k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        19 分
+                    </div>
+                    
+                
+				
+				
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="fa fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>今年找实习的过程不是很顺利，主要是因为没有实际的项目，所以希望在秋招之前能够自己动手做出一点小东西出来，现在有两个想法，一个就是做一个简易的 rpc 框架，使用的方式跟 dubbo 一样，能够整合 spring 容器。另外一个就是分布式的统一 ID 生成器，就类似于美团开源的 leaf 项目。</p>
+<p>相比较之下，rpc 框架应该会比分布式的统一 ID 生成器要难，我选择的是先把这个 rpc 框架给搞定，当然最先要解决的就是整个 spring 的 ioc 容器，也就是说我需要自己解析自定义的标签，之前只是了解过大致的原理，但是细节部分没有过多的考量，所以这里我就想通过 dubbo 的自定义标签的解析过程来加深自己的理解，本文的内容就是我在看源码过程中所加的一些注释，来表示当前代码的含义。我还将这些代码注释提交到了 github 上边，各位需要的小伙伴欢迎<a href="https://github.com/AprilYoLies/incubator-dubbo/tree/dev" target="_blank" rel="noopener">自取</a>。</p>
+<h2 id="整体设计"><a href="#整体设计" class="headerlink" title="整体设计"></a>整体设计</h2><p>Dubbo 的自定义标签全部是由 DubboNamespaceHandler 所注册的 DubboBeanDefinitionParser 解析器来完成解析的。这个跟 Spring 自定义标签的解析的设计还是有点小区别。具体的可以看一下他们各自的代码，这里以 AopNamespace 的解析进行说明。</p>
+<blockquote>
+<p>org.apache.dubbo.config.spring.schema.DubboNamespaceHandler</p>
+</blockquote>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DubboNamespaceHandler</span> <span class="token keyword">extends</span> <span class="token class-name">NamespaceHandlerSupport</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">static</span> <span class="token punctuation">{</span>
+        Version<span class="token punctuation">.</span><span class="token function">checkDuplicate</span><span class="token punctuation">(</span>DubboNamespaceHandler<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 注册标签解析器，比如 &lt;dubbo:service />标签</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"application"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ApplicationConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"module"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ModuleConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"registry"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>RegistryConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"config-center"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ConfigCenterBean<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"metadata-report"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>MetadataReportConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"monitor"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>MonitorConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"metrics"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>MetricsConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"provider"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ProviderConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"consumer"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ConsumerConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"protocol"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ProtocolConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"service"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ServiceBean<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"reference"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DubboBeanDefinitionParser</span><span class="token punctuation">(</span>ReferenceBean<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"annotation"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">AnnotationBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>org.springframework.aop.config.AopNamespaceHandler</p>
+</blockquote>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AopNamespaceHandler</span> <span class="token keyword">extends</span> <span class="token class-name">NamespaceHandlerSupport</span> <span class="token punctuation">{</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * Register the {@link BeanDefinitionParser BeanDefinitionParsers} for the
+     * '{@code config}', '{@code spring-configured}', '{@code aspectj-autoproxy}'
+     * and '{@code scoped-proxy}' tags.
+     */</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// In 2.0 XSD as well as in 2.1 XSD.</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"config"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">ConfigBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"aspectj-autoproxy"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">AspectJAutoProxyBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerBeanDefinitionDecorator</span><span class="token punctuation">(</span><span class="token string">"scoped-proxy"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">ScopedProxyBeanDefinitionDecorator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// Only in 2.0 XSD: moved to context namespace as of 2.1</span>
+        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"spring-configured"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">SpringConfiguredBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>看到了吧，所做的事情基本一样，应该就只是 dubbo 进行了统一的封装，用一个统一的 DubboBeanDefinitionParser 通过传入参数的方式来对不同的标签进行解析。</p>
+<h2 id="具体的标签解析过程"><a href="#具体的标签解析过程" class="headerlink" title="具体的标签解析过程"></a>具体的标签解析过程</h2><p>DubboBeanDefinitionParser 实现了 BeanDefinitionParser 接口，Spring 容器在遇上对应的标签后就会调用这个接口的 <code>org.apache.dubbo.config.spring.schema.DubboBeanDefinitionParser#parse(org.w3c.dom.Element, org.springframework.beans.factory.xml.ParserContext)</code> 方法。这个方法又调用了 <code>org.apache.dubbo.config.spring.schema.DubboBeanDefinitionParser#parse(org.w3c.dom.Element, org.springframework.beans.factory.xml.ParserContext, java.lang.Class&lt;?&gt;, boolean)</code> 方法，这个方法就是分析的重点，详细的过程我已经添加了注释，请在代码中查看。</p>
+<blockquote>
+<p>org.apache.dubbo.config.spring.schema.DubboBeanDefinitionParser#parse(org.w3c.dom.Element, org.springframework.beans.factory.xml.ParserContext, java.lang.Class&lt;?&gt;, boolean)</p>
+</blockquote>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"unchecked"</span><span class="token punctuation">)</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> BeanDefinition <span class="token function">parse</span><span class="token punctuation">(</span>Element element<span class="token punctuation">,</span> ParserContext parserContext<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> beanClass<span class="token punctuation">,</span> <span class="token keyword">boolean</span> required<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 用于承载被解析出来的标签所对应的 bean 的信息</span>
+    RootBeanDefinition beanDefinition <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RootBeanDefinition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    beanDefinition<span class="token punctuation">.</span><span class="token function">setBeanClass</span><span class="token punctuation">(</span>beanClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    beanDefinition<span class="token punctuation">.</span><span class="token function">setLazyInit</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 获取 id 属性</span>
+    String id <span class="token operator">=</span> element<span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span><span class="token string">"id"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// id 属性为空后者空串</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> required<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        String generatedBeanName <span class="token operator">=</span> element<span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span><span class="token string">"name"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>generatedBeanName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 如果是调用的引用了 ProtocolConfig.class 的 DubboBeanDefinitionParser，并且没有 id 和 name 属性，就将解析出来的 beanDefinition 的名字叫做 dubbo</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>ProtocolConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>beanClass<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                generatedBeanName <span class="token operator">=</span> <span class="token string">"dubbo"</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 不是 引用了 ProtocolConfig.class 的 DubboBeanDefinitionParser，就将 beanDefinition 命名为 interface 属性的值</span>
+                generatedBeanName <span class="token operator">=</span> element<span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span><span class="token string">"interface"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 将 beanClass 的全限定名作为 beanDefinition 的名字</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>generatedBeanName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            generatedBeanName <span class="token operator">=</span> beanClass<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// id 也用这个 beanDefinition 的名字</span>
+        id <span class="token operator">=</span> generatedBeanName<span class="token punctuation">;</span>
+        <span class="token keyword">int</span> counter <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 如果已经注册过这个 id 的 beanDefinition，就将 id 后边加上一个数字</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>parserContext<span class="token punctuation">.</span><span class="token function">getRegistry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">containsBeanDefinition</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            id <span class="token operator">=</span> generatedBeanName <span class="token operator">+</span> <span class="token punctuation">(</span>counter<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">// 如果 id 不为空，也不为空串</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>id <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> id<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 已注册过此 id 则报错</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>parserContext<span class="token punctuation">.</span><span class="token function">getRegistry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">containsBeanDefinition</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Duplicate spring bean id "</span> <span class="token operator">+</span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 将 id 和 beanDefinition 注册，此 beanDefinition 用于承载被解析的标签所对应的 bean 的信息</span>
+        parserContext<span class="token punctuation">.</span><span class="token function">getRegistry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">registerBeanDefinition</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> beanDefinition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 为这个 beanDefinition 添加个 id 属性值</span>
+        beanDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span><span class="token string">"id"</span><span class="token punctuation">,</span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">// 如果是调用的引用了 ProtocolConfig.class 的 DubboBeanDefinitionParser</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ProtocolConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>beanClass<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 通过 beanDefinition 的 name 获取 beanDefinition</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span>String name <span class="token operator">:</span> parserContext<span class="token punctuation">.</span><span class="token function">getRegistry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBeanDefinitionNames</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            BeanDefinition definition <span class="token operator">=</span> parserContext<span class="token punctuation">.</span><span class="token function">getRegistry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBeanDefinition</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            PropertyValue property <span class="token operator">=</span> definition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getPropertyValue</span><span class="token punctuation">(</span><span class="token string">"protocol"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>property <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                Object value <span class="token operator">=</span> property<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 如果在已经注册的 beanDefinition 中，具有属性 protocol，属性值为 ProtocolConfig 对象，且这个 Protocol 对象的 name 属性和现在注册的</span>
+                <span class="token comment" spellcheck="true">// 这个 beanDefinition 的 id 相等，那么就就将这个 protocol 属性的值修改为当前 beanDefinition 的运行时引用（估计是为了避免循环引用的问题）</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token keyword">instanceof</span> <span class="token class-name">ProtocolConfig</span> <span class="token operator">&amp;&amp;</span> id<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span>ProtocolConfig<span class="token punctuation">)</span> value<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    definition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span><span class="token string">"protocol"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeBeanReference</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>ServiceBean<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>beanClass<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 此处解析 service 标签</span>
+        String className <span class="token operator">=</span> element<span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span><span class="token string">"class"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 如果 service 标签有 class 属性</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>className <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> className<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 此 classDefinition 用于承载 service 标签所对应的 class 属性值所代表的 class 对象</span>
+            RootBeanDefinition classDefinition <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RootBeanDefinition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            classDefinition<span class="token punctuation">.</span><span class="token function">setBeanClass</span><span class="token punctuation">(</span>ReflectUtils<span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span>className<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            classDefinition<span class="token punctuation">.</span><span class="token function">setLazyInit</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 解析当前标签元素的子元素信息，用 classDefinition 承载解析出来的信息</span>
+            <span class="token function">parseProperties</span><span class="token punctuation">(</span>element<span class="token punctuation">.</span><span class="token function">getChildNodes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> classDefinition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 为 beanDefinition 添加一个 ref 属性,值为 service 标签 class 属性所对应的 classDefinition</span>
+            beanDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span><span class="token string">"ref"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">BeanDefinitionHolder</span><span class="token punctuation">(</span>classDefinition<span class="token punctuation">,</span> id <span class="token operator">+</span> <span class="token string">"Impl"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>ProviderConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>beanClass<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 此处解析 provider 标签</span>
+        <span class="token function">parseNested</span><span class="token punctuation">(</span>element<span class="token punctuation">,</span> parserContext<span class="token punctuation">,</span> ServiceBean<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token string">"service"</span><span class="token punctuation">,</span> <span class="token string">"provider"</span><span class="token punctuation">,</span> id<span class="token punctuation">,</span> beanDefinition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>ConsumerConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>beanClass<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 此处解析 consumer 标签</span>
+        <span class="token function">parseNested</span><span class="token punctuation">(</span>element<span class="token punctuation">,</span> parserContext<span class="token punctuation">,</span> ReferenceBean<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token string">"reference"</span><span class="token punctuation">,</span> <span class="token string">"consumer"</span><span class="token punctuation">,</span> id<span class="token punctuation">,</span> beanDefinition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">// 用于保存 beanClass 的属性</span>
+    Set<span class="token operator">&lt;</span>String<span class="token operator">></span> props <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashSet</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    ManagedMap parameters <span class="token operator">=</span> null<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 遍历 beanClass 的所有方法，根据相应的属性为 beanDefinition 进行填充</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>Method setter <span class="token operator">:</span> beanClass<span class="token punctuation">.</span><span class="token function">getMethods</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        String name <span class="token operator">=</span> setter<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 如果是 public 修饰的参数个数为一的 setter 方法</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>name<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">3</span> <span class="token operator">&amp;&amp;</span> name<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span><span class="token string">"set"</span><span class="token punctuation">)</span>
+                <span class="token operator">&amp;&amp;</span> Modifier<span class="token punctuation">.</span><span class="token function">isPublic</span><span class="token punctuation">(</span>setter<span class="token punctuation">.</span><span class="token function">getModifiers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token operator">&amp;&amp;</span> setter<span class="token punctuation">.</span><span class="token function">getParameterTypes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 唯一的参数类型</span>
+            Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> type <span class="token operator">=</span> setter<span class="token punctuation">.</span><span class="token function">getParameterTypes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// setter 方法所对应的属性</span>
+            String beanProperty <span class="token operator">=</span> name<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> name<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 看这个测试用例就知道这个函数的作用了，均能通过测试</span>
+            <span class="token comment" spellcheck="true">// public void testCamelToSplitName() throws Exception {</span>
+            <span class="token comment" spellcheck="true">//     assertEquals("ab-cd-ef", StringUtils.camelToSplitName("abCdEf", "-"));</span>
+            <span class="token comment" spellcheck="true">//     assertEquals("ab-cd-ef", StringUtils.camelToSplitName("AbCdEf", "-"));</span>
+            <span class="token comment" spellcheck="true">//     assertEquals("ab-cd-ef", StringUtils.camelToSplitName("ab-cd-ef", "-"));</span>
+            <span class="token comment" spellcheck="true">//     assertEquals("abcdef", StringUtils.camelToSplitName("abcdef", "-"));</span>
+            <span class="token comment" spellcheck="true">// }</span>
+            String property <span class="token operator">=</span> StringUtils<span class="token punctuation">.</span><span class="token function">camelToSplitName</span><span class="token punctuation">(</span>beanProperty<span class="token punctuation">,</span> <span class="token string">"-"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            props<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// check the setter/getter whether match</span>
+            Method getter <span class="token operator">=</span> null<span class="token punctuation">;</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 获取相应的 getter 方法</span>
+                getter <span class="token operator">=</span> beanClass<span class="token punctuation">.</span><span class="token function">getMethod</span><span class="token punctuation">(</span><span class="token string">"get"</span> <span class="token operator">+</span> name<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Class</span><span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">NoSuchMethodException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// 没有 getter 方法，就获取 is 方法</span>
+                    getter <span class="token operator">=</span> beanClass<span class="token punctuation">.</span><span class="token function">getMethod</span><span class="token punctuation">(</span><span class="token string">"is"</span> <span class="token operator">+</span> name<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Class</span><span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">NoSuchMethodException</span> e2<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// ignore, there is no need any log here since some class implement the interface: EnvironmentAware,</span>
+                    <span class="token comment" spellcheck="true">// ApplicationAware, etc. They only have setter method, otherwise will cause the error log during application start up.</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 如果 getter 方法为空，或者非 public 修饰，或者返回值类型不一致，就继续下一个方法</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>getter <span class="token operator">==</span> null
+                    <span class="token operator">||</span> <span class="token operator">!</span>Modifier<span class="token punctuation">.</span><span class="token function">isPublic</span><span class="token punctuation">(</span>getter<span class="token punctuation">.</span><span class="token function">getModifiers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                    <span class="token operator">||</span> <span class="token operator">!</span>type<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>getter<span class="token punctuation">.</span><span class="token function">getReturnType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">continue</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 如果是 parameters 属性</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"parameters"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 为 beanDefinition 填充 parameters</span>
+                parameters <span class="token operator">=</span> <span class="token function">parseParameters</span><span class="token punctuation">(</span>element<span class="token punctuation">.</span><span class="token function">getChildNodes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> beanDefinition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"methods"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 如果是 methods 属性，为 beanDefinition 填充 methods</span>
+                <span class="token function">parseMethods</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> element<span class="token punctuation">.</span><span class="token function">getChildNodes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> beanDefinition<span class="token punctuation">,</span> parserContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"arguments"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 如果是 arguments 属性，为 beanDefinition 填充 arguments</span>
+                <span class="token function">parseArguments</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> element<span class="token punctuation">.</span><span class="token function">getChildNodes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> beanDefinition<span class="token punctuation">,</span> parserContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 非上述三种情况，直接获取对应的属性值</span>
+                String value <span class="token operator">=</span> element<span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    value <span class="token operator">=</span> value<span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// 获取的属性值不为空，不为空串</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>value<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token comment" spellcheck="true">// 如果 getter 方法对应的属性为 registry，且属性值为 N/A</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"registry"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> RegistryConfig<span class="token punctuation">.</span>NO_AVAILABLE<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token comment" spellcheck="true">// 直接构建 RegistryConfig 对象，设置 address 为 N/A</span>
+                            RegistryConfig registryConfig <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RegistryConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            registryConfig<span class="token punctuation">.</span><span class="token function">setAddress</span><span class="token punctuation">(</span>RegistryConfig<span class="token punctuation">.</span>NO_AVAILABLE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token comment" spellcheck="true">// 为 beanDefinition 添加这个 RegistryConfig 属性值，键为 beanProperty（即 getter 方法去掉 get 子串，并且首字母变小写的结果）</span>
+                            beanDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span>beanProperty<span class="token punctuation">,</span> registryConfig<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"provider"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token string">"registry"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token punctuation">(</span><span class="token string">"protocol"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> ServiceBean<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>beanClass<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token comment" spellcheck="true">// 如果 setter 方法所代表的属性为 provider、registry（相应的值不为 N/A）或者 protocol 并且当前解析的是 service 标签</span>
+                            <span class="token comment" spellcheck="true">/**
+                             * For 'provider' 'protocol' 'registry', keep literal value (should be id/name) and set the value to 'registryIds' 'providerIds' protocolIds'
+                             * The following process should make sure each id refers to the corresponding instance, here's how to find the instance for different use cases:
+                             * 1. Spring, check existing bean by id, see{@link ServiceBean#afterPropertiesSet()}; then try to use id to find configs defined in remote Config Center
+                             * 2. API, directly use id to find configs defined in remote Config Center; if all config instances are defined locally, please use {@link org.apache.dubbo.config.ServiceConfig#setRegistries(List)}
+                             */</span>
+                            <span class="token comment" spellcheck="true">// 把这个属性的值填充到 beanDefinition 中，键名后边补一个 Ids</span>
+                            beanDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span>beanProperty <span class="token operator">+</span> <span class="token string">"Ids"</span><span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                            <span class="token comment" spellcheck="true">// 非以上两种情况</span>
+                            Object reference<span class="token punctuation">;</span>
+                            <span class="token comment" spellcheck="true">// 若 setter 方法的参数 type 是基本类型，或者是基本类型所对应的包装类型</span>
+                            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isPrimitive</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token comment" spellcheck="true">/**
+                                 * async -> false
+                                 * timeout -> 0
+                                 * delay -> 0
+                                 * version -> 0.0.0
+                                 * stat -> -1
+                                 * reliable -> false
+                                 */</span>
+                                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"async"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token string">"false"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+                                        <span class="token operator">||</span> <span class="token string">"timeout"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token string">"0"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+                                        <span class="token operator">||</span> <span class="token string">"delay"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token string">"0"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+                                        <span class="token operator">||</span> <span class="token string">"version"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token string">"0.0.0"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+                                        <span class="token operator">||</span> <span class="token string">"stat"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token string">"-1"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+                                        <span class="token operator">||</span> <span class="token string">"reliable"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token string">"false"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                    <span class="token comment" spellcheck="true">// backward compatibility for the default value in old version's xsd</span>
+                                    value <span class="token operator">=</span> null<span class="token punctuation">;</span>
+                                <span class="token punctuation">}</span>
+                                reference <span class="token operator">=</span> value<span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"onreturn"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token comment" spellcheck="true">// 这里 value 已经通过 String value = element.getAttribute(property); 进行获取了，就是 onreturn 的属性值</span>
+                                <span class="token keyword">int</span> index <span class="token operator">=</span> value<span class="token punctuation">.</span><span class="token function">lastIndexOf</span><span class="token punctuation">(</span><span class="token string">"."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                <span class="token comment" spellcheck="true">// onreturn 方法的引用</span>
+                                String returnRef <span class="token operator">=</span> value<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                <span class="token comment" spellcheck="true">// onreturn 方法的名字</span>
+                                String returnMethod <span class="token operator">=</span> value<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span>index <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                reference <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeBeanReference</span><span class="token punctuation">(</span>returnRef<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                <span class="token comment" spellcheck="true">// 将这个 onreturn 方法的名字保存到 beanDefinition 中去</span>
+                                beanDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span><span class="token string">"onreturnMethod"</span><span class="token punctuation">,</span> returnMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"onthrow"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token comment" spellcheck="true">// 处理方式同 onreturn 类似</span>
+                                <span class="token keyword">int</span> index <span class="token operator">=</span> value<span class="token punctuation">.</span><span class="token function">lastIndexOf</span><span class="token punctuation">(</span><span class="token string">"."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                String throwRef <span class="token operator">=</span> value<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                String throwMethod <span class="token operator">=</span> value<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span>index <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                reference <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeBeanReference</span><span class="token punctuation">(</span>throwRef<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                beanDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span><span class="token string">"onthrowMethod"</span><span class="token punctuation">,</span> throwMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"oninvoke"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token comment" spellcheck="true">// 处理方式同 onreturn 类似</span>
+                                <span class="token keyword">int</span> index <span class="token operator">=</span> value<span class="token punctuation">.</span><span class="token function">lastIndexOf</span><span class="token punctuation">(</span><span class="token string">"."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                String invokeRef <span class="token operator">=</span> value<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                String invokeRefMethod <span class="token operator">=</span> value<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span>index <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                reference <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeBeanReference</span><span class="token punctuation">(</span>invokeRef<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                beanDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span><span class="token string">"oninvokeMethod"</span><span class="token punctuation">,</span> invokeRefMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                                <span class="token comment" spellcheck="true">// 如果 setter 方法对应的属性为 ref，并且 spring 容器中已经注册过这个 ref 所引用的 bean 的 beanDefinition</span>
+                                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"ref"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>property<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> parserContext<span class="token punctuation">.</span><span class="token function">getRegistry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">containsBeanDefinition</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                    <span class="token comment" spellcheck="true">// 那就拿到这个 beanDefinition</span>
+                                    BeanDefinition refBean <span class="token operator">=</span> parserContext<span class="token punctuation">.</span><span class="token function">getRegistry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBeanDefinition</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                    <span class="token comment" spellcheck="true">// 这个 beanDefinition 必须是单例的</span>
+                                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>refBean<span class="token punctuation">.</span><span class="token function">isSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"The exported service ref "</span> <span class="token operator">+</span> value <span class="token operator">+</span> <span class="token string">" must be singleton! Please set the "</span> <span class="token operator">+</span> value <span class="token operator">+</span> <span class="token string">" bean scope to singleton, eg: &lt;bean id=\""</span> <span class="token operator">+</span> value <span class="token operator">+</span> <span class="token string">"\" scope=\"singleton\" ...>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                    <span class="token punctuation">}</span>
+                                <span class="token punctuation">}</span>
+                                reference <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeBeanReference</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span>
+                            <span class="token comment" spellcheck="true">// 将 beanProperty 和 reference 这个 kv 对添加到 beanDefinition 中去</span>
+                            beanDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span>beanProperty<span class="token punctuation">,</span> reference<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在上述方法中，又调用了当前类中的其他方法，大部分都是对于子标签的解析，我也进行了注释，可以通过下边的代码进行查看。</p>
+<blockquote>
+<p>org.apache.dubbo.config.spring.schema.DubboBeanDefinitionParser#isPrimitive</p>
+</blockquote>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 判断 cls 是否是基本类型，或者基本类型对应的包装类型
+ *
+ * @param cls 待判断的对象
+ * @return 判断的结果
+ */</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">boolean</span> <span class="token function">isPrimitive</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> cls<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> cls<span class="token punctuation">.</span><span class="token function">isPrimitive</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> cls <span class="token operator">==</span> Boolean<span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token operator">||</span> cls <span class="token operator">==</span> Byte<span class="token punctuation">.</span><span class="token keyword">class</span>
+            <span class="token operator">||</span> cls <span class="token operator">==</span> Character<span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token operator">||</span> cls <span class="token operator">==</span> Short<span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token operator">||</span> cls <span class="token operator">==</span> Integer<span class="token punctuation">.</span><span class="token keyword">class</span>
+            <span class="token operator">||</span> cls <span class="token operator">==</span> Long<span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token operator">||</span> cls <span class="token operator">==</span> Float<span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token operator">||</span> cls <span class="token operator">==</span> Double<span class="token punctuation">.</span><span class="token keyword">class</span>
+            <span class="token operator">||</span> cls <span class="token operator">==</span> String<span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token operator">||</span> cls <span class="token operator">==</span> Date<span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token operator">||</span> cls <span class="token operator">==</span> Class<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>org.apache.dubbo.config.spring.schema.DubboBeanDefinitionParser#parseNested</p>
+</blockquote>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 此方法在解析 provider 标签或者 consumer 标签时会使用到
+ *
+ * @param element        根标签
+ * @param parserContext  解析上下文环境
+ * @param beanClass      分别对应 ServiceBean 和 ReferenceBean
+ * @param required       由上层函数传入
+ * @param tag            分别对应 service 和 reference
+ * @param property       分别对应 provider 和 consumer
+ * @param ref            即当前待解析标签的 id
+ * @param beanDefinition 当前待解析标签对应的 beanDefinition
+ */</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">parseNested</span><span class="token punctuation">(</span>Element element<span class="token punctuation">,</span> ParserContext parserContext<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> beanClass<span class="token punctuation">,</span> <span class="token keyword">boolean</span> required<span class="token punctuation">,</span> String tag<span class="token punctuation">,</span> String property<span class="token punctuation">,</span> String ref<span class="token punctuation">,</span> BeanDefinition beanDefinition<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 获取子标签</span>
+    NodeList nodeList <span class="token operator">=</span> element<span class="token punctuation">.</span><span class="token function">getChildNodes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>nodeList <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> nodeList<span class="token punctuation">.</span><span class="token function">getLength</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">boolean</span> first <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nodeList<span class="token punctuation">.</span><span class="token function">getLength</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Node node <span class="token operator">=</span> nodeList<span class="token punctuation">.</span><span class="token function">item</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>node <span class="token keyword">instanceof</span> <span class="token class-name">Element</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 这里就是分别解析如下两种标签的情况，子标签为 service 或者 reference</span>
+                <span class="token comment" spellcheck="true">// &lt;provider></span>
+                <span class="token comment" spellcheck="true">//         &lt;service>&lt;service/></span>
+                <span class="token comment" spellcheck="true">// &lt;provider/></span>
+                <span class="token comment" spellcheck="true">//</span>
+                <span class="token comment" spellcheck="true">// &lt;consumer></span>
+                <span class="token comment" spellcheck="true">//         &lt;reference>&lt;reference/></span>
+                <span class="token comment" spellcheck="true">// &lt;consumer/></span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>tag<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span><span class="token function">getNodeName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                        <span class="token operator">||</span> tag<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span><span class="token function">getLocalName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// 第一次解析的时候，考虑下根标签的 default 属性</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>first<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        first <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">// 根标签没有 default 属性，或者为空串</span>
+                        String isDefault <span class="token operator">=</span> element<span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span><span class="token string">"default"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>isDefault<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token comment" spellcheck="true">// 将 default 置为 false</span>
+                            beanDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span><span class="token string">"default"</span><span class="token punctuation">,</span> <span class="token string">"false"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span>
+                    <span class="token comment" spellcheck="true">// 真正解析这个子标签，其实就是个递归调用的过程</span>
+                    BeanDefinition subDefinition <span class="token operator">=</span> <span class="token function">parse</span><span class="token punctuation">(</span><span class="token punctuation">(</span>Element<span class="token punctuation">)</span> node<span class="token punctuation">,</span> parserContext<span class="token punctuation">,</span> beanClass<span class="token punctuation">,</span> required<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>subDefinition <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> ref <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> ref<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token comment" spellcheck="true">// 为子标签添加一个对父节点标签所对应 bean 的引用，属性名为 provider 或者 consumer（由当前解析的父标签所决定）</span>
+                        subDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span>property<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeBeanReference</span><span class="token punctuation">(</span>ref<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>org.apache.dubbo.config.spring.schema.DubboBeanDefinitionParser#parseProperties</p>
+</blockquote>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 解析子 property 标签
+ * @param nodeList 子标签
+ * @param beanDefinition 带解析的标签所对应的 beanDefinition
+ */</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">parseProperties</span><span class="token punctuation">(</span>NodeList nodeList<span class="token punctuation">,</span> RootBeanDefinition beanDefinition<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>nodeList <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> nodeList<span class="token punctuation">.</span><span class="token function">getLength</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nodeList<span class="token punctuation">.</span><span class="token function">getLength</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// node 代表子标签</span>
+            Node node <span class="token operator">=</span> nodeList<span class="token punctuation">.</span><span class="token function">item</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>node <span class="token keyword">instanceof</span> <span class="token class-name">Element</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 为 property 标签</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"property"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span><span class="token function">getNodeName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                        <span class="token operator">||</span> <span class="token string">"property"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span><span class="token function">getLocalName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    String name <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>Element<span class="token punctuation">)</span> node<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span><span class="token string">"name"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// 标签的 name 属性不为空或者空串</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>name <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> name<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        String value <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>Element<span class="token punctuation">)</span> node<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span><span class="token string">"value"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        String ref <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>Element<span class="token punctuation">)</span> node<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span><span class="token string">"ref"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">// property 标签的属性值可能为 value 数值型和 ref 引用型</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> value<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token comment" spellcheck="true">// 将 解析出来的 property 属性存入 beanDefinition 中</span>
+                            beanDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>ref <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> ref<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token comment" spellcheck="true">// 将 解析出来的 property 属性存入 beanDefinition 中</span>
+                            beanDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeBeanReference</span><span class="token punctuation">(</span>ref<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">UnsupportedOperationException</span><span class="token punctuation">(</span><span class="token string">"Unsupported &lt;property name=\""</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">"\"> sub tag, Only supported &lt;property name=\""</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">"\" ref=\"...\" /> or &lt;property name=\""</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">"\" value=\"...\" />"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>org.apache.dubbo.config.spring.schema.DubboBeanDefinitionParser#parseParameters</p>
+</blockquote>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 如果当前解析的标签有完成的 setter getter is 方法，就用调用此方法来解析子 parameter 标签，返回值为解析出来的 kv 对
+ *
+ * @param nodeList
+ * @param beanDefinition
+ * @return
+ */</span>
+<span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"unchecked"</span><span class="token punctuation">)</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> ManagedMap <span class="token function">parseParameters</span><span class="token punctuation">(</span>NodeList nodeList<span class="token punctuation">,</span> RootBeanDefinition beanDefinition<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>nodeList <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> nodeList<span class="token punctuation">.</span><span class="token function">getLength</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        ManagedMap parameters <span class="token operator">=</span> null<span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nodeList<span class="token punctuation">.</span><span class="token function">getLength</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 获取子标签元素</span>
+            Node node <span class="token operator">=</span> nodeList<span class="token punctuation">.</span><span class="token function">item</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>node <span class="token keyword">instanceof</span> <span class="token class-name">Element</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 如果子标签为 parameter</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"parameter"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span><span class="token function">getNodeName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                        <span class="token operator">||</span> <span class="token string">"parameter"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span><span class="token function">getLocalName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>parameters <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        parameters <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ManagedMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    String key <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>Element<span class="token punctuation">)</span> node<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span><span class="token string">"key"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    String value <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>Element<span class="token punctuation">)</span> node<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span><span class="token string">"value"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// 如果 parameter 标签存在 hide 属性为 true，就在 key 属性值前边加一个'.'</span>
+                    <span class="token keyword">boolean</span> hide <span class="token operator">=</span> <span class="token string">"true"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span>Element<span class="token punctuation">)</span> node<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span><span class="token string">"hide"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>hide<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        key <span class="token operator">=</span> HIDE_KEY_PREFIX <span class="token operator">+</span> key<span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    <span class="token comment" spellcheck="true">// 用 parameters 存储解析出来的 parameter 标签的 key 和 value</span>
+                    parameters<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">TypedStringValue</span><span class="token punctuation">(</span>value<span class="token punctuation">,</span> String<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> parameters<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>org.apache.dubbo.config.spring.schema.DubboBeanDefinitionParser#parseMethods</p>
+</blockquote>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 解析 method 子标签
+ *
+ * @param id             当前解析的 beanDefinition 的 id
+ * @param nodeList       子标签元素
+ * @param beanDefinition 当前解析的 beanDefinition
+ * @param parserContext  解析上下文环境
+ */</span>
+<span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"unchecked"</span><span class="token punctuation">)</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">parseMethods</span><span class="token punctuation">(</span>String id<span class="token punctuation">,</span> NodeList nodeList<span class="token punctuation">,</span> RootBeanDefinition beanDefinition<span class="token punctuation">,</span>
+                                    ParserContext parserContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>nodeList <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> nodeList<span class="token punctuation">.</span><span class="token function">getLength</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        ManagedList methods <span class="token operator">=</span> null<span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nodeList<span class="token punctuation">.</span><span class="token function">getLength</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 获取每一个子标签元素</span>
+            Node node <span class="token operator">=</span> nodeList<span class="token punctuation">.</span><span class="token function">item</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>node <span class="token keyword">instanceof</span> <span class="token class-name">Element</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                Element element <span class="token operator">=</span> <span class="token punctuation">(</span>Element<span class="token punctuation">)</span> node<span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 如果是 method 标签</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"method"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span><span class="token function">getNodeName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token string">"method"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span><span class="token function">getLocalName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    String methodName <span class="token operator">=</span> element<span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span><span class="token string">"name"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// method 标签必须要有 name 属性</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>methodName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"&lt;dubbo:method> name attribute == null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>methods <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        methods <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ManagedList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    <span class="token comment" spellcheck="true">// 递归调用解析，此时解析的是 method 标签，返回代表 method 标签的 methodBeanDefinition</span>
+                    BeanDefinition methodBeanDefinition <span class="token operator">=</span> <span class="token function">parse</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span>Element<span class="token punctuation">)</span> node<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                            parserContext<span class="token punctuation">,</span> MethodConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// 方法标签 beanDefinition 的命名方式</span>
+                    String name <span class="token operator">=</span> id <span class="token operator">+</span> <span class="token string">"."</span> <span class="token operator">+</span> methodName<span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// 用 BeanDefinitionHolder 对象来承载解析出来的 methodBeanDefinition 实例</span>
+                    BeanDefinitionHolder methodBeanDefinitionHolder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeanDefinitionHolder</span><span class="token punctuation">(</span>
+                            methodBeanDefinition<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// methods 存储当前标签下的所有 method 标签所对应的 methodBeanDefinitionHolder</span>
+                    methods<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>methodBeanDefinitionHolder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>methods <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 将解析的 methods 结果存放到根节点所代表的 beanDefinition 中去</span>
+            beanDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span><span class="token string">"methods"</span><span class="token punctuation">,</span> methods<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>org.apache.dubbo.config.spring.schema.DubboBeanDefinitionParser#parseArguments</p>
+</blockquote>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 跟 parseMethods 方法作用基本一致
+ *
+ * @param id
+ * @param nodeList
+ * @param beanDefinition
+ * @param parserContext
+ */</span>
+<span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"unchecked"</span><span class="token punctuation">)</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">parseArguments</span><span class="token punctuation">(</span>String id<span class="token punctuation">,</span> NodeList nodeList<span class="token punctuation">,</span> RootBeanDefinition beanDefinition<span class="token punctuation">,</span>
+                                    ParserContext parserContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>nodeList <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> nodeList<span class="token punctuation">.</span><span class="token function">getLength</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        ManagedList arguments <span class="token operator">=</span> null<span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nodeList<span class="token punctuation">.</span><span class="token function">getLength</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 获取每个子标签元素</span>
+            Node node <span class="token operator">=</span> nodeList<span class="token punctuation">.</span><span class="token function">item</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>node <span class="token keyword">instanceof</span> <span class="token class-name">Element</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                Element element <span class="token operator">=</span> <span class="token punctuation">(</span>Element<span class="token punctuation">)</span> node<span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 为 argument 标签</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"argument"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span><span class="token function">getNodeName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token string">"argument"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span><span class="token function">getLocalName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    String argumentIndex <span class="token operator">=</span> element<span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span><span class="token string">"index"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>arguments <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        arguments <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ManagedList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    <span class="token comment" spellcheck="true">// 递归调用进行解析，这里解析的是 argument 标签，返回相应的 beanDefinition</span>
+                    BeanDefinition argumentBeanDefinition <span class="token operator">=</span> <span class="token function">parse</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span>Element<span class="token punctuation">)</span> node<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                            parserContext<span class="token punctuation">,</span> ArgumentConfig<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// argumentBeanDefinition 的命名规则</span>
+                    String name <span class="token operator">=</span> id <span class="token operator">+</span> <span class="token string">"."</span> <span class="token operator">+</span> argumentIndex<span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// 包装解析出来的 argumentBeanDefinition</span>
+                    BeanDefinitionHolder argumentBeanDefinitionHolder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeanDefinitionHolder</span><span class="token punctuation">(</span>
+                            argumentBeanDefinition<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    arguments<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>argumentBeanDefinitionHolder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>arguments <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 将解析出来的结果封装到当前解析的父标签所对应的 beanDefinition 中去</span>
+            beanDefinition<span class="token punctuation">.</span><span class="token function">getPropertyValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addPropertyValue</span><span class="token punctuation">(</span><span class="token string">"arguments"</span><span class="token punctuation">,</span> arguments<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>应该来说，整个的标签解析过程还是很好理解的，但是我不太喜欢 dubbo 的这种一体式的标签解析设计，因为各种标签的解析过程都糅杂在一个方法中了，使得方法非常长，阅读起来也不是很清晰，相比较之下，spring 的标签解析就是各司其职，不同的标签对应不同的标签解析器，这样逻辑很清楚，留下个小坑，以后有时间的话，就把这个 dubbo 的标签解析过程整成类似于 spring 的那种方式。</p>
+<p>标签解析过程完成后，就是对不同标签解析出来的 bean 的作用进行分析了。根据自己使用 dubbo 的过程，决定下一个源码分析的类容就是 <code>org.apache.dubbo.config.spring.ServiceBean</code>。</p>
+
+            </div>
+            <hr>
+
+            
+            <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.88rem;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-large waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fa fa-close"></i></a>
+            <h4 class="reward-title">请作者喝一杯咖啡吧！！</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechatpay.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="https://aprilyolies.top" class="b-link-green">AprilYoLies</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href class="b-link-green">Dubbo自定义标签解析过程的源码分析</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+        <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments input[type=text],
+    #vcomments input[type=email],
+    #vcomments input[type=url],
+    #vcomments textarea {
+        box-sizing: border-box;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #42b983;
+        font-weight: 500;
+        text-decoration: underline;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div id="vcomments" class="card-content"></div>
+</div>
+
+<script src="/libs/valine/av-min.js"></script>
+<script src="/libs/valine/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: '6EGjo7zur3lPWW013mEcJkzC-gzGzoHsz',
+        appKey: 'H4QEnPnNWPBOkgGA8QcY8x2w',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'true' === 'true',
+        avatar: 'mm',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: '既然都来了，留下点什么再走吧！！'
+    });
+</script>
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href>
+                    <div class="card-image">
+                        
+                        <img src="https://image.aprilyolies.top/static/images/face-img/13.jpg" class="responsive-img" alt="Dubbo自定义标签解析过程的源码分析">
+                        
+                        <span class="card-title">Dubbo自定义标签解析过程的源码分析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            今年找实习的过程不是很顺利，主要是因为没有实际的项目，所以希望在秋招之前能够自己动手做出一点小东西出来，现在有两个想法，一个就是做一个简易的 rpc 框架，使用的方式跟 dubbo 一样，能够整合 spring 容器。另外一个就是分布式的统一 ID 生成器，就类似于美团开源的 leaf 项目。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-15
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="../../../../categories/后台开发/" class="post-category" target="_blank">
+                                    后台开发
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="../../../../tags/Spring/" target="_blank">
+                        <span class="chip bg-color">Spring</span>
+                    </a>
+                    
+                    <a href="../../../../tags/Dubbo/" target="_blank">
+                        <span class="chip bg-color">Dubbo</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="../../13/Spring如何实现自定义名称空间的解析/">
+                    <div class="card-image">
+                        
+                        <img src="https://image.aprilyolies.top/static/images/face-img/12.jpg" class="responsive-img" alt="Spring如何实现自定义名称空间的解析">
+                        
+                        <span class="card-title">Spring如何实现自定义名称空间的解析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            今年的春招已经接近尾声了，因为自己没有实际的项目经验，所以找实习的情况很不理想，心里当然是很不甘心的，所以就开始盘算着要动手做出点实际的东西出来，这样今年的秋招才会有底气。先想到的就是自己开发出一个类似于 dubbo 的 rpc框架，能够实现基本的功能就好。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-13
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="../../../../categories/后台开发/" class="post-category" target="_blank">
+                                    后台开发
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="../../../../tags/Spring/" target="_blank">
+                        <span class="chip bg-color">Spring</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h2, h3, h4, h5'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4, h5').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            PoweredBy&nbsp;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>&nbsp;&copy;
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">46.1k</span>
+            
+
+            
+			
+                <br>
+                
+                <span id="busuanzi_container_site_pv">
+                    <i class="fa fa-heart-o"></i>
+                    本站总访问量 <span id="busuanzi_value_site_pv" class="white-color"></span>
+                </span>
+                
+                
+                <span id="busuanzi_container_site_uv">
+                    <i class="fa fa-users"></i>
+                    次,&nbsp;访客数 <span id="busuanzi_value_site_uv" class="white-color"></span> 人.
+                </span>
+                
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/AprilYoLies" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:aprilyolies@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=863821569" class="tooltipped" data-tooltip="QQ联系我: 863821569" data-position="top" data-delay="50">
+        <i class="fa fa-qq"></i>
+    </a>
+
+
+
+    <a href="../../../../atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字" class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>
