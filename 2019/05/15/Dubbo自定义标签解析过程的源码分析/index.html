@@ -434,7 +434,7 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>今年找实习的过程不是很顺利，主要是因为没有实际的项目，所以希望在秋招之前能够自己动手做出一点小东西出来，现在有两个想法，一个就是做一个简易的 rpc 框架，使用的方式跟 dubbo 一样，能够整合 spring 容器。另外一个就是分布式的统一 ID 生成器，就类似于美团开源的 leaf 项目。</p>
-<p>相比较之下，rpc 框架应该会比分布式的统一 ID 生成器要难，我选择的是先把这个 rpc 框架给搞定，当然最先要解决的就是整个 spring 的 ioc 容器，也就是说我需要自己解析自定义的标签，之前只是了解过大致的原理，但是细节部分没有过多的考量，所以这里我就想通过 dubbo 的自定义标签的解析过程来加深自己的理解，本文的内容就是我在看源码过程中所加的一些注释，来表示当前代码的含义。我还将这些代码注释提交到了 github 上边，各位需要的小伙伴欢迎<a href="https://github.com/AprilYoLies/incubator-dubbo/tree/dev" target="_blank" rel="noopener">自取</a>。</p>
+<p>相比较之下，rpc 框架应该会比分布式的统一 ID 生成器要难，我选择的是先把这个 rpc 框架给搞定，当然最先要解决的就是整个 spring 的 ioc 容器，也就是说我需要自己解析自定义的标签，之前只是了解过大致的原理，但是细节部分没有过多的考量，所以这里我就想通过 dubbo 的自定义标签的解析过程来加深自己的理解，本文的内容就是我在看源码过程中所加的一些注释，来表示当前代码的含义。我还将这些代码注释提交到了 github 上边，各位需要的小伙伴欢迎<a href="https://github.com/AprilYoLies/dubbo-with-comment" target="_blank" rel="noopener">自取</a>。</p>
 <h2 id="整体设计"><a href="#整体设计" class="headerlink" title="整体设计"></a>整体设计</h2><p>Dubbo 的自定义标签全部是由 DubboNamespaceHandler 所注册的 DubboBeanDefinitionParser 解析器来完成解析的。这个跟 Spring 自定义标签的解析的设计还是有点小区别。具体的可以看一下他们各自的代码，这里以 AopNamespace 的解析进行说明。</p>
 <blockquote>
 <p>org.apache.dubbo.config.spring.schema.DubboNamespaceHandler</p>
