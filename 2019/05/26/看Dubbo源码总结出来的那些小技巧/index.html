@@ -406,14 +406,14 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        6.2k
+                        6.4k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        28 分
+                        30 分
                     </div>
                     
                 
@@ -1075,6 +1075,37 @@
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>注意这里的 <code>Class&lt;?&gt; clazz = getExtensionClasses().get(name);</code> 语句获取的就是 InjvmProtocol 对应的 class 了，然后执行了 <code>EXTENSION_INSTANCES.putIfAbsent(clazz, clazz.newInstance());</code> 语句来完成对 INSTANCE 的初始化。还有一点需要注意的是，InjvmProtocol 和它的构造函数都是属于 public 关键字修饰，也就是说任何代码都可以调用 InjvmProtocol 的构造函数，这样就会使得 INSTANCE 并非单例了，因为每一次 new InjvmProtocol 都会使得 INSTANCE 引用新的实例。</p>
+<h3 id="资源加载的方式"><a href="#资源加载的方式" class="headerlink" title="资源加载的方式"></a>资源加载的方式</h3><blockquote>
+<p>org.apache.dubbo.common.extension.ExtensionLoader#loadDirectory</p>
+</blockquote>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">loadDirectory</span><span class="token punctuation">(</span>Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">>></span> extensionClasses<span class="token punctuation">,</span> String dir<span class="token punctuation">,</span> String type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// META-INF/dubbo/internal/com.alibaba.dubbo.common.extension.ExtensionFactory</span>
+    String fileName <span class="token operator">=</span> dir <span class="token operator">+</span> type<span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">// META-INF/dubbo/internal/org.apache.dubbo.configcenter.DynamicConfigurationFactory</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        Enumeration<span class="token operator">&lt;</span>java<span class="token punctuation">.</span>net<span class="token punctuation">.</span>URL<span class="token operator">></span> urls<span class="token punctuation">;</span>
+        ClassLoader classLoader <span class="token operator">=</span> <span class="token function">findClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>classLoader <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 通过 classloader 获取 filename 资源的全部 urls</span>
+            urls <span class="token operator">=</span> classLoader<span class="token punctuation">.</span><span class="token function">getResources</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            urls <span class="token operator">=</span> ClassLoader<span class="token punctuation">.</span><span class="token function">getSystemResources</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>urls <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>urls<span class="token punctuation">.</span><span class="token function">hasMoreElements</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// /Users/eva/IdeaProjects/dubbo-with-comment/dubbo-common/target/classes/META-INF/dubbo/internal/org.apache.dubbo.common.extension.ExtensionFactory</span>
+                <span class="token comment" spellcheck="true">// /Users/eva/IdeaProjects/dubbo-with-comment/dubbo-config/dubbo-config-spring/target/classes/META-INF/dubbo/internal/org.apache.dubbo.common.extension.ExtensionFactory</span>
+                java<span class="token punctuation">.</span>net<span class="token punctuation">.</span>URL resourceURL <span class="token operator">=</span> urls<span class="token punctuation">.</span><span class="token function">nextElement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 将 resourceURL 所对应的文件中的 class 进行加载，然后保存到 extensionClasses</span>
+                <span class="token function">loadResource</span><span class="token punctuation">(</span>extensionClasses<span class="token punctuation">,</span> classLoader<span class="token punctuation">,</span> resourceURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Exception occurred when loading extension class (interface: "</span> <span class="token operator">+</span>
+                type <span class="token operator">+</span> <span class="token string">", description file: "</span> <span class="token operator">+</span> fileName <span class="token operator">+</span> <span class="token string">")."</span><span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这是 Dubbo 在进行 ExtensionClass 获取的代码，核心的就是 <code>urls = classLoader.getResources(fileName);</code> 这条代码，它会将资源路径下所有的 fileName 资源作为 Enumeration&lt;java.net.URL&gt; 返回，然后我们就可以针对每一个资源文件进行处理了。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文的篇幅算是比较长了，总结就尽量短吧，因为内容都是一些零散的技巧性总结，所以看起来不会觉得很系统，其中的一些要点可能还是要通过自己在阅读源码中领会了，看源码确实很枯燥乏味，但是如果不去看一些好的东西，只管自己折腾的话，那么可以说自己写出来的东西就是一坨 Shit。</p>
 
             </div>
@@ -1715,7 +1746,7 @@
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">52.3k</span>
+                <span class="white-color">52.5k</span>
             
 
             
