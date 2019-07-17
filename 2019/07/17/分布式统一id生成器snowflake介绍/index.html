@@ -406,14 +406,14 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        3.2k
+                        3.5k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        13 分
+                        14 分
                     </div>
                     
                 
@@ -464,39 +464,41 @@
 
 <p>内嵌服务发布的实例程序就在 snowflake-demo 模块之下，再次说明这里我使用的是自己开发的 rpc 框架 beehive，如果你使用的是其他类型的 rpc 框架，方式也基本一致。先看服务发布端的 spring 配置文件：</p>
 <blockquote>
-<p>embed-server.xml<br><code>`</code> java<br>&lt;?xml version=”1.0” encoding=”UTF-8”?&gt;</p>
+<p>embed-server.xml</p>
 </blockquote>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beehive="https://www.aprilyolies.top/schema/beehive" xsi:schemalocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd https://www.aprilyolies.top/schema/beehive https://www.aprilyolies.top/schema/beehive.xsd">
+<pre class="line-numbers language-java"><code class="language-java"><span class="token operator">&lt;</span><span class="token operator">?</span>xml version<span class="token operator">=</span><span class="token string">"1.0"</span> encoding<span class="token operator">=</span><span class="token string">"UTF-8"</span><span class="token operator">?</span><span class="token operator">></span>
+<span class="token operator">&lt;</span>beans xmlns<span class="token operator">=</span><span class="token string">"http://www.springframework.org/schema/beans"</span>
+       xmlns<span class="token operator">:</span>xsi<span class="token operator">=</span><span class="token string">"http://www.w3.org/2001/XMLSchema-instance"</span>
+       xmlns<span class="token operator">:</span>beehive<span class="token operator">=</span><span class="token string">"https://www.aprilyolies.top/schema/beehive"</span>
+       xsi<span class="token operator">:</span>schemaLocation<span class="token operator">=</span><span class="token string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd https://www.aprilyolies.top/schema/beehive https://www.aprilyolies.top/schema/beehive.xsd"</span><span class="token operator">></span>
 
-<pre><code>&lt;bean class=&quot;org.springframework.beans.factory.config.PropertyPlaceholderConfigurer&quot;&gt;
-    &lt;property name=&quot;locations&quot; value=&quot;classpath:snowflake.properties&quot;/&gt;
-&lt;/bean&gt;
+    <span class="token operator">&lt;</span>bean <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"locations"</span> value<span class="token operator">=</span><span class="token string">"classpath:snowflake.properties"</span><span class="token operator">/</span><span class="token operator">></span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>bean<span class="token operator">></span>
 
-&lt;bean id=&quot;serviceFactory&quot; class=&quot;top.aprilyolies.snowflake.idservice.IdServiceFactory&quot;&gt;
-    &lt;property name=&quot;machineIdProvider&quot; value=&quot;ZOOKEEPER&quot;/&gt;
-    &lt;property name=&quot;idType&quot; value=&quot;1&quot;/&gt;
-    &lt;property name=&quot;zkHost&quot; value=&quot;119.23.247.86&quot;/&gt;
-    &lt;property name=&quot;dbUrl&quot; value=&quot;jdbc:mysql://localhost:3306/snowflake&quot;/&gt;
-    &lt;property name=&quot;username&quot; value=&quot;root&quot;/&gt;
-    &lt;property name=&quot;password&quot; value=&quot;kuaile1..&quot;/&gt;
-    &lt;property name=&quot;serviceType&quot; value=&quot;snowflake&quot;/&gt;
-&lt;/bean&gt;
+    <span class="token operator">&lt;</span>bean id<span class="token operator">=</span><span class="token string">"serviceFactory"</span> <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"top.aprilyolies.snowflake.idservice.IdServiceFactory"</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"machineIdProvider"</span> value<span class="token operator">=</span><span class="token string">"ZOOKEEPER"</span><span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"idType"</span> value<span class="token operator">=</span><span class="token string">"1"</span><span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"zkHost"</span> value<span class="token operator">=</span><span class="token string">"119.23.247.86"</span><span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"dbUrl"</span> value<span class="token operator">=</span><span class="token string">"jdbc:mysql://localhost:3306/snowflake"</span><span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"username"</span> value<span class="token operator">=</span><span class="token string">"root"</span><span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"password"</span> value<span class="token operator">=</span><span class="token string">"kuaile1.."</span><span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"serviceType"</span> value<span class="token operator">=</span><span class="token string">"snowflake"</span><span class="token operator">/</span><span class="token operator">></span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>bean<span class="token operator">></span>
 
-&lt;beehive:service id=&quot;idService&quot; service=&quot;top.aprilyolies.snowflake.idservice.IdService&quot;
-                 ref=&quot;serviceFactory&quot; proxy-factory=&quot;jdk&quot; serializer=&quot;hessian&quot; server-port=&quot;7442&quot;/&gt;
+    <span class="token operator">&lt;</span>beehive<span class="token operator">:</span>service id<span class="token operator">=</span><span class="token string">"idService"</span> service<span class="token operator">=</span><span class="token string">"top.aprilyolies.snowflake.idservice.IdService"</span>
+                     ref<span class="token operator">=</span><span class="token string">"serviceFactory"</span> proxy<span class="token operator">-</span>factory<span class="token operator">=</span><span class="token string">"jdk"</span> serializer<span class="token operator">=</span><span class="token string">"hessian"</span> server<span class="token operator">-</span>port<span class="token operator">=</span><span class="token string">"7442"</span><span class="token operator">/</span><span class="token operator">></span>
 
-&lt;beehive:registry id=&quot;registry&quot; address=&quot;zookeeper://119.23.247.86:2181&quot;/&gt;
-</code></pre><p></p></beans><p></p>
-<pre><code>
-这里的 &lt;beehive:service/&gt; 标签是 beehive 用于发布服务的，它暴露的服务接口是 `top.aprilyolies.snowflake.idservice.IdService` 这里和我上边的说明一致。然后就是该服务的实现类指定，可以看到这里是设置的 `ref=&quot;serviceFactory&quot;`，它所对应的就是那个 IdService 工厂类，因为在构建 IdService 实现类时需要指定部分参数信息，所以这里我们还指定了一系列参数，具体的作用如下：
-
-根据生成的 id 的类型不同，参数的指定也不一样，如果你是要生成 segment 类型的 id，那么你只需要指定用于获取 id 段信息的数据库信息即可，也就是这三个。
-
-``` java
-&lt;property name=&quot;dbUrl&quot; value=&quot;jdbc:mysql://localhost:3306/snowflake&quot;/&gt;
-&lt;property name=&quot;username&quot; value=&quot;root&quot;/&gt;
-&lt;property name=&quot;password&quot; value=&quot;kuaile1..&quot;/&gt;
-</code></pre><p>需要在对应的数据库中提前创建 id 分段信息表，在项目的 scripts 目录下已提供 SEGMENT_ID_TABLE.sql 文件，内容如下：</p>
+    <span class="token operator">&lt;</span>beehive<span class="token operator">:</span>registry id<span class="token operator">=</span><span class="token string">"registry"</span> address<span class="token operator">=</span><span class="token string">"zookeeper://119.23.247.86:2181"</span><span class="token operator">/</span><span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>beans<span class="token operator">></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里的 <a href="beehive:service/" target="_blank" rel="noopener">beehive:service/</a> 标签是 beehive 用于发布服务的，它暴露的服务接口是 <code>top.aprilyolies.snowflake.idservice.IdService</code> 这里和我上边的说明一致。然后就是该服务的实现类指定，可以看到这里是设置的 <code>ref=&quot;serviceFactory&quot;</code>，它所对应的就是那个 IdService 工厂类，因为在构建 IdService 实现类时需要指定部分参数信息，所以这里我们还指定了一系列参数，具体的作用如下：</p>
+<p>根据生成的 id 的类型不同，参数的指定也不一样，如果你是要生成 segment 类型的 id，那么你只需要指定用于获取 id 段信息的数据库信息即可，也就是这三个。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"dbUrl"</span> value<span class="token operator">=</span><span class="token string">"jdbc:mysql://localhost:3306/snowflake"</span><span class="token operator">/</span><span class="token operator">></span>
+<span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"username"</span> value<span class="token operator">=</span><span class="token string">"root"</span><span class="token operator">/</span><span class="token operator">></span>
+<span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"password"</span> value<span class="token operator">=</span><span class="token string">"kuaile1.."</span><span class="token operator">/</span><span class="token operator">></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>需要在对应的数据库中提前创建 id 分段信息表，在项目的 scripts 目录下已提供 SEGMENT_ID_TABLE.sql 文件，内容如下：</p>
 <pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">SET</span> NAMES utf8mb4<span class="token punctuation">;</span>
 <span class="token keyword">SET</span> FOREIGN_KEY_CHECKS <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
 
@@ -613,6 +615,30 @@ snowflake.database.password=kuaile1..
 <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> IdService segIdService <span class="token operator">=</span> IdServiceFactory<span class="token punctuation">.</span><span class="token function">buildIdService</span><span class="token punctuation">(</span>SnowflakeChannelHandler<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"segment"</span><span class="token punctuation">,</span> <span class="token string">"snowflake.properties"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="测试运行"><a href="#测试运行" class="headerlink" title="测试运行"></a>测试运行</h2><h3 id="内嵌服务发布模式测试"><a href="#内嵌服务发布模式测试" class="headerlink" title="内嵌服务发布模式测试"></a>内嵌服务发布模式测试</h3><p>因为测试程序依赖了我开发的 beehive rpc 框架，这个在 maven 中央仓库无法直接下载，需要先手动进行安装该依赖，具体方法就是执行如下指令，这样在你的本地 maven 仓库就会存在该依赖了。</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> clone https://github.com/AprilYoLies/beehive.git
+<span class="token function">cd</span> beehive
+mvn clean <span class="token function">install</span> -Dmaven.test.skip<span class="token operator">=</span>true
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>然后启动服务端，执行 nowflake-demo/embed-server 模块下 <code>top.aprilyolies.snowflake.EmbedServer</code> 类的 main 方法，如果启动成功，那么就表示服务已发布。</p>
+<p>接着启动客户端，执行 snowflake-demo/embed-client 模块下 <code>top.aprilyolies.snowflake.EmbedClient</code> 类的 main 方法，如果出现如下结果，就表示服务调用成功。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token number">14108116920565761</span>
+<span class="token number">14108116970897409</span>
+<span class="token number">14108116979286017</span>
+<span class="token number">14108116983480321</span>
+<span class="token number">14108116991868929</span>
+<span class="token number">14108116996063233</span>
+<span class="token number">14108117004451841</span>
+<span class="token number">14108117008646145</span>
+<span class="token number">14108117017034753</span>
+<span class="token number">14108117021229057</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="独立运行模式测试"><a href="#独立运行模式测试" class="headerlink" title="独立运行模式测试"></a>独立运行模式测试</h3><p>独立运行模式提供了两个 Server 端，随便启动一个就行，以 NettyServer 为例，执行 snowflake-server/snowflake-netty 模块下 <code>top.aprilyolies.snowflake.SnowflakeServer</code> 类的 main 方法，如果启动成功，就会日志打印请求的路径如下：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token number">210</span> <span class="token punctuation">[</span>main<span class="token punctuation">]</span> INFO top<span class="token punctuation">.</span>aprilyolies<span class="token punctuation">.</span>snowflake<span class="token punctuation">.</span>SnowflakeServer <span class="token operator">-</span> Snowflake netty server started on port <span class="token number">6707</span><span class="token punctuation">.</span>
+<span class="token number">210</span> <span class="token punctuation">[</span>main<span class="token punctuation">]</span> INFO top<span class="token punctuation">.</span>aprilyolies<span class="token punctuation">.</span>snowflake<span class="token punctuation">.</span>SnowflakeServer <span class="token operator">-</span> Get segment id by http<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span>localhost<span class="token operator">:</span><span class="token number">6707</span><span class="token operator">/</span>snowflake<span class="token operator">/</span>seg<span class="token operator">/</span>business<span class="token operator">-</span>name
+<span class="token number">210</span> <span class="token punctuation">[</span>main<span class="token punctuation">]</span> INFO top<span class="token punctuation">.</span>aprilyolies<span class="token punctuation">.</span>snowflake<span class="token punctuation">.</span>SnowflakeServer <span class="token operator">-</span> Get snowflake id by http<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span>localhost<span class="token operator">:</span><span class="token number">6707</span><span class="token operator">/</span>snowflake<span class="token operator">/</span>snow
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>访问两个链接中的任意一条就会得到对应的 id。</p>
 <h2 id="TODO-LIST"><a href="#TODO-LIST" class="headerlink" title="TODO-LIST"></a>TODO-LIST</h2><ul>
 <li><p>在通过 snowflake 算法生成 id 时，由于需要通过时间戳来生成 id，这就有可能会因为某一个机器的时间发生回拨，导致这台机器产生出重复的 id，有两种解决办法，一个是在每次生成 id 时，都检查一次当前时间戳是否比上一次生成 id 的时间戳小，如果条件成立，就拒绝 id 生成，这种方式的好处是，在服务不重启的情况下也能检查出这种问题，缺陷是获取当前时间戳和时间比对是一个耗时操作，会导致吞吐量下降。另外一种方式是每隔一小段时间向数据库中写入当前机器生成 id 的时间戳，在服务重启时需要先检查当前时间戳是否比上一次生成 id 的时间戳小，如果成立，则拒绝启动服务，这种做法能够避免服务重启时的时间回拨问题，但是如果服务是在运行中，发生时间回拨，这种方式将会产生错误。</p>
 </li>
@@ -1256,7 +1282,7 @@ snowflake.database.password=kuaile1..
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">55.7k</span>
+                <span class="white-color">56k</span>
             
 
             
