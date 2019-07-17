@@ -406,7 +406,7 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        3.5k
+                        3.6k
                     </div>
                     
 
@@ -582,33 +582,32 @@
 <p>这里的 idType 就是指的 snowflake 算法生成的 id 的颗粒度（即在怎样的单位时长内，生成的 id 是单调有序的），0 代表在一秒内，生成的 id 是单调有序递增的，而 1 则代表在一毫秒的时间内，生成的 id 是单调有序递增的。</p>
 <p>在服务端的配置完成后，剩下的就是直接引用发布的服务了，配置很简单，我这里只是贴出来，不做说明。</p>
 <blockquote>
-<p>embed-client.xml<br><code>`</code> java<br>&lt;?xml version=”1.0” encoding=”UTF-8”?&gt;</p>
+<p>embed-client.xml</p>
 </blockquote>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beehive="https://www.aprilyolies.top/schema/beehive" xsi:schemalocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd https://www.aprilyolies.top/schema/beehive https://www.aprilyolies.top/schema/beehive.xsd">
+<pre class="line-numbers language-java"><code class="language-java"><span class="token operator">&lt;</span><span class="token operator">?</span>xml version<span class="token operator">=</span><span class="token string">"1.0"</span> encoding<span class="token operator">=</span><span class="token string">"UTF-8"</span><span class="token operator">?</span><span class="token operator">></span>
+<span class="token operator">&lt;</span>beans xmlns<span class="token operator">=</span><span class="token string">"http://www.springframework.org/schema/beans"</span>
+       xmlns<span class="token operator">:</span>xsi<span class="token operator">=</span><span class="token string">"http://www.w3.org/2001/XMLSchema-instance"</span>
+       xmlns<span class="token operator">:</span>beehive<span class="token operator">=</span><span class="token string">"https://www.aprilyolies.top/schema/beehive"</span>
+       xsi<span class="token operator">:</span>schemaLocation<span class="token operator">=</span><span class="token string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd https://www.aprilyolies.top/schema/beehive https://www.aprilyolies.top/schema/beehive.xsd"</span><span class="token operator">></span>
 
-<pre><code>&lt;beehive:registry id=&quot;registry&quot; address=&quot;zookeeper://119.23.247.86:2181&quot;/&gt;
+    <span class="token operator">&lt;</span>beehive<span class="token operator">:</span>registry id<span class="token operator">=</span><span class="token string">"registry"</span> address<span class="token operator">=</span><span class="token string">"zookeeper://119.23.247.86:2181"</span><span class="token operator">/</span><span class="token operator">></span>
 
-&lt;beehive:reference id=&quot;idService&quot; service=&quot;top.aprilyolies.snowflake.idservice.IdService&quot; load-balance=&quot;poll&quot;
-                   serializer=&quot;hessian&quot; read-timeout=&quot;1000&quot; retry-times=&quot;2&quot;/&gt;
-</code></pre><p></p></beans><p></p>
-<pre><code>
-在实例程序中，我已经指定了 IdService 类型为 snowflake，且 machine id 的获取方式为 ZOOKEEPER，所以不需要使用到数据库，而且我指定的 zookeeper 地址为我的阿里云地址，正常情况下，我会开启 zookeeper 服务，这样你直接运行 server 端和 client 端程序就能看到结果。
-
-### 独立运行模式
-
-独立运行模式采用手动直接构建 IdService 的方式，这种方式更加灵活，我们只需要指定几个和 id service 相关的参数，然后就能通过 IdServiceFactory 类来拿到 IdService 实例，至于怎么使用这个 IdService，完全由你决定，就像我在项目中给出的两个 restful 风格的 id 生成方式，一个是通过 Springboot 构建的 web 应用来进行访问，另外一个就是通过 Netty 服务器来提供访问支持。参数的配置方式和内嵌服务发布模式完全一致，只不过是一个配置文件是 xml，一个配置文件是 properties。
-
-就直接那 netty 的实例程序来说明吧，我们根本就是要得到 IdService 的实例，在 IdServiceFactory 类中提供了一个公有静态方法 `public static IdService buildIdService(ClassLoader classLoader, String serviceType, String confPath) `，我们可以直接通过该方法来获取 IdService 实例，三个参数需要指定，classloader 类加载器，需要保证这个类加载器能够加载到你的配置文件，serviceType 服务类型，固定为 segment 或者 snowflake，指定其它参数会报错，最后一个就是你的配置文件路径，里边的内容如下：
-
-``` java
-snowflake.machine.id=1023
-snowflake.machine.id.provider=ZOOKEEPER
-snowflake.id.type=0
-snowflake.zookeeper.host=119.23.247.86
-snowflake.database.url=jdbc:mysql://localhost:3306/snowflake
-snowflake.database.username=root
-snowflake.database.password=kuaile1..
-</code></pre><p>跟上边介绍的一样，里边的配置不是非得全写，根据自己的需求指定几条必须的参数即可。该方法的返回值就是 IdService 实例，就像示例程序的 SnowflakeChannelHandler 返回的那样。</p>
+    <span class="token operator">&lt;</span>beehive<span class="token operator">:</span>reference id<span class="token operator">=</span><span class="token string">"idService"</span> service<span class="token operator">=</span><span class="token string">"top.aprilyolies.snowflake.idservice.IdService"</span> load<span class="token operator">-</span>balance<span class="token operator">=</span><span class="token string">"poll"</span>
+                       serializer<span class="token operator">=</span><span class="token string">"hessian"</span> read<span class="token operator">-</span>timeout<span class="token operator">=</span><span class="token string">"1000"</span> retry<span class="token operator">-</span>times<span class="token operator">=</span><span class="token string">"2"</span><span class="token operator">/</span><span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>beans<span class="token operator">></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在实例程序中，我已经指定了 IdService 类型为 snowflake，且 machine id 的获取方式为 ZOOKEEPER，所以不需要使用到数据库，而且我指定的 zookeeper 地址为我的阿里云地址，正常情况下，我会开启 zookeeper 服务，这样你直接运行 server 端和 client 端程序就能看到结果。</p>
+<h3 id="独立运行模式"><a href="#独立运行模式" class="headerlink" title="独立运行模式"></a>独立运行模式</h3><p>独立运行模式采用手动直接构建 IdService 的方式，这种方式更加灵活，我们只需要指定几个和 id service 相关的参数，然后就能通过 IdServiceFactory 类来拿到 IdService 实例，至于怎么使用这个 IdService，完全由你决定，就像我在项目中给出的两个 restful 风格的 id 生成方式，一个是通过 Springboot 构建的 web 应用来进行访问，另外一个就是通过 Netty 服务器来提供访问支持。参数的配置方式和内嵌服务发布模式完全一致，只不过是一个配置文件是 xml，一个配置文件是 properties。</p>
+<p>就直接那 netty 的实例程序来说明吧，我们根本就是要得到 IdService 的实例，在 IdServiceFactory 类中提供了一个公有静态方法 <code>public static IdService buildIdService(ClassLoader classLoader, String serviceType, String confPath)</code>，我们可以直接通过该方法来获取 IdService 实例，三个参数需要指定，classloader 类加载器，需要保证这个类加载器能够加载到你的配置文件，serviceType 服务类型，固定为 segment 或者 snowflake，指定其它参数会报错，最后一个就是你的配置文件路径，里边的内容如下：</p>
+<pre class="line-numbers language-java"><code class="language-java">snowflake<span class="token punctuation">.</span>machine<span class="token punctuation">.</span>id<span class="token operator">=</span><span class="token number">1023</span>
+snowflake<span class="token punctuation">.</span>machine<span class="token punctuation">.</span>id<span class="token punctuation">.</span>provider<span class="token operator">=</span>ZOOKEEPER
+snowflake<span class="token punctuation">.</span>id<span class="token punctuation">.</span>type<span class="token operator">=</span><span class="token number">0</span>
+snowflake<span class="token punctuation">.</span>zookeeper<span class="token punctuation">.</span>host<span class="token operator">=</span><span class="token number">119.23</span><span class="token punctuation">.</span><span class="token number">247.86</span>
+snowflake<span class="token punctuation">.</span>database<span class="token punctuation">.</span>url<span class="token operator">=</span>jdbc<span class="token operator">:</span>mysql<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span>localhost<span class="token operator">:</span><span class="token number">3306</span><span class="token operator">/</span>snowflake
+snowflake<span class="token punctuation">.</span>database<span class="token punctuation">.</span>username<span class="token operator">=</span>root
+snowflake<span class="token punctuation">.</span>database<span class="token punctuation">.</span>password<span class="token operator">=</span>kuaile1<span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>跟上边介绍的一样，里边的配置不是非得全写，根据自己的需求指定几条必须的参数即可。该方法的返回值就是 IdService 实例，就像示例程序的 SnowflakeChannelHandler 返回的那样。</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">// SnowflakeIdService 实例</span>
 <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> IdService snowIdService <span class="token operator">=</span> IdServiceFactory<span class="token punctuation">.</span><span class="token function">buildIdService</span><span class="token punctuation">(</span>SnowflakeChannelHandler<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"snowflake"</span><span class="token punctuation">,</span> <span class="token string">"snowflake.properties"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token comment" spellcheck="true">// SegmentIdService 实例</span>
@@ -1282,7 +1281,7 @@ mvn clean <span class="token function">install</span> -Dmaven.test.skip<span cla
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">56k</span>
+                <span class="white-color">56.1k</span>
             
 
             
