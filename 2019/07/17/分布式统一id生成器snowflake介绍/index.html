@@ -5,7 +5,7 @@
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
     <meta name="keywords" content="分布式统一id生成器snowflake介绍, Java,Mysql,Netty,Spring">
-    <meta name="description" content="前言好久没有写技术博客了，实在是因为自己比较忙，花了将近两个月的时间完成了两个开源小项目，这篇文章要介绍的就是其中一个，我将它的名字叫做 snowflake，是一个分布式的统一 id 生成器，能够生成 segment 和 snowflake">
+    <meta name="description" content="前言项目地址好久没有写技术博客了，实在是因为自己比较忙，花了将近两个月的时间完成了两个开源小项目，这篇文章要介绍的就是其中一个，我将它的名字叫做 snowflake，是一个分布式的统一 id 生成器，能够生成 segment 和 snowf">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -429,7 +429,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>好久没有写技术博客了，实在是因为自己比较忙，花了将近两个月的时间完成了两个开源小项目，这篇文章要介绍的就是其中一个，我将它的名字叫做 <a href="https://github.com/AprilYoLies/snowflake" target="_blank" rel="noopener">snowflake</a>，是一个分布式的统一 id 生成器，能够生成 segment 和 snowflake 两种类型的 id。另外一个就是一个类似于 dubbo 的 rpc 框架 <a href="https://github.com/AprilYoLies/beehive" target="_blank" rel="noopener">beehive</a>，在我的 snowflake 项目中提供了内嵌模式的测试程序，它所使用的 rpc 框架就是我自己开发的 beehive，关于 beehive 我准备在我后边的文章中再作介绍，本篇就先详细介绍一下 snowflake 这个 id 生成器。</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><a href="https://github.com/AprilYoLies/snowflake" target="_blank" rel="noopener">项目地址</a><br>好久没有写技术博客了，实在是因为自己比较忙，花了将近两个月的时间完成了两个开源小项目，这篇文章要介绍的就是其中一个，我将它的名字叫做 <a href="https://github.com/AprilYoLies/snowflake" target="_blank" rel="noopener">snowflake</a>，是一个分布式的统一 id 生成器，能够生成 segment 和 snowflake 两种类型的 id。另外一个就是一个类似于 dubbo 的 rpc 框架 <a href="https://github.com/AprilYoLies/beehive" target="_blank" rel="noopener">beehive</a>，在我的 snowflake 项目中提供了内嵌模式的测试程序，它所使用的 rpc 框架就是我自己开发的 beehive，关于 beehive 我准备在我后边的文章中再作介绍，本篇就先详细介绍一下 snowflake 这个 id 生成器。</p>
 <h2 id="基本介绍"><a href="#基本介绍" class="headerlink" title="基本介绍"></a>基本介绍</h2><p>snowflake 是一款分布式的统一 ID 生成器，提供了两种 id 生成的方式，分段 id 和通过 snowflake 算法计算得到 id。在分段 id 的生成过程中，不同的服务器从数据库获取自己专属的 id 号段，再从该号段中来产生唯一 id，在从数据库中获取号段的过程中，通过数据库的事务机制，保证了不同的 id 服务器获取的号段是不重复的，所以能够保证全局的 id 唯一性。而 snowflake 算法计算 id 的方式稍微复杂，首先它并不是通过 id 隔段的方式来保证 id 的唯一性，而是通过各个 id 服务器的 machine id 来保证不同的服务器之间产生的 id 唯一性，此外，在单台 id 服务器之上，machine id 是唯一且不变的，要想产生唯一 id，就还需要其他的项来进行保证，snowflake 算法采用的是加上时间戳的方式，在本项目的实现中，提供了两种时间颗粒度的选择（秒和毫秒），对于计算机世界而言一秒和一毫秒而言，是很漫长的，在这样的时间颗粒度下很有可能会在同一个最小时间单元内生成多个 id，因为时间戳和 machine id 一致，所以在我们生成的 id 中，还需要一个额外的字段来保证在单位时间粒度中生成的 id 的唯一性，这就是序列号。snowflake 算法生成 id 相关的三个字段如上所述，更加详细的 id 模型请看下表：</p>
 <table>
 <thead>
@@ -492,7 +492,7 @@
     <span class="token operator">&lt;</span>beehive<span class="token operator">:</span>registry id<span class="token operator">=</span><span class="token string">"registry"</span> address<span class="token operator">=</span><span class="token string">"zookeeper://119.23.247.86:2181"</span><span class="token operator">/</span><span class="token operator">></span>
 <span class="token operator">&lt;</span><span class="token operator">/</span>beans<span class="token operator">></span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这里的 <a href="beehive:service/" target="_blank" rel="noopener">beehive:service/</a> 标签是 beehive 用于发布服务的，它暴露的服务接口是 <code>top.aprilyolies.snowflake.idservice.IdService</code> 这里和我上边的说明一致。然后就是该服务的实现类指定，可以看到这里是设置的 <code>ref=&quot;serviceFactory&quot;</code>，它所对应的就是那个 IdService 工厂类，因为在构建 IdService 实现类时需要指定部分参数信息，所以这里我们还指定了一系列参数，具体的作用如下：</p>
+<p>这里的 &lt;beehive:service/&gt; 标签是 beehive 用于发布服务的，它暴露的服务接口是 <code>top.aprilyolies.snowflake.idservice.IdService</code> 这里和我上边的说明一致。然后就是该服务的实现类指定，可以看到这里是设置的 <code>ref=&quot;serviceFactory&quot;</code>，它所对应的就是那个 IdService 工厂类，因为在构建 IdService 实现类时需要指定部分参数信息，所以这里我们还指定了一系列参数，具体的作用如下：</p>
 <p>根据生成的 id 的类型不同，参数的指定也不一样，如果你是要生成 segment 类型的 id，那么你只需要指定用于获取 id 段信息的数据库信息即可，也就是这三个。</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"dbUrl"</span> value<span class="token operator">=</span><span class="token string">"jdbc:mysql://localhost:3306/snowflake"</span><span class="token operator">/</span><span class="token operator">></span>
 <span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"username"</span> value<span class="token operator">=</span><span class="token string">"root"</span><span class="token operator">/</span><span class="token operator">></span>
@@ -1075,27 +1075,26 @@ mvn clean <span class="token function">install</span> -Dmaven.test.skip<span cla
         
         <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
-            </div>
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href>
+                <a href="../../18/轻量级RPC框架BEEHIVE介绍/">
                     <div class="card-image">
                         
-                        <img src="https://image.aprilyolies.top/static/images/face-img/15.jpg" class="responsive-img" alt="分布式统一id生成器snowflake介绍">
+                        <img src="https://image.aprilyolies.top/static/images/face-img/16.jpg" class="responsive-img" alt="轻量级RPC框架BEEHIVE介绍">
                         
-                        <span class="card-title">分布式统一id生成器snowflake介绍</span>
+                        <span class="card-title">轻量级RPC框架BEEHIVE介绍</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            snowflake 是一款分布式的统一 ID 生成器，提供了两种 id 生成的方式，分段 id 和通过 snowflake 算法计算得到 id。在分段 id 的生成过程中，不同的服务器从数据库获取自己专属的 id 号段，再从该号段中来产生唯一 id，在从数据库中获取号段的过程中，通过数据库的事务机制，保证了不同的 id 服务器获取的号段是不重复的，所以能够保证全局的 id 唯一性。
+                            beehive 是一款轻量级的 RPC 框架，通过 spring 容器来管理 bean，做到了对用户代码的零入侵，同时通过 spi 拓展机制，实现了自己的 ioc 容器，使得 beehive 能够很方便的对组件进行拓展。
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-07-17
-                            </span>
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-07-18
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -1108,12 +1107,11 @@ mvn clean <span class="token function">install</span> -Dmaven.test.skip<span cla
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
-                    <a href="../../../../tags/分布式/" target="_blank">
-                        <span class="chip bg-color">分布式</span>
+                    <a href="../../../../tags/RPC/" target="_blank">
+                        <span class="chip bg-color">RPC</span>
                     </a>
                     
                 </div>
@@ -1281,7 +1279,7 @@ mvn clean <span class="token function">install</span> -Dmaven.test.skip<span cla
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">56.1k</span>
+                <span class="white-color">68.4k</span>
             
 
             
