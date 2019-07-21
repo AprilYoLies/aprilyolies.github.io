@@ -527,7 +527,7 @@ beehive 是一款轻量级的 RPC 框架，通过 spring 容器来管理 bean，
 </li>
 <li><p>serializer：序列化器，默认为 fastjson，可选 hessian</p>
 </li>
-<li><p>sever-port：服务启动的端口号，默认使用 7440，你也可以再启动程序时通过 -Dport=端口号 来指定，优先级最高</p>
+<li><p>server-port：服务启动的端口号，默认使用 7440，你也可以再启动程序时通过 -Dport=端口号 来指定，优先级最高</p>
 </li>
 </ul>
 <h3 id="lt-beehive-reference-gt-标签"><a href="#lt-beehive-reference-gt-标签" class="headerlink" title="&lt;beehive:reference/&gt; 标签"></a>&lt;beehive:reference/&gt; 标签</h3><ul>
@@ -1985,45 +1985,47 @@ result<span class="token operator">:</span> Jim say MultiThreadConsumer<span cla
         
         <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
-            </div>
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href>
+                <a href="../../21/Spring-AOP-实现原理分析/">
                     <div class="card-image">
                         
-                        <img src="https://image.aprilyolies.top/static/images/face-img/16.jpg" class="responsive-img" alt="轻量级RPC框架BEEHIVE介绍">
+                        <img src="https://image.aprilyolies.top/static/images/face-img/17.jpg" class="responsive-img" alt="Spring AOP 实现原理分析">
                         
-                        <span class="card-title">轻量级RPC框架BEEHIVE介绍</span>
+                        <span class="card-title">Spring AOP 实现原理分析</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            beehive 是一款轻量级的 RPC 框架，通过 spring 容器来管理 bean，做到了对用户代码的零入侵，同时通过 spi 拓展机制，实现了自己的 ioc 容器，使得 beehive 能够很方便的对组件进行拓展。
+                            本文是关于 spring aop 实现原理的分析文章，因为 spring 源码博大精深，对于 aop 实现的细节部分不可能通过此一篇文章讲解清楚，所以本文只是从整体的角度来看 aop 的实现，虽然细节部分不会细说，但是对于理解其实现及分析其执行过程而言足以。
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-07-18
-                            </span>
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-07-21
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="../../../../categories/后台开发/" class="post-category" target="_blank">
-                                    后台开发
+                            <a href="../../../../categories/源码分析/" class="post-category" target="_blank">
+                                    源码分析
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
                     <a href="../../../../tags/RPC/" target="_blank">
                         <span class="chip bg-color">RPC</span>
+                    </a>
+                    
+                    <a href="../../../../tags/AOP/" target="_blank">
+                        <span class="chip bg-color">AOP</span>
                     </a>
                     
                 </div>
@@ -2191,7 +2193,7 @@ result<span class="token operator">:</span> Jim say MultiThreadConsumer<span cla
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">68.5k</span>
+                <span class="white-color">78.4k</span>
             
 
             
