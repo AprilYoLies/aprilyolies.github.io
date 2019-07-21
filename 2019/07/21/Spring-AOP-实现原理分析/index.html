@@ -375,8 +375,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="../../../../tags/RPC/" target="_blank">
-                                <span class="chip bg-color">RPC</span>
+                            <a href="../../../../tags/Spring/" target="_blank">
+                                <span class="chip bg-color">Spring</span>
                             </a>
                         
                             <a href="../../../../tags/AOP/" target="_blank">
@@ -676,7 +676,7 @@ afterTest
     <span class="token keyword">return</span> null<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>主要就是两行代码，对于第行代码，是一个对于当前标签的子标签的处理，因为这里没用到，所以我直接就忽略了。重点关注第一行代码，从名字就知道，核心就是向 spring 容器注册一个 AspectJAnnotationAutoProxyCreator 实例，进去后看实现：</p>
+<p>主要就是两行代码，对于第二行代码，是一个对于当前标签的子标签的处理，因为这里没用到，所以我直接就忽略了。重点关注第一行代码，从名字就知道，核心就是向 spring 容器注册一个 AspectJAnnotationAutoProxyCreator 实例，进去后看实现：</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 主要就是注册了一个 AnnotationAwareAspectJAutoProxyCreator，并对 &lt;aop:aspectj-autoproxy/> 标签的 proxy-target-class 和 expose-proxy 属性的处理</span>
 <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">registerAspectJAnnotationAutoProxyCreatorIfNecessary</span><span class="token punctuation">(</span>
         ParserContext parserContext<span class="token punctuation">,</span> Element sourceElement<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -772,7 +772,7 @@ afterTest
 </p><p>直接看好像没有什么熟悉的声明周期接口对吧，但是如果你顺着继承关系逐个往上找，就会看到在其父类 AbstractAutoProxyCreator 中实现了一个 SmartInstantiationAwareBeanPostProcessor 接口，看过 spring ioc 实现原理的小伙伴应该对 BeanPostProcessor 这样的接口十分敏感，它意味着在 bean 的初始化不同阶段，spring 会完成对实现该类接口的 bean 的对应方法的调用，这里也不例外。当然直接通过 idea 的 diagram 绘制能更清楚的看出 AnnotationAwareAspectJAutoProxyCreator 实现的其它接口，但是这里我们只关心 SmartInstantiationAwareBeanPostProcessor。</p>
 <div style="text-align:center;"><img src="https://image.aprilyolies.top/static/images/common/9d6f9b28cd7e445bbcd9194cc47334c6.jpg" width="800"></div>
 
-<center>AnnotationAwareAspectJAutoProxyCreator 图表</center>
+<center>AnnotationAwareAspectJAutoProxyCreator 继承体系</center>
 
 <p>
 
@@ -1667,8 +1667,8 @@ afterTest
                 
                 <div class="card-action article-tags">
                     
-                    <a href="../../../../tags/RPC/" target="_blank">
-                        <span class="chip bg-color">RPC</span>
+                    <a href="../../../../tags/Spring/" target="_blank">
+                        <span class="chip bg-color">Spring</span>
                     </a>
                     
                     <a href="../../../../tags/AOP/" target="_blank">

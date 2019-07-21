@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://aprilyolies.top/"/>
-  <updated>2019-07-21T13:43:58.868Z</updated>
+  <updated>2019-07-21T14:02:47.599Z</updated>
   <id>https://aprilyolies.top/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://aprilyolies.top/2019/07/21/Spring-AOP-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/"/>
     <id>https://aprilyolies.top/2019/07/21/Spring-AOP-实现原理分析/</id>
     <published>2019-07-21T03:16:21.000Z</published>
-    <updated>2019-07-21T13:43:58.868Z</updated>
+    <updated>2019-07-21T14:02:47.599Z</updated>
     
     <summary type="html">
     
@@ -38,7 +38,7 @@
       <category term="源码分析" scheme="https://aprilyolies.top/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"/>
     
     
-      <category term="RPC" scheme="https://aprilyolies.top/tags/RPC/"/>
+      <category term="Spring" scheme="https://aprilyolies.top/tags/Spring/"/>
     
       <category term="AOP" scheme="https://aprilyolies.top/tags/AOP/"/>
     
