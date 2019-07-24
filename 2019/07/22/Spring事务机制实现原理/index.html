@@ -429,7 +429,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在我的上一篇文章中已经比较详细的对 Spring 的 AOP 实现原理进行了说明，而 Spring 的事务实现原理呢又跟 Spring 的 AOP 实现有着较大的关系，所以这里选择成热打铁，对 Spring 的事务实现机制进行一下说明。上一篇文章在对 AOP 实现进行解释时，只分析了它的 cglib 代理实现，因为提供的例子中被代理类没有实现相应的接口，导致不能通过 jdk 原生方式进行代理，而本文将要解释的 Spring 事务实现中，例子是实现了用户服务接口的，所以代理方式是采用的 jdk 原生方式，正好能够对上文进行补充。同样的示例代码我已经提交到我的 <a href="https://github.com/AprilYoLies/spring-framework" target="_blank" rel="noopener">github</a> 上，欢迎自取。在阅读本文之前，十分的建议先看我的上一篇 <a href="https://www.aprilyolies.top/2019/07/21/Spring-AOP-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" target="_blank" rel="noopener">Spring AOP 实现原理</a>文章，因为分析 Spring 事务实现原理的方式和分析 Spring AOP 实现原理的方式十分相似，如果对上一篇文章理解得好，Spring 的事务实现完全可以按照同样的方式来进行分析。</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在我的上一篇文章中已经比较详细的对 Spring 的 AOP 实现原理进行了说明，而 Spring 的事务实现原理呢又跟 Spring 的 AOP 实现有着较大的关系，所以这里选择成热打铁，对 Spring 的事务实现机制进行一下说明。上一篇文章在对 AOP 实现进行解释时，只分析了它的 cglib 代理实现，因为提供的例子中被代理类没有实现相应的接口，导致不能通过 jdk 原生方式进行代理，而本文将要解释的 Spring 事务实现中，例子是实现了用户服务接口的，所以代理方式是采用的 jdk 原生方式，正好能够对上文进行补充。同样的示例代码我已经提交到我的 <a href="https://github.com/AprilYoLies/spring-framework" target="_blank" rel="noopener">github</a> 上，欢迎自取。在阅读本文之前，十分的建议先看我的上一篇 <a href="https://www.aprilyolies.top/2019/07/21/Spring-AOP-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">Spring AOP 实现原理</a>文章，因为分析 Spring 事务实现原理的方式和分析 Spring AOP 实现原理的方式十分相似，如果对上一篇文章理解得好，Spring 的事务实现完全可以按照同样的方式来进行分析。</p>
 <h2 id="示例程序"><a href="#示例程序" class="headerlink" title="示例程序"></a>示例程序</h2><p>实例程序很简单，已经同步到上文 github 链接上了，在 spring-example 模块的 <code>top.aprilyolies.example.tx</code> 包之下，执行前还需要先在数据库中创建数据表，sql 文件在当前模块下的 db 文件夹下。</p>
 <blockquote>
 <p>主函数 top.aprilyolies.example.tx.TxApp</p>
@@ -1300,7 +1300,7 @@ retVal <span class="token operator">=</span> invocation<span class="token punctu
                     <span class="reprint-tip">
                         <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
                     </span>
-                    <a href="https://aprilyolies.top" class="b-link-green">AprilYoLies</a>
+                    <a href="https://www.aprilyolies.top" class="b-link-green">AprilYoLies</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
                     <a href class="b-link-green">Spring事务机制实现原理</a>
                 </p>
