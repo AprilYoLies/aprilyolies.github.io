@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.aprilyolies.top/"/>
-  <updated>2019-07-23T14:10:10.641Z</updated>
+  <updated>2019-07-25T08:01:02.277Z</updated>
   <id>https://www.aprilyolies.top/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>SpringMVC基本原理分析</title>
+    <link href="https://www.aprilyolies.top/2019/07/25/SpringMVC%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/"/>
+    <id>https://www.aprilyolies.top/2019/07/25/SpringMVC基本原理分析/</id>
+    <published>2019-07-25T01:08:08.000Z</published>
+    <updated>2019-07-25T08:01:02.277Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;本文是关于 SpringMVC 实现原理分析的文章，这之前还写了两篇关于 Spring AOP 和事务机制实现原理的文章，总的来说
+        
+      
+    
+    </summary>
+    
+      <category term="源码分析" scheme="https://www.aprilyolies.top/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"/>
+    
+    
+      <category term="Spring" scheme="https://www.aprilyolies.top/tags/Spring/"/>
+    
+      <category term="SpringMVC" scheme="https://www.aprilyolies.top/tags/SpringMVC/"/>
+    
+  </entry>
   
   <entry>
     <title>Spring事务机制实现原理</title>
@@ -544,35 +572,6 @@
     
     
       <category term="Git" scheme="https://www.aprilyolies.top/tags/Git/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>FastDFS单机环境下的搭建</title>
-    <link href="https://www.aprilyolies.top/2019/04/19/FastDFS%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%9A%84%E6%90%AD%E5%BB%BA/"/>
-    <id>https://www.aprilyolies.top/2019/04/19/FastDFS单机环境下的搭建/</id>
-    <published>2019-04-19T10:20:05.000Z</published>
-    <updated>2019-05-06T01:46:22.254Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;!-- toc --&gt;
-&lt;h2 id=&quot;FastDFS简单介绍&quot;&gt;&lt;a href=&quot;#FastDFS简单介绍&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-      <category term="后端开发" scheme="https://www.aprilyolies.top/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
-    
-    
-      <category term="FastDFS" scheme="https://www.aprilyolies.top/tags/FastDFS/"/>
-    
-      <category term="Linux" scheme="https://www.aprilyolies.top/tags/Linux/"/>
     
   </entry>
   
